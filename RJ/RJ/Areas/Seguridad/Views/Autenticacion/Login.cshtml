@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+<script type="text/javascript">
+    Ext.Loader.setConfig({
+        enabled: true,
+        disableCaching: true,
+        paths: {
+            SegApp: '../../Areas/Seguridad/Scripts'
+        }
+    });
+
+    Ext.onReady(function () {
+
+        var panel = Ext.create('SegApp.Login.FrmLogin');
+        panel.show();
+        panel.getComponent('txtUsuario').focus();
+
+    });
+</script>
