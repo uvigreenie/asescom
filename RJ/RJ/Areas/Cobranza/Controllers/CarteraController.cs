@@ -18,7 +18,7 @@ namespace RJ.Areas.Cobranza.Controllers
 
             public JsonResult ListarFechaFinCartera(short gestionCliente)
             {
-            //prueba
+            //prueba 2
                 DataTable dt = Cartera.Instancia.ListarFechaFinCartera(gestionCliente);
 
                 string fields = "[{\"name\":\"FechaFin\",\"type\":\"string\"},{\"name\":\"DFechaFin\",\"type\":\"string\"}]";
