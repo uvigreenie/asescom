@@ -1,4 +1,4 @@
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -18,6 +18,7 @@ namespace RJ.Areas.Cobranza.Controllers
 
             public JsonResult ListarFechaFinCartera(short gestionCliente)
             {
+            //prueba
                 DataTable dt = Cartera.Instancia.ListarFechaFinCartera(gestionCliente);
 
                 string fields = "[{\"name\":\"FechaFin\",\"type\":\"string\"},{\"name\":\"DFechaFin\",\"type\":\"string\"}]";
