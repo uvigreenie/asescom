@@ -8,6 +8,7 @@ namespace RJ.Areas.Cobranza
         {
             get
             {
+                //prueba
                 return "Cobranza";
             }
         }
