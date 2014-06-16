@@ -11,6 +11,7 @@ namespace RJ.Areas.Cobranza.Controllers
     {
         //
         // GET: /Cobranza/Index/
+//
 
         public ActionResult Index()
         {
