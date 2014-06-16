@@ -9,7 +9,7 @@ using RJ.Areas.Cobranza.Models;
 using System.Text;
 using System.Data;
 using System.Web.Script.Serialization;
-
+//Revision 12
 namespace RJ.Areas.Cobranza.Controllers
 {
     public class MorosoController : Controller
