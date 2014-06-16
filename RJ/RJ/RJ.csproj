@@ -100,6 +100,7 @@
     <Compile Include="Areas\Seguridad\Controllers\GrupoController.cs" />
     <Compile Include="Areas\Seguridad\Controllers\IndexController.cs" />
     <Compile Include="Areas\Seguridad\Controllers\MenuController.cs" />
+    <Compile Include="Areas\Seguridad\Controllers\TrabajadorController.cs" />
     <Compile Include="Areas\Seguridad\Entity\SeguridadDs.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -108,6 +109,7 @@
     <Compile Include="Areas\Seguridad\Models\Autenticacion.cs" />
     <Compile Include="Areas\Seguridad\Models\Grupo.cs" />
     <Compile Include="Areas\Seguridad\Models\Menu.cs" />
+    <Compile Include="Areas\Seguridad\Models\Trabajador.cs" />
     <Compile Include="Areas\Seguridad\Models\TreeMenu.cs" />
     <Compile Include="Areas\Seguridad\SeguridadAreaRegistration.cs" />
     <Compile Include="Global.asax.cs">
@@ -125,6 +127,7 @@
     <Content Include="Areas\Seguridad\Scripts\Layout\Contenedor.js" />
     <Content Include="Areas\Seguridad\Scripts\Login\FrmLogin.js" />
     <Content Include="Areas\Seguridad\Scripts\Menu\FrmRegistrarMenu.js" />
+    <Content Include="Areas\Seguridad\Scripts\Trabajador\FrmRegistrarTrabajador.js" />
     <Content Include="Areas\Seguridad\Scripts\Usuario\FrmChangePassword.js" />
     <Content Include="Areas\Seguridad\Scripts\Usuario\FrmMenuUsuario.js" />
     <Content Include="Areas\Seguridad\Scripts\Usuario\FrmRegistrarUsuario.js" />
