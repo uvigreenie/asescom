@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+
+    Ext.Loader.setConfig({
+        enabled: true,
+        disableCaching: true,
+        paths: {
+            SegApp: '../../Areas/Seguridad/Scripts',
+            CobApp: '../../Areas/Cobranza/Scripts',
+            'Ext.ux': '../../Scripts/ExtJs/ux'
+        }
+    });
+
+    Ext.require([
+        'Ext.ux.grid.FiltersFeature'
+    ]);
+
+    Ext.onReady(function () {
+
+        Ext.MessageBox.show({
+            title: 'RJ Abogados',
+            msg: 'Cargando menú de usuario, por favor espere...',
+            width: 300,
+            wait: true,
+            waitConfig: { interval: 100 }
+        });
+        Ext.QuickTips.init();
+        Ext.util.Format.decimalSeparator = '.';
+        Ext.util.Format.thousandSeparator = ',';
+        var contenedor = Ext.create('SegApp.Layout.Contenedor');
+        contenedor.show();
+    });
+</script>
