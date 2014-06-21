@@ -169,7 +169,7 @@
                     emptyText: '< Seleccione >',
                     store: stSexo,
                     displayField: 'Sexo',
-                    valueField: 'DSexo',
+                    valueField: 'Sexo',
                     allowBlank: false,
                     forceSelection: true,
                     queryMode: 'local'
