@@ -23,6 +23,16 @@ namespace RJ.Areas.Seguridad.Controllers
                 fields += "{\"name\":\"CorreoAlternativo\",\"type\":\"string\"},{\"name\":\"Direccion\",\"type\":\"string\"},{\"name\":\"DireccionAlterna\",\"type\":\"string\"},";
                 fields += "{\"name\":\"Activo\",\"type\":\"bool\"}]";
 
+                string columns = "[{\"xtype\":\"rownumberer\",\"resizable\":true,\"width\":60},{\"text\":\"Trabajador\",\"dataIndex\":\"Trabajador\",\"hidden\":true,\"hideable\":false},";
+                columns += "{\"text\":\"TipoDocumento\",\"dataIndex\":\"TipoDocumento\",\"hidden\":true,\"hideable\":false},{\"text\":\"Tipo Documento\",\"dataIndex\":\"DTipoDocumento\",\"width\":60},";
+                columns += "{\"text\":\"N° Documento\",\"dataIndex\":\"NumeroDocumento\",\"width\":90},{\"text\":\"Apellido Paterno\",\"dataIndex\":\"ApellidoPaterno\",\"width\":180},";
+                columns += "{\"text\":\"Apellido Materno\",\"dataIndex\":\"ApellidoMaterno\",\"width\":180},{\"text\":\"Nombres\",\"dataIndex\":\"Nombre\",\"width\":180},";
+                columns += "{\"xtype\":\"datecolumn\",\"text\":\"Fecha Nacimiento\",\"dataIndex\":\"FechaNacimiento\",\"width\":100,\"format\":\"d/m/Y\"},{\"text\":\"Sexo\",\"dataIndex\":\"Sexo\",\"width\":40},";
+                columns += "{\"text\":\"Teléfono\",\"dataIndex\":\"TelefonoFijo\",\"width\":90},{\"text\":\"Celular\",\"dataIndex\":\"Celular\",\"width\":90},";
+                columns += "{\"text\":\"Correo\",\"dataIndex\":\"Correo\",\"width\":120},{\"text\":\"Correo Alterno\",\"dataIndex\":\"CorreoAlternativo\",\"width\":120},";
+                columns += "{\"text\":\"Dirección\",\"dataIndex\":\"Direccion\",\"width\":120},{\"text\":\"Dirección Alterna\",\"dataIndex\":\"DireccionAlterna\",\"width\":120},";
+                columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Activo\",\"dataIndex\":\"Activo\",\"processEvent\":'function () { return false; }',\"width\":100}]";
+
                 var lista = (from m in dt.AsEnumerable()
                              select new
                              {
@@ -33,7 +43,7 @@ namespace RJ.Areas.Seguridad.Controllers
                                  ApellidoPaterno = m["ApellidoPaterno"].ToString(),
                                  ApellidoMaterno = m["ApellidoMaterno"].ToString(),
                                  Nombre = m["Nombre"].ToString(),
-                                 FechaNacimiento = Convert.ToDateTime(m["FechaNacimiento"]),
+                                 FechaNacimiento = Convert.ToDateTime(m["FechaNacimiento"]).ToString("yyyy/MM/dd"),
                                  Sexo = m["Sexo"].ToString(),
                                  TelefonoFijo = m["TelefonoFijo"].ToString(),
                                  Celular = m["Celular"].ToString(),
@@ -45,7 +55,8 @@ namespace RJ.Areas.Seguridad.Controllers
                              }).ToList<object>();
 
                 var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
-                return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+                var jsColumns = new JavaScriptSerializer().Deserialize(columns, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields, columns = jsColumns }, data = lista }, JsonRequestBehavior.AllowGet);
             }
 
             public JsonResult ListarTipoDocumento()
@@ -63,6 +74,28 @@ namespace RJ.Areas.Seguridad.Controllers
 
                 var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
                 return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
+            /// <summary>
+            /// Lista trabajadores por usuario.
+            /// </summary>
+            /// <param name="usuario">id usuario.</param>
+            /// <returns>Lista</returns>
+            public JsonResult ListarTrabajadoresxUsuario(short usuario)
+            {
+                List<object> lista = Trabajador.Instancia.Listar(usuario);
+                return Json(lista, JsonRequestBehavior.AllowGet);
+            }
+
+            /// <summary>
+            /// Lista trabajadores asignados a un usuario.
+            /// </summary>
+            /// <param name="usuario">id usuario.</param>
+            /// <returns>Lista</returns>
+            public JsonResult ListarTrabajadoresxAsignar(short usuario)
+            {
+                List<object> lista = Trabajador.Instancia.ListarTrabajadoresxAsignar(usuario);
+                return Json(lista, JsonRequestBehavior.AllowGet);
             }
 
         #endregion
@@ -93,6 +126,28 @@ namespace RJ.Areas.Seguridad.Controllers
                     bool activo = Convert.ToBoolean(lista[0]["Activo"]);
                     short result = Trabajador.Instancia.InsUpdTrabajador(trabajador,tipoDocumento,numeroDocumento,apellidoPaterno,apellidoMaterno,nombre,fecha,sexo,telefonoFijo,celular,correo,correoAlternativo,direccion,direccionAlterna, activo, Session["Login"].ToString());
                     return Json(new { success = "true", data = result.ToString() }, JsonRequestBehavior.AllowGet);
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = "false", data = ex.Message }, JsonRequestBehavior.AllowGet);
+                }
+            }
+
+            public JsonResult InsUpdUsuarioTrabajador(short usuario, object[] datos)
+            {
+                try
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    List<Dictionary<string, object>> lista = js.Deserialize<List<Dictionary<string, object>>>(datos[0].ToString());
+                    string xml = "<root>";
+
+                    for (int i = 0; i < lista.Count; i++)
+                    {
+                        xml += "<usuariotrabajador Trabajador = '" + lista[i]["Trabajador"].ToString() + "' />";
+                    }
+                    xml += "</root>";
+                    Trabajador.Instancia.InsUpdUsuarioTrabajador(usuario, xml, Session["Login"].ToString());
+                    return Json(new { success = "true", data = "true" }, JsonRequestBehavior.AllowGet);
                 }
                 catch (Exception ex)
                 {
