@@ -1,9 +1,11 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.Linq;
 using Microsoft.Practices.EnterpriseLibrary.Data;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 using RJ.Models;
 using System;
+using System.Collections.Generic;
 
 namespace RJ.Areas.Seguridad.Models
 {
@@ -42,6 +44,50 @@ namespace RJ.Areas.Seguridad.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
+            /// <summary>
+            /// Lista trabajadores por usuario.
+            /// </summary>
+            /// <param name="usuario">id usuario.</param>
+            /// <returns>Lista</returns>
+            public List<object> Listar(short usuario)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspSEG_ListarTrabajadoresAsignados");
+                cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmintUsuario", DbType.Int16, usuario);
+                DataTable dt = db.ExecuteDataSet(cmd).Tables[0];
+
+                var lista = (from m in dt.AsEnumerable()
+                             select new
+                             {
+                                 Trabajador = Convert.ToInt16(m["Trabajador"]),
+                                 DTrabajador = m["DTrabajador"].ToString()
+                             }).ToList<object>();
+                return lista;
+            }
+
+            /// <summary>
+            /// Lista trabajadores asignados a un usuario.
+            /// </summary>
+            /// <param name="usuario">id usuario.</param>
+            /// <returns>Lista</returns>
+            public List<object> ListarTrabajadoresxAsignar(short usuario)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspSEG_ListarTrabajadoresxAsignar");
+                cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmintUsuario", DbType.Int16, usuario);
+                DataTable dt = db.ExecuteDataSet(cmd).Tables[0];
+
+                var lista = (from m in dt.AsEnumerable()
+                             select new
+                             {
+                                 Trabajador = Convert.ToInt16(m["Trabajador"]),
+                                 DTrabajador = m["DTrabajador"].ToString()
+                             }).ToList<object>();
+                return lista;
+            }
+
         #endregion
 
         #region Insert
@@ -70,6 +116,18 @@ namespace RJ.Areas.Seguridad.Models
                 db.AddInParameter(cmd, "@prmstrLogin", DbType.String, login);
 
                 return Convert.ToInt16(db.ExecuteScalar(cmd));
+            }
+
+            
+            public void InsUpdUsuarioTrabajador(short usuario, string xml, string login)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspSEG_GuardarUsuarioTrabajador");
+                cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmintUsuario", DbType.Int16, usuario);
+                db.AddInParameter(cmd, "@prmstrXML", DbType.String, xml);
+                db.AddInParameter(cmd, "@prmstrLogin", DbType.String, login);
+                db.ExecuteNonQuery(cmd);
             }
 
         #endregion
