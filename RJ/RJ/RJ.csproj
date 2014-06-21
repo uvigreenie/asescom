@@ -125,6 +125,7 @@
     <Content Include="Areas\Seguridad\Scripts\Login\FrmLogin.js" />
     <Content Include="Areas\Seguridad\Scripts\Menu\FrmRegistrarMenu.js" />
     <Content Include="Areas\Seguridad\Scripts\Trabajador\FrmRegistrarTrabajador.js" />
+    <Content Include="Areas\Seguridad\Scripts\Trabajador\FrmUsuarioTrabajador.js" />
     <Content Include="Areas\Seguridad\Scripts\Usuario\FrmChangePassword.js" />
     <Content Include="Areas\Seguridad\Scripts\Usuario\FrmMenuUsuario.js" />
     <Content Include="Areas\Seguridad\Scripts\Usuario\FrmRegistrarUsuario.js" />
