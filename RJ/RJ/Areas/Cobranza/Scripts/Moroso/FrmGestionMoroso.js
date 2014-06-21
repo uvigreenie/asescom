@@ -945,6 +945,12 @@
                     scope: me
                 },
                 {
+                    itemId: 'btnExportar',
+                    iconCls: 'icon-export',
+                    text: 'Exportar',
+                    href: '../../Cobranza/Cartera/ExportarMorosos'
+                },
+                {
                     itemId: 'btnSalir',
                     text: 'Salir',
                     iconCls: 'icon-exit',
@@ -1228,7 +1234,15 @@
                     departamento: dtDepartamento
                 }
             });
-        }
+
+            this.getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
+                    cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                    gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                    fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
+                    tramo: this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue(),
+                    cluster: dtCluster,
+                    departamento: dtDepartamento});
+            }
     },
 
     onBtnNuevoClick: function (button, e, options) {
