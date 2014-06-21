@@ -9,6 +9,7 @@ using RJ.Areas.Cobranza.Models;
 using System.Text;
 using System.Data;
 using System.Web.Script.Serialization;
+using C1.C1Excel;
 
 namespace RJ.Areas.Cobranza.Controllers
 {
@@ -186,6 +187,40 @@ namespace RJ.Areas.Cobranza.Controllers
             {
                 List<object> lista = Cartera.Instancia.ListarGestionMoroso(detalleMoroso);
                 return Json(lista, JsonRequestBehavior.AllowGet);
+            }
+
+            public void ExportarMorosos(string cliente, short gestionCliente, string fechaFin, string tramo, object[] cluster, object[] departamento)
+            {
+                string xmlCluster = "<root>";
+                string xmlDpto = "<root>";
+
+                if (cluster != null)
+                {
+                    for (int i = 0; i < cluster.Length; i++)
+                    {
+                        xmlCluster += "<cluster Cluster = '" + cluster[i].ToString() + "' />";
+                    }
+                }
+                xmlCluster += "</root>";
+
+                if (departamento != null)
+                {
+                    for (int i = 0; i < departamento.Length; i++)
+                    {
+                        xmlDpto += "<departamento Departamento = '" + departamento[i].ToString() + "' />";
+                    }
+                }
+                xmlDpto += "</root>";
+                DataTable dt = Cartera.Instancia.ListarMorososEnCartera(cliente, gestionCliente, fechaFin, tramo, xmlCluster, xmlDpto);
+                Response.Clear();
+                Response.AddHeader("content-disposition", "attachment;filename=morosos.csv");
+                Response.Charset = "";
+                Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                Response.ContentType = "application/vnd.csv";
+                Response.Charset = "UTF-8";
+                Response.ContentEncoding = System.Text.Encoding.Unicode;
+                Response.BinaryWrite(ConvertirTablaToExcel(dt, "Morosos").ToArray());
+                Response.End();
             }
 
         #endregion
@@ -423,6 +458,38 @@ namespace RJ.Areas.Cobranza.Controllers
             {
                 return prmstrCadena;
             }
+        }
+
+        public MemoryStream ConvertirTablaToExcel(DataTable dt, string nombreHoja)
+        {
+            int col = 0;
+            int row = 1;
+            C1XLBook book = new C1XLBook();
+            book.Sheets.Clear();
+            XLSheet sheet = book.Sheets.Add(nombreHoja);
+
+            int c = 0;
+            foreach (DataColumn item in dt.Columns)
+            {
+                XLCell cell = sheet[0, col + c];
+                cell.Value = item.ColumnName;
+                int r = 0;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    cell = sheet[row + r, col + c];
+                    if (item.DataType == typeof(DateTime))
+                        cell.Value = Convert.ToDateTime(dr[item.Ordinal]).ToString("dd/MM/yyyy");
+                    else
+                        cell.Value = dr[item.Ordinal];
+                    r++;
+                }
+                c++;
+            }
+
+            MemoryStream ms = new MemoryStream();
+            book.Save(ms, FileFormat.Csv);
+
+            return ms;
         }
 
     }
