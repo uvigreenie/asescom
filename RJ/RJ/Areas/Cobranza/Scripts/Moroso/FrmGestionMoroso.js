@@ -701,6 +701,22 @@
                         },
                         {
                             xtype: 'combo',
+                            itemId: 'cbxTrabajador',
+                            lastQuery: '',
+                            fieldLabel: 'Gestor',
+                            emptyText: '< Seleccione >',
+                            //store: stDClaseGestion,
+                            //displayField: 'Descripcion',
+                            //valueField: 'DClaseGestion',
+                            allowBlank: false,
+                            forceSelection: true,
+                            queryMode: 'local',
+                            colspan: 2,
+                            //anchor: '100%',
+                            width: 520
+                        },
+                        {
+                            xtype: 'combo',
                             itemId: 'cbxClaseGestion',
                             lastQuery: '',
                             fieldLabel: 'Código',
@@ -708,6 +724,9 @@
                             store: stClaseGestion,
                             displayField: 'Codigo',
                             valueField: 'ClaseGestion',
+                            colspan: 2,
+                            //anchor: '100%',
+                            width: 520,
                             allowBlank: false,
                             forceSelection: true,
                             queryMode: 'local',
@@ -717,13 +736,6 @@
                                     scope: me
                                 }
                             }
-                        },
-                        {
-                            xtype: 'button',
-                            itemId: 'btnDatos',
-                            text: 'Datos Adicionales',
-                            handler: me.onBtnDialogClick,
-                            scope: me
                         },
                         {
                             xtype: 'combo',
@@ -739,7 +751,7 @@
                             queryMode: 'local',
                             colspan: 2,
                             //anchor: '100%',
-                            width: 600
+                            width: 520
                         },
                         {
                             xtype: 'datefield',
@@ -763,8 +775,14 @@
                             decimalSeparator: '.',
                             decimalPrecision: 2,
                             allowBlank: false,
-                            blankText: 'Este campo es obligatorio.',
-                            colspan: 2
+                            blankText: 'Este campo es obligatorio.'
+                        },
+                        {
+                            xtype: 'button',
+                            itemId: 'btnDatos',
+                            text: 'Datos Adicionales',
+                            handler: me.onBtnDialogClick,
+                            scope: me
                         },
                         {
                             xtype: 'label',
