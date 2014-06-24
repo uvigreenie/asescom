@@ -244,11 +244,12 @@ namespace RJ.Areas.Cobranza.Controllers
                     byte tipoGestion = Convert.ToByte(lista[0]["TipoGestion"]);
                     byte claseGestion = Convert.ToByte(lista[0]["ClaseGestion"]);
                     short dclaseGestion = Convert.ToInt16(lista[0]["DClaseGestion"]);
+                    short trabajador = Convert.ToInt16(lista[0]["Trabajador"]);
                     DateTime fechaGestion = Convert.ToDateTime(lista[0]["FechaGestion"]);
                     DateTime? fechaPromesa = ( lista[0]["FechaPromesa"] == null ? new DateTime?() : Convert.ToDateTime(lista[0]["FechaPromesa"]));
                     decimal monto = Convert.ToDecimal(lista[0]["Monto"]);
                     string observacion = lista[0]["Observacion"].ToString();
-                    int result = Cartera.Instancia.InsUpdGestionMoroso(gestionMoroso,cartera,detalleMoroso,tipoGestion,claseGestion,dclaseGestion,fechaGestion,fechaPromesa,monto,observacion,Session["Login"].ToString());
+                    int result = Cartera.Instancia.InsUpdGestionMoroso(gestionMoroso,cartera,detalleMoroso,tipoGestion,claseGestion,dclaseGestion,fechaGestion,fechaPromesa,monto,observacion,trabajador,Session["Login"].ToString());
                     return Json(new { success = "true", data = result.ToString() }, JsonRequestBehavior.AllowGet);
                 }
                 catch (Exception ex)

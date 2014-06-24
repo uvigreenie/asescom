@@ -24,6 +24,19 @@
             }
         });
 
+        var stTrabajadorUsuario = Ext.create('Ext.data.Store', {
+            autoLoad: false,
+            fields: [
+                { name: 'Trabajador', type: 'int' },
+                { name: 'DTrabajador', type: 'string' }
+            ],
+            proxy: {
+                type: 'ajax',
+                url: '../../Seguridad/Trabajador/ListarTrabajadoresxUsuarioLog',
+                reader: { type: 'json' }
+            }
+        });
+
         var stFechaFin = Ext.create('Ext.data.Store', {
             autoLoad: false,
             proxy: {
@@ -104,7 +117,8 @@
                 { name: 'FechaVencimiento', type: 'string' },
                 { name: 'Moneda', type: 'string' },
                 { name: 'MontoDeuda', type: 'float' },
-                { name: 'MontoPagado', type: 'float' }
+                { name: 'MontoPagado', type: 'float' },
+                { name: 'FechaPago', type: 'string' }
             ],
             proxy: {
                 type: 'ajax',
@@ -215,6 +229,8 @@
                 { name: 'FechaGestion', type: 'string' },
                 { name: 'FechaPromesa', type: 'string' },
                 { name: 'Monto', type: 'Monto' },
+                { name: 'Trabajador', type: 'int' },
+                { name: 'DTrabajador', type: 'string' },
                 { name: 'Observacion', type: 'Observacion' }
             ],
             proxy: {
@@ -354,6 +370,18 @@
                             text: 'Monto Pagado',
                             format: '0,000.##',
                             width: 80,
+                            hideable: false
+                        },
+                        {
+                            xtype: 'datecolumn',
+                            dataIndex: 'FechaPago',
+                            text: 'Ult.Fecha Pago',
+                            width: 90,
+                            renderer: function (v) {
+                                var dateObject = Ext.Date.parse(v, 'MS');
+                                var ymdString = Ext.util.Format.date(dateObject, 'd/m/Y');
+                                return ymdString;
+                            },
                             hideable: false
                         },
                         {
@@ -655,6 +683,20 @@
                             text: 'Monto',
                             width: 90,
                             hideable: false
+                        },
+                        {
+                            xtype: 'numbercolumn',
+                            dataIndex: 'Trabajador',
+                            text: 'Trabajador',
+                            hidden: true,
+                            hideable: false
+                        },
+                        {
+                            xtype: 'gridcolumn',
+                            dataIndex: 'DTrabajador',
+                            text: 'Gestor',
+                            width: 150,
+                            hideable: false
                         }
                         ],
                         listeners: {
@@ -708,9 +750,9 @@
                             lastQuery: '',
                             fieldLabel: 'Gestor',
                             emptyText: '< Seleccione >',
-                            //store: stDClaseGestion,
-                            //displayField: 'Descripcion',
-                            //valueField: 'DClaseGestion',
+                            store: stTrabajadorUsuario,
+                            displayField: 'DTrabajador',
+                            valueField: 'Trabajador',
                             allowBlank: false,
                             forceSelection: true,
                             queryMode: 'local',
@@ -987,6 +1029,7 @@
         afterrender: {
             fn: function (component, options) {
                 this.getComponent('pnlFiltro').getComponent('cbxCliente').getStore().load();
+                this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').getStore().load();
                 this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').getStore().load();
                 this.fnEstadoForm('visualizacion');
                 Ext.MessageBox.hide();
@@ -1152,6 +1195,7 @@
                 }
             });
             this.fnLimpiarControles();
+            
         }
     },
 
@@ -1161,6 +1205,7 @@
             this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtDetalleMoroso').setValue(selections[0].get('DetalleMoroso'));
             this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTipoGestion').setValue(selections[0].get('TipoGestion'));
             this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').setValue(selections[0].get('ClaseGestion'));
+            this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').setValue(selections[0].get('Trabajador'));
             this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxDClaseGestion').getStore().load({
                 params: {
                     claseGestion: parseInt(this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').getValue())
@@ -1266,7 +1311,7 @@
             }
     },
 
-    onBtnNuevoClick: function (button, e, options) {
+    onBtnNuevoClick: function (button, e, options) {    
         if ( this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtDetalleMoroso').getValue().toString() == '' ){
             Ext.MessageBox.show({
                             title: 'Sistema RJ Abogados',
@@ -1278,6 +1323,8 @@
         }
         else {
             this.fnLimpiarControles();
+            this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').setValue(this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').store.getAt(0).get('Trabajador'));
+            this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTipoGestion').setValue(this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTipoGestion').store.getAt(0).get('TipoGestion'));
             this.fnEstadoForm('registro');
         }
     },
@@ -1321,6 +1368,7 @@
             dtGestion['FechaPromesa'] = this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('dtpFechaPromesa').getValue();
             dtGestion['Monto'] = this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtMonto').getValue();
             dtGestion['Observacion'] = this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtObservacion').getValue();
+            dtGestion['Trabajador'] = this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').getValue();
 
             Ext.Ajax.request({
                 url: "../../Cartera/InsUpdGestionMoroso",
@@ -1396,6 +1444,9 @@
         if (!this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTipoGestion').isValid()) {
             return false;
         }
+        if (!this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').isValid()) {
+            return false;
+        }
         if (!this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').isValid()) {
             return false;
         }
@@ -1412,7 +1463,8 @@
         this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxDClaseGestion').setDisabled(estado);
         this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('dtpFechaGestion').setDisabled(estado);
         this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('dtpFechaPromesa').setDisabled(estado);
-        this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtMonto').setDisabled(estado);
+        this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('dtpFechaPromesa').setDisabled(estado);
+        this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').setDisabled(estado);
         this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtObservacion').setDisabled(estado);
         this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('btnDatos').setDisabled(estado);
     },
