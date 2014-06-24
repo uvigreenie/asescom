@@ -260,14 +260,17 @@
                         filters: [ { type: 'string', dataIndex: 'Cluster'},
                             { type: 'string', dataIndex: 'Departamento'},
                             { type: 'string', dataIndex: 'NumeroDocumento' },
+                            { type: 'string', dataIndex: 'CodCliente' },
                             { type: 'string', dataIndex: 'Cuenta' },
                             { type: 'string', dataIndex: 'Servicio' },
                             { type: 'string', dataIndex: 'DMoroso' },
                             { type: 'numeric', dataIndex: 'DeudaTotal' },
                             { type: 'numeric', dataIndex: 'PagoTotal' },
                             { type: 'numeric', dataIndex: 'Saldo' },
+                            { type: 'boolean', dataIndex: 'Gestionado', defaultValue: null, yesText: 'Si', noText:'No'},
                             { type: 'boolean', dataIndex: 'Contactado', defaultValue: null, yesText: 'Si', noText:'No'},
-                            { type: 'boolean', dataIndex: 'PromesaPago', defaultValue: null, yesText: 'Si', noText:'No'}
+                            { type: 'boolean', dataIndex: 'PromesaPago', defaultValue: null, yesText: 'Si', noText:'No'},
+                            { type: 'string', dataIndex: 'Zonal' }
                         ]
                     }],
                     listeners: {
