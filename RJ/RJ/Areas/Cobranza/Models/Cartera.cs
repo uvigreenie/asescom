@@ -97,6 +97,7 @@ namespace RJ.Areas.Cobranza.Models
                                  FechaVencimiento = Convert.ToDateTime(m["FechaVencimiento"]),
                                  Moneda = m["Moneda"].ToString(),
                                  MontoDeuda = Convert.ToDecimal(m["MontoDeuda"]),
+                                 FechaPago = (m["FechaPago"] == DBNull.Value ? new DateTime?() : Convert.ToDateTime(m["FechaPago"])),
                                  MontoPagado = Convert.ToDecimal(m["MontoPagado"])
                              }).ToList<object>();
                 return lista;
@@ -143,6 +144,8 @@ namespace RJ.Areas.Cobranza.Models
                                  Codigo = m["Codigo"].ToString(),
                                  DescClaseGestion = m["DescClaseGestion"].ToString(),
                                  DClaseGestion = Convert.ToInt16(m["DClaseGestion"]),
+                                 Trabajador = Convert.ToInt16(m["Trabajador"]),
+                                 DTrabajador = m["DTrabajador"].ToString(),
                                  DescDClaseGestion = m["DescDClaseGestion"].ToString(),
                                  FechaGestion = Convert.ToDateTime(m["FechaGestion"]),
                                  FechaPromesa = (m["FechaPromesa"] == DBNull.Value ? new DateTime?() : Convert.ToDateTime(m["FechaPromesa"])),
@@ -156,7 +159,7 @@ namespace RJ.Areas.Cobranza.Models
 
         #region Insert
 
-            public int InsUpdGestionMoroso(int? gestionMoroso, int cartera, int detalleMoroso, byte tipoGestion, byte claseGestion, short dclaseGestion, DateTime fechaGestion, DateTime? fechaPromesa, decimal monto, string observacion, string login)
+            public int InsUpdGestionMoroso(int? gestionMoroso, int cartera, int detalleMoroso, byte tipoGestion, byte claseGestion, short dclaseGestion, DateTime fechaGestion, DateTime? fechaPromesa, decimal monto, string observacion, short trabajador,string login)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspCOB_InsUpdGestionMoroso");
@@ -167,6 +170,7 @@ namespace RJ.Areas.Cobranza.Models
                 db.AddInParameter(cmd, "@prmintTipoGestion", DbType.Byte, tipoGestion);
                 db.AddInParameter(cmd, "@prmintClaseGestion", DbType.Byte, claseGestion);
                 db.AddInParameter(cmd, "@prmintDClaseGestion", DbType.Int16, dclaseGestion);
+                db.AddInParameter(cmd, "@prmintTrabajador", DbType.Int16, trabajador);
                 db.AddInParameter(cmd, "@prmdatFechaGestion", DbType.DateTime, fechaGestion);
                 db.AddInParameter(cmd, "@prmdatFechaPromesa", DbType.DateTime, fechaPromesa);
                 db.AddInParameter(cmd, "@prmdecMonto", DbType.Decimal, monto);

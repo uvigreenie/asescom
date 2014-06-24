@@ -87,6 +87,13 @@ namespace RJ.Areas.Seguridad.Controllers
                 return Json(lista, JsonRequestBehavior.AllowGet);
             }
 
+            public JsonResult ListarTrabajadoresxUsuarioLog()
+            {
+                short usuario = Convert.ToInt16(Session["Usuario"]);
+                List<object> lista = Trabajador.Instancia.Listar(usuario);
+                return Json(lista, JsonRequestBehavior.AllowGet);
+            }
+
             /// <summary>
             /// Lista trabajadores asignados a un usuario.
             /// </summary>
