@@ -296,6 +296,7 @@ namespace RJ.Areas.Cobranza.Controllers
 
                     string xml;
                     string linea = "";
+                    string direccion = "";
                     string[] valores;
                     int contador = 10;
 
@@ -330,7 +331,22 @@ namespace RJ.Areas.Cobranza.Controllers
                             xml += "Telefono1 = '" + valores[9].Trim() + "' ";
                             xml += "Telefono2 = '" + valores[10].Trim() + "' ";
                             xml += "Telefono3 = '" + valores[11].Trim() + "' ";
-                            xml += "Direccion = '" + devuelveCadena((valores[20] + " " + valores[19] + " " + valores[21])).Trim() + "' ";
+
+                            direccion = (
+                                        (valores[19].ToString().Trim() == "\0" ? "" : valores[19].ToString().Trim()) + "  " +
+                                        (valores[20].ToString().Trim() == "\0" || valores[20].ToString().Trim() == "0" || valores[20].ToString().Trim() == "" ? "" : valores[20].ToString().Trim() + " ") +
+                                        (valores[21].ToString().Trim() == "\0" || valores[21].ToString().Trim() == "0" || valores[21].ToString().Trim() == "" ? "" : valores[21].ToString().Trim() + " ") +
+                                        (valores[22].ToString().Trim() == "\0" || valores[22].ToString().Trim() == "0" || valores[22].ToString().Trim() == "" ? "" : "Piso " + valores[22].ToString().Trim() + " ") +
+                                        (valores[23].ToString().Trim() == "\0" || valores[23].ToString().Trim() == "0" || valores[23].ToString().Trim() == "" ? "" : "Int. " + valores[23].ToString().Trim() + " ") +
+                                        (valores[24].ToString().Trim() == "\0" || valores[24].ToString().Trim() == "0" || valores[24].ToString().Trim() == "" ? "" : "Mz. " + valores[24].ToString().Trim() + " ") +
+                                        (valores[25].ToString().Trim() == "\0" || valores[25].ToString().Trim() == "0" || valores[25].ToString().Trim() == "" ? "" : "Lt. " + valores[25].ToString().Trim() + " ") +
+                                        (valores[26].ToString().Trim() == "\0" || valores[26].ToString().Trim() == "0" || valores[26].ToString().Trim() == "" ? "" : ". " + valores[26].ToString().Trim() + " ") +
+                                        (valores[27].ToString().Trim() == "\0" || valores[27].ToString().Trim() == "0" || valores[27].ToString().Trim() == "" ? "" : valores[27].ToString().Trim() + " ") +
+                                        (valores[28].ToString().Trim() == "\0" || valores[28].ToString().Trim() == "0" || valores[28].ToString().Trim() == "" ? "" : "Sector " + valores[28].ToString().Trim() + " ") +
+                                        (valores[29].ToString().Trim() == "\0" || valores[29].ToString().Trim() == "0" || valores[29].ToString().Trim() == "" ? "" : valores[29].ToString().Trim() + " Etapa")
+                                        );
+
+                            xml += "Direccion = '" + devuelveCadena(direccion).Trim() + "' ";
                             xml += "Referencia = '" + devuelveCadena(valores[30].Trim()) + "' ";
                             xml += "Servicio = '" + valores[35].Trim() + "' ";
                             xml += "Zonal = '" + valores[12].Trim() + "' ";
