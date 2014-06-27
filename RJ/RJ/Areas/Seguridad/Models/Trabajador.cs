@@ -44,6 +44,48 @@ namespace RJ.Areas.Seguridad.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
+            public DataTable ListarDepartamento()
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspSEG_ListarDepartamento");
+                cmd.CommandTimeout = 300;
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarProvincia(string Departamento)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspSEG_ListarProvincia");
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, Departamento);
+                cmd.CommandTimeout = 300;
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarDistrito(string Departamento,string Provincia)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspSEG_ListarDistrito");
+                db.AddInParameter(cmd, "@prmstrProvincia", DbType.String, Provincia);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, Departamento);
+                cmd.CommandTimeout = 300;
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarZonal()
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspSEG_ListarZonal");
+                cmd.CommandTimeout = 300;
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarPuesto()
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspSEG_ListarPuesto");
+                cmd.CommandTimeout = 300;
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
             /// <summary>
             /// Lista trabajadores por usuario.
             /// </summary>
