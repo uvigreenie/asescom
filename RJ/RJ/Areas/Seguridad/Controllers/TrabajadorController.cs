@@ -77,6 +77,91 @@ namespace RJ.Areas.Seguridad.Controllers
                 return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
             }
 
+            public JsonResult ListarDepartamento()
+            {
+                DataTable dt = Trabajador.Instancia.ListarDepartamento();
+
+                string fields = "[{\"name\":\"Departamento\",\"type\":\"string\"},{\"name\":\"DDepartamento\",\"type\":\"string\"}]";
+
+                var lista = (from m in dt.AsEnumerable()
+                             select new
+                             {
+                                 Departamento = m["Departamento"].ToString(),
+                                 DDepartamento = m["DDepartamento"].ToString()
+                             }).ToList<object>();
+
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
+            public JsonResult ListarProvincia(string Departamento)
+            {
+                DataTable dt = Trabajador.Instancia.ListarProvincia(Departamento);
+
+                string fields = "[{\"name\":\"Provincia\",\"type\":\"string\"},{\"name\":\"DProvincia\",\"type\":\"string\"}]";
+
+                var lista = (from m in dt.AsEnumerable()
+                             select new
+                             {
+                                 Provincia = m["Provincia"].ToString(),
+                                 DProvincia = m["DProvincia"].ToString()
+                             }).ToList<object>();
+
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
+            public JsonResult ListarDistrito(string Departamento,string Provincia)
+            {
+                DataTable dt = Trabajador.Instancia.ListarDistrito(Departamento,Provincia);
+
+                string fields = "[{\"name\":\"Distrito\",\"type\":\"int\"},{\"name\":\"DDistrito\",\"type\":\"string\"}]";
+
+                var lista = (from m in dt.AsEnumerable()
+                             select new
+                             {
+                                 Distrito = Convert.ToInt16(m["Distrito"]),
+                                 DDistrito = m["DDistrito"].ToString()
+                             }).ToList<object>();
+
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
+            public JsonResult ListarZonal()
+            {
+                DataTable dt = Trabajador.Instancia.ListarZonal();
+
+                string fields = "[{\"name\":\"Zonal\",\"type\":\"int\"},{\"name\":\"DZonal\",\"type\":\"string\"}]";
+
+                var lista = (from m in dt.AsEnumerable()
+                             select new
+                             {
+                                 Zonal = Convert.ToInt16(m["Zonal"]),
+                                 DZonal = m["DZonal"].ToString()
+                             }).ToList<object>();
+
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
+            public JsonResult ListarPuesto()
+            {
+                DataTable dt = Trabajador.Instancia.ListarPuesto();
+
+                string fields = "[{\"name\":\"Puesto\",\"type\":\"int\"},{\"name\":\"DPuesto\",\"type\":\"string\"}]";
+
+                var lista = (from m in dt.AsEnumerable()
+                             select new
+                             {
+                                 Puesto = Convert.ToInt16(m["Puesto"]),
+                                 DPuesto = m["DPuesto"].ToString()
+                             }).ToList<object>();
+
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
             /// <summary>
             /// Lista trabajadores por usuario.
             /// </summary>

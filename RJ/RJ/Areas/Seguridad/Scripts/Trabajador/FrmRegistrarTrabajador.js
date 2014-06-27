@@ -25,6 +25,51 @@
             }
         });
 
+        var stDepartamento = Ext.create('Ext.data.Store', {
+            autoLoad: false,
+            proxy: {
+                type: 'ajax',
+                url: '../../Seguridad/Trabajador/ListarDepartamento',
+                reader: { type: 'json', root: 'data' }
+            }
+        });
+
+        var stProvincia = Ext.create('Ext.data.Store', {
+            autoLoad: false,
+            proxy: {
+                type: 'ajax',
+                url: '../../Seguridad/Trabajador/ListarProvincia',
+                reader: { type: 'json', root: 'data' }
+            }
+        });
+
+        var stDistrito = Ext.create('Ext.data.Store', {
+            autoLoad: false,
+            proxy: {
+                type: 'ajax',
+                url: '../../Seguridad/Trabajador/ListarDistrito',
+                reader: { type: 'json', root: 'data' }
+            }
+        });
+
+        var stZonal = Ext.create('Ext.data.Store', {
+            autoLoad: false,
+            proxy: {
+                type: 'ajax',
+                url: '../../Seguridad/Trabajador/ListarZonal',
+                reader: { type: 'json', root: 'data' }
+            }
+        });
+
+        var stPuesto = Ext.create('Ext.data.Store', {
+            autoLoad: false,
+            proxy: {
+                type: 'ajax',
+                url: '../../Seguridad/Trabajador/ListarPuesto',
+                reader: { type: 'json', root: 'data' }
+            }
+        });
+
         var stTrabajador = Ext.create('Ext.data.Store', {
             autoLoad: false,
             proxy: {
@@ -213,6 +258,88 @@
                     fieldLabel: 'Dirección Alterna'
                 },
                 {
+                    xtype: 'combo',
+                    itemId: 'cbxDepartamento',
+                    width: 300,
+                    lastQuery: '',
+                    fieldLabel: 'Departamento',
+                    emptyText: '< Seleccione >',
+                    store: stDepartamento,
+                    displayField: 'DDepartamento',
+                    valueField: 'Departamento',
+                    allowBlank: false,
+                    forceSelection: true,
+                    queryMode: 'local',
+                    listeners: {
+                        select: {
+                            fn: me.oncbxDepartamentoSelect,
+                            scope: me
+                        }
+                    }
+                },
+                {
+                    xtype: 'combo',
+                    itemId: 'cbxProvincia',
+                    width: 300,
+                    lastQuery: '',
+                    fieldLabel: 'Provincia',
+                    emptyText: '< Seleccione >',
+                    store: stProvincia,
+                    displayField: 'DProvincia',
+                    valueField: 'Provincia',
+                    allowBlank: false,
+                    forceSelection: true,
+                    queryMode: 'local',
+                    listeners: {
+                        select: {
+                            fn: me.oncbxProvinciaSelect,
+                            scope: me
+                        }
+                    }
+                },
+                {
+                    xtype: 'combo',
+                    itemId: 'cbxDistrito',
+                    width: 300,
+                    lastQuery: '',
+                    fieldLabel: 'Distrito',
+                    emptyText: '< Seleccione >',
+                    store: stDistrito,
+                    displayField: 'DDistrito',
+                    valueField: 'Distrito',
+                    allowBlank: false,
+                    forceSelection: true,
+                    queryMode: 'local'
+                },
+                {
+                    xtype: 'combo',
+                    itemId: 'cbxZonal',
+                    width: 300,
+                    lastQuery: '',
+                    fieldLabel: 'Zonal',
+                    emptyText: '< Seleccione >',
+                    store: stZonal,
+                    displayField: 'DZonal',
+                    valueField: 'Zonal',
+                    allowBlank: false,
+                    forceSelection: true,
+                    queryMode: 'local'
+                },
+                {
+                    xtype: 'combo',
+                    itemId: 'cbxPuesto',
+                    width: 300,
+                    lastQuery: '',
+                    fieldLabel: 'Puesto',
+                    emptyText: '< Seleccione >',
+                    store: stPuesto,
+                    displayField: 'DPuesto',
+                    valueField: 'Puesto',
+                    allowBlank: false,
+                    forceSelection: true,
+                    queryMode: 'local'
+                },
+                {
                     xtype: 'checkboxfield',
                     itemId: 'chkActivo',
                     hideLabel: true,
@@ -247,11 +374,31 @@
             fn: function (component, options) {
                 component.getComponent('pnlRegistro').getComponent('cbxTipoDocumento').getStore().load();
                 component.getComponent('pnlRegistro').getComponent('cbxSexo').getStore().load();
+                component.getComponent('pnlRegistro').getComponent('cbxDepartamento').getStore().load();
+                component.getComponent('pnlRegistro').getComponent('cbxZonal').getStore().load();
+                component.getComponent('pnlRegistro').getComponent('cbxPuesto').getStore().load();
                 component.getComponent('grdTrabajador').getStore().load();
                 component.fnEstadoForm('visualizacion');
                 Ext.MessageBox.hide();
             }
         }
+    },
+
+    oncbxDepartamentoSelect: function (combo, records, eOpts) {
+        this.getComponent('pnlRegistro').getComponent('cbxProvincia').getStore().load({
+            params: {
+                Departamento: this.getComponent('pnlRegistro').getComponent('cbxDepartamento').getValue().toString()
+            }
+        });
+    },
+
+    oncbxProvinciaSelect: function (combo, records, eOpts) {
+        this.getComponent('pnlRegistro').getComponent('cbxDistrito').getStore().load({
+            params: {
+                Departamento: this.getComponent('pnlRegistro').getComponent('cbxDepartamento').getValue().toString(),
+                Provincia: this.getComponent('pnlRegistro').getComponent('cbxProvincia').getValue().toString()
+            }
+        });
     },
 
     onBtnAgregarClick: function (button, e, options) {
