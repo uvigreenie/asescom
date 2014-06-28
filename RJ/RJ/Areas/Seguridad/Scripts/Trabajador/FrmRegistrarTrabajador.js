@@ -72,6 +72,7 @@
 
         var stTrabajador = Ext.create('Ext.data.Store', {
             autoLoad: false,
+            model: Ext.define('Trabajador', { extend: 'Ext.data.Model' }),
             proxy: {
                 type: 'ajax',
                 url: '../../Seguridad/Trabajador/Listar',
@@ -92,7 +93,23 @@
                 region: 'center',
                 title: 'Lista de Trabajadores',
                 store: stTrabajador,
+                filterable: true,
                 columnLines: true,
+                features: [{
+                    ftype: 'filters',
+//                    autoReload: false,
+                    local: true,
+                    filters: 
+                    [
+                        { type: 'string', dataIndex: 'ApellidoPaterno' },
+                        { type: 'string', dataIndex: 'ApellidoMaterno' },
+                        { type: 'list', dataIndex: 'TipoPuesto', options: ['Administrativo', 'Gestión de Campo', 'Gestión de Call','Responsable de Zonal'] },
+                        { type: 'list', dataIndex: 'Sexo', options: ['F', 'M'] },
+                        { type: 'string', dataIndex: 'NumeroDocumento' },
+                        { type: 'string', dataIndex: 'Nombre' },
+                        { type: 'string', dataIndex: 'Zonal' }
+                    ]
+                }],
                 emptyText: 'No se encontraron datos.',
                 tbar: [{
                     itemId: 'btnAgregar',
@@ -426,6 +443,22 @@
             this.getComponent('pnlRegistro').getComponent('txtDireccion').setValue(filas[0].get('Direccion'));
             this.getComponent('pnlRegistro').getComponent('txtDireccionAlterna').setValue(filas[0].get('DireccionAlterna'));
             this.getComponent('pnlRegistro').getComponent('chkActivo').setValue(filas[0].get('Activo'));
+            this.getComponent('pnlRegistro').getComponent('cbxDepartamento').setValue(filas[0].get('Departamento'));
+            this.getComponent('pnlRegistro').getComponent('cbxProvincia').getStore().load({
+                params: {
+                    Departamento: filas[0].get('Departamento')
+                }
+            });
+            this.getComponent('pnlRegistro').getComponent('cbxProvincia').setValue(filas[0].get('Provincia'));
+            this.getComponent('pnlRegistro').getComponent('cbxDistrito').getStore().load({
+                params: {
+                    Departamento: filas[0].get('Departamento'),
+                    Provincia: filas[0].get('Provincia')
+                }
+            });
+            this.getComponent('pnlRegistro').getComponent('cbxDistrito').setValue(filas[0].get('Distrito'));
+            this.getComponent('pnlRegistro').getComponent('cbxZonal').setValue(filas[0].get('Zonal'));
+            this.getComponent('pnlRegistro').getComponent('cbxPuesto').setValue(filas[0].get('Puesto'));
             this.getComponent('pnlRegistro').expand();
             this.fnEstadoForm('edicion');
         }
@@ -489,6 +522,9 @@
             dtTrabajador['CorreoAlternativo'] = this.getComponent('pnlRegistro').getComponent('txtCorreoAlternativo').getValue();
             dtTrabajador['Direccion'] = this.getComponent('pnlRegistro').getComponent('txtDireccion').getValue();
             dtTrabajador['DireccionAlterna'] = this.getComponent('pnlRegistro').getComponent('txtDireccionAlterna').getValue();
+            dtTrabajador['Distrito'] = this.getComponent('pnlRegistro').getComponent('cbxDistrito').getValue();
+            dtTrabajador['Zonal'] = this.getComponent('pnlRegistro').getComponent('cbxZonal').getValue();
+            dtTrabajador['Puesto'] = this.getComponent('pnlRegistro').getComponent('cbxPuesto').getValue();
             dtTrabajador['Activo'] = this.getComponent('pnlRegistro').getComponent('chkActivo').getValue();
 
             Ext.Ajax.request({
@@ -634,6 +670,11 @@
         this.getComponent('pnlRegistro').getComponent('txtCorreoAlternativo').setDisabled(estado);
         this.getComponent('pnlRegistro').getComponent('txtDireccion').setDisabled(estado);
         this.getComponent('pnlRegistro').getComponent('txtDireccionAlterna').setDisabled(estado);
+        this.getComponent('pnlRegistro').getComponent('cbxDepartamento').setDisabled(estado);
+        this.getComponent('pnlRegistro').getComponent('cbxProvincia').setDisabled(estado);
+        this.getComponent('pnlRegistro').getComponent('cbxDistrito').setDisabled(estado);
+        this.getComponent('pnlRegistro').getComponent('cbxZonal').setDisabled(estado);
+        this.getComponent('pnlRegistro').getComponent('cbxPuesto').setDisabled(estado);
         this.getComponent('pnlRegistro').getComponent('chkActivo').setDisabled(estado);
     },
 
@@ -651,6 +692,11 @@
         this.getComponent('pnlRegistro').getComponent('txtCorreoAlternativo').setValue('');
         this.getComponent('pnlRegistro').getComponent('txtDireccion').setValue('');
         this.getComponent('pnlRegistro').getComponent('txtDireccionAlterna').setValue('');
+        this.getComponent('pnlRegistro').getComponent('cbxDepartamento').clearValue();
+        this.getComponent('pnlRegistro').getComponent('cbxProvincia').clearValue();
+        this.getComponent('pnlRegistro').getComponent('cbxDistrito').clearValue();
+        this.getComponent('pnlRegistro').getComponent('cbxZonal').clearValue();
+        this.getComponent('pnlRegistro').getComponent('cbxPuesto').clearValue();
     },
 
     fnEsValidoGuardar: function () {
@@ -670,6 +716,21 @@
             return false;
         }
         if (!this.getComponent('pnlRegistro').getComponent('txtNombre').isValid()) {
+            return false;
+        }
+        if (!this.getComponent('pnlRegistro').getComponent('dtpFechaNacimiento').isValid()) {
+            return false;
+        }
+        if (!this.getComponent('pnlRegistro').getComponent('cbxDepartamento').isValid()) {
+            return false;
+        }
+        if (!this.getComponent('pnlRegistro').getComponent('cbxProvincia').isValid()) {
+            return false;
+        }
+        if (!this.getComponent('pnlRegistro').getComponent('cbxDistrito').isValid()) {
+            return false;
+        }
+        if (!this.getComponent('pnlRegistro').getComponent('cbxZonal').isValid()) {
             return false;
         }
         if (!this.getComponent('pnlRegistro').getComponent('dtpFechaNacimiento').isValid()) {
