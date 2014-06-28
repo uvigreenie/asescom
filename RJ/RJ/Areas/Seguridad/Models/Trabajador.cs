@@ -134,8 +134,8 @@ namespace RJ.Areas.Seguridad.Models
 
         #region Insert
 
-            public short InsUpdTrabajador(short trabajador, byte tipoDocumento, string numeroDocumento, string apellidoPaterno, string apellidoMaterno, string nombre, 
-                DateTime fecha, string sexo, string telefonoFijo, string celular, string correo, string correoAlternativo, string direccion, string direccionAlterna, bool activo, string login)
+            public short InsUpdTrabajador(short trabajador, byte tipoDocumento, string numeroDocumento, string apellidoPaterno, string apellidoMaterno, string nombre, DateTime fecha, string sexo, 
+                string telefonoFijo, string celular, string correo, string correoAlternativo, string direccion, string direccionAlterna, short distrito, short zonal, short puesto, bool activo, string login)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspSEG_InsUpdTrabajador");
@@ -154,6 +154,9 @@ namespace RJ.Areas.Seguridad.Models
                 db.AddInParameter(cmd, "@prmstrCorreoAlternativo", DbType.String, correoAlternativo);
                 db.AddInParameter(cmd, "@prmstrDireccion", DbType.String, direccion);
                 db.AddInParameter(cmd, "@prmstrDireccionAlterna", DbType.String, direccionAlterna);
+                db.AddInParameter(cmd, "@prmintDistrito", DbType.Int16, distrito);
+                db.AddInParameter(cmd, "@prmintZonal", DbType.Int16, zonal);
+                db.AddInParameter(cmd, "@prmintPuesto", DbType.Int16, puesto);
                 db.AddInParameter(cmd, "@prmbitActivo", DbType.Boolean, activo);
                 db.AddInParameter(cmd, "@prmstrLogin", DbType.String, login);
 

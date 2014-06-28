@@ -13,8 +13,7 @@
                 reader: { type: 'json', root: 'data' }
             }
         });
-        /**/
-        /**/
+
         var stGestionCliente = Ext.create('Ext.data.Store', {
             autoLoad: false,
             proxy: {
