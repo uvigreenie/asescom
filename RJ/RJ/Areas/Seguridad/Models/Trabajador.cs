@@ -28,11 +28,12 @@ namespace RJ.Areas.Seguridad.Models
             /// Devuelve lista de todos los trabajadores.
             /// </summary>
             /// <returns>DataTable</returns>
-            public DataTable Listar()
+            public DataTable Listar(int usuario)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspSEG_ListarTrabajadores");
                 cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmintUsuario", DbType.Int16, usuario);
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
@@ -71,19 +72,21 @@ namespace RJ.Areas.Seguridad.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
-            public DataTable ListarZonal()
+            public DataTable ListarZonal(short usuario)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspSEG_ListarZonal");
                 cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmintUsuario", DbType.Int16, usuario);
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
-            public DataTable ListarPuesto()
+            public DataTable ListarPuesto(short usuario)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspSEG_ListarPuesto");
                 cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmintUsuario", DbType.Int16, usuario);
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
             /// <summary>

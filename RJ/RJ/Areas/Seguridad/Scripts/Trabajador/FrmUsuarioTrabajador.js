@@ -17,7 +17,7 @@
             ],
             proxy: {
                 type: 'ajax',
-                url: '../../Seguridad/Autenticacion/ListarUsuarios',
+                url: '../../Seguridad/Autenticacion/ListarUsuariosPorUsuario',
                 reader: {
                     type: 'json'
                 }

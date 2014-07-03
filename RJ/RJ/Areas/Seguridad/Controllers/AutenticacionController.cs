@@ -45,6 +45,13 @@ namespace RJ.Areas.Seguridad.Controllers
                 List<object> lista = Autenticacion.Instancia.ListarUsuarios(Convert.ToByte(Session["Empresa"]));
                 return Json(lista, JsonRequestBehavior.AllowGet);
             }
+
+            public JsonResult ListarUsuariosPorUsuario()
+            {
+                short usuario = Convert.ToInt16(Session["Usuario"]);
+                List<object> lista = Autenticacion.Instancia.ListarUsuariosPorUsuario(Convert.ToByte(Session["Empresa"]), usuario);
+                return Json(lista, JsonRequestBehavior.AllowGet);
+            }
         
             public JsonResult ObtenerDatosSession()
             {

@@ -14,7 +14,8 @@ namespace RJ.Areas.Seguridad.Controllers
 
             public JsonResult Listar()
             {
-                DataTable dt = Trabajador.Instancia.Listar();
+                int usuario = Convert.ToInt16(Session["Usuario"]);
+                DataTable dt = Trabajador.Instancia.Listar(usuario);
 
                 string fields = "[{\"name\":\"Trabajador\",\"type\":\"int\"},{\"name\":\"TipoDocumento\",\"type\":\"int\"},{\"name\":\"DTipoDocumento\",\"type\":\"string\"},";
                 fields += "{\"name\":\"NumeroDocumento\",\"type\":\"string\"},{\"name\":\"ApellidoPaterno\",\"type\":\"string\"},{\"name\":\"ApellidoMaterno\",\"type\":\"string\"},";
@@ -29,15 +30,15 @@ namespace RJ.Areas.Seguridad.Controllers
 
                 string columns = "[{\"xtype\":\"rownumberer\",\"resizable\":true,\"width\":60},{\"text\":\"Trabajador\",\"dataIndex\":\"Trabajador\",\"hidden\":true,\"hideable\":false},";
                 columns += "{\"text\":\"CodZonal\",\"dataIndex\":\"Zonal\",\"hidden\":true,\"hideable\":false},{\"text\":\"Zonal\",\"dataIndex\":\"DZonal\",\"width\":120,\"filterable\":true},";
-                columns += "{\"text\":\"Área\",\"dataIndex\":\"TipoPuesto\",\"width\":120,\"filterable\":true},";
-                columns += "{\"text\":\"CodPuesto\",\"dataIndex\":\"Puesto\",\"hidden\":true,\"hideable\":false},{\"text\":\"Puesto\",\"dataIndex\":\"DPuesto\",\"width\":120},";
+                columns += "{\"text\":\"Área\",\"dataIndex\":\"TipoPuesto\",\"width\":180,\"filterable\":true},";
+                columns += "{\"text\":\"CodPuesto\",\"dataIndex\":\"Puesto\",\"hidden\":true,\"hideable\":false},{\"text\":\"Puesto\",\"dataIndex\":\"DPuesto\",\"width\":150},";
                 columns += "{\"text\":\"TipoDocumento\",\"dataIndex\":\"TipoDocumento\",\"hidden\":true,\"hideable\":false},{\"text\":\"Tipo Documento\",\"dataIndex\":\"DTipoDocumento\",\"width\":60},";
-                columns += "{\"text\":\"N° Documento\",\"dataIndex\":\"NumeroDocumento\",\"width\":90,\"filterable\":true},{\"text\":\"Apellido Paterno\",\"dataIndex\":\"ApellidoPaterno\",\"width\":180,\"filterable\":true},";
-                columns += "{\"text\":\"Apellido Materno\",\"dataIndex\":\"ApellidoMaterno\",\"width\":180,\"filterable\":true},{\"text\":\"Nombres\",\"dataIndex\":\"Nombre\",\"width\":180,\"filterable\":true},";
+                columns += "{\"text\":\"N° Documento\",\"dataIndex\":\"NumeroDocumento\",\"width\":90,\"filterable\":true},{\"text\":\"Apellido Paterno\",\"dataIndex\":\"ApellidoPaterno\",\"width\":120,\"filterable\":true},";
+                columns += "{\"text\":\"Apellido Materno\",\"dataIndex\":\"ApellidoMaterno\",\"width\":120,\"filterable\":true},{\"text\":\"Nombres\",\"dataIndex\":\"Nombre\",\"width\":120,\"filterable\":true},";
                 columns += "{\"xtype\":\"datecolumn\",\"text\":\"Fecha Nacimiento\",\"dataIndex\":\"FechaNacimiento\",\"width\":100,\"format\":\"d/m/Y\"},{\"text\":\"Sexo\",\"dataIndex\":\"Sexo\",\"width\":40},";
                 columns += "{\"text\":\"Teléfono\",\"dataIndex\":\"TelefonoFijo\",\"width\":90},{\"text\":\"Celular\",\"dataIndex\":\"Celular\",\"width\":90},";
                 columns += "{\"text\":\"Correo\",\"dataIndex\":\"Correo\",\"width\":120},{\"text\":\"Correo Alterno\",\"dataIndex\":\"CorreoAlternativo\",\"width\":120},";
-                columns += "{\"text\":\"Dirección\",\"dataIndex\":\"Direccion\",\"width\":120},{\"text\":\"Dirección Alterna\",\"dataIndex\":\"DireccionAlterna\",\"width\":120},";
+                columns += "{\"text\":\"Dirección\",\"dataIndex\":\"Direccion\",\"width\":120},{\"text\":\"Dirección Alterna\",\"dataIndex\":\"DireccionAlterna\",\"width\":150},";
                 columns += "{\"text\":\"CodDepartamento\",\"dataIndex\":\"Departamento\",\"hidden\":true,\"hideable\":false},{\"text\":\"Departamento\",\"dataIndex\":\"DDepartamento\",\"width\":120},";
                 columns += "{\"text\":\"CodProvincia\",\"dataIndex\":\"Provincia\",\"hidden\":true,\"hideable\":false},{\"text\":\"Provincia\",\"dataIndex\":\"DProvincia\",\"width\":120},";
                 columns += "{\"text\":\"CodDistrito\",\"dataIndex\":\"Distrito\",\"hidden\":true,\"hideable\":false},{\"text\":\"Distrito\",\"dataIndex\":\"DDistrito\",\"width\":120},";
@@ -151,7 +152,8 @@ namespace RJ.Areas.Seguridad.Controllers
 
             public JsonResult ListarZonal()
             {
-                DataTable dt = Trabajador.Instancia.ListarZonal();
+                short usuario = Convert.ToInt16(Session["Usuario"]);
+                DataTable dt = Trabajador.Instancia.ListarZonal(usuario);
 
                 string fields = "[{\"name\":\"Zonal\",\"type\":\"int\"},{\"name\":\"DZonal\",\"type\":\"string\"}]";
 
@@ -168,8 +170,8 @@ namespace RJ.Areas.Seguridad.Controllers
 
             public JsonResult ListarPuesto()
             {
-                DataTable dt = Trabajador.Instancia.ListarPuesto();
-
+                short usuario = Convert.ToInt16(Session["Usuario"]);
+                DataTable dt = Trabajador.Instancia.ListarPuesto(usuario);
                 string fields = "[{\"name\":\"Puesto\",\"type\":\"int\"},{\"name\":\"DPuesto\",\"type\":\"string\"}]";
 
                 var lista = (from m in dt.AsEnumerable()

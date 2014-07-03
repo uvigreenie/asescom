@@ -103,7 +103,8 @@
                     [
                         { type: 'string', dataIndex: 'ApellidoPaterno' },
                         { type: 'string', dataIndex: 'ApellidoMaterno' },
-                        { type: 'list', dataIndex: 'TipoPuesto', options: ['Administrativo', 'Gestión de Campo', 'Gestión de Call','Responsable de Zonal'] },
+                        { type: 'list', dataIndex: 'DZonal', options: ['OF. AREQUIPA', 'OF. AYACUCHO', 'OF. CHICLAYO', 'OF. CHIMBOTE', 'OF. HUARAZ', 'OF. IQUITOS', 'OF. PIURA', 'OF. TACNA', 'OF. TRUJILLO'] },
+                        { type: 'list', dataIndex: 'TipoPuesto', options: ['ADMINISTRATIVO', 'GESTION DE CAMPO', 'GESTION DE CALL','RESPONSABLE DE ZONAL'] },
                         { type: 'list', dataIndex: 'Sexo', options: ['F', 'M'] },
                         { type: 'string', dataIndex: 'NumeroDocumento' },
                         { type: 'string', dataIndex: 'Nombre' },
@@ -161,6 +162,7 @@
                 title: 'Crear / Editar',
                 region: 'east',
                 border: false,
+                autoScroll: true,
                 split: true,
                 collapsed: true,
                 collapsible: true,
@@ -731,6 +733,9 @@
             return false;
         }
         if (!this.getComponent('pnlRegistro').getComponent('cbxZonal').isValid()) {
+            return false;
+        }
+        if (!this.getComponent('pnlRegistro').getComponent('cbxPuesto').isValid()) {
             return false;
         }
         if (!this.getComponent('pnlRegistro').getComponent('dtpFechaNacimiento').isValid()) {

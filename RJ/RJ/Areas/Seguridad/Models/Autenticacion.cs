@@ -78,6 +78,27 @@ namespace RJ.Areas.Seguridad.Models
             return lista;
         }
 
+        public List<object> ListarUsuariosPorUsuario(byte empresa, short usuario)
+        {
+            Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+            DbCommand cmd = db.GetStoredProcCommand("uspSEG_ListarUsuariosPorUsuario");
+            cmd.CommandTimeout = 180;
+            db.AddInParameter(cmd, "@prmintUsuario", DbType.Int16, usuario);
+            db.AddInParameter(cmd, "@prmintEmpresa", DbType.Byte, empresa);
+            DataTable dt = db.ExecuteDataSet(cmd).Tables[0];
+
+            var lista = (from m in dt.AsEnumerable()
+                         select new
+                         {
+                             Usuario = Convert.ToInt16(m["Usuario"]),
+                             Login = m["Login"].ToString(),
+                             Nombres = m["Nombres"].ToString(),
+                             Correo = m["Correo"].ToString(),
+                             Activo = Convert.ToBoolean(m["Activo"])
+                         }).ToList<object>();
+            return lista;
+        }
+
         #endregion
 
         #region Insertar
