@@ -48,6 +48,19 @@ namespace RJ.Areas.Cobranza.Controllers
                 return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
             }
 
+            public JsonResult ListarZonal(int gestionCliente, string fechaFin)
+            {
+                DataTable dt = Cartera.Instancia.ListarZonal(gestionCliente, fechaFin);
+
+                string fields = "[{\"name\":\"Zonal\",\"type\":\"string\"}]";
+
+                var lista = (from c in dt.AsEnumerable()
+                             select new { Zonal = c["Zonal"].ToString() }).ToList<object>();
+
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
             public JsonResult ListarCluster(int gestionCliente, string fechaFin, string tramo)
             {
                 DataTable dt = Cartera.Instancia.ListarCluster(gestionCliente, fechaFin, tramo);
@@ -80,6 +93,228 @@ namespace RJ.Areas.Cobranza.Controllers
 
                 var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
                 return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
+            public JsonResult ListarDepartamentoxZonal(int gestionCliente, string fechaFin, object[] zonales)
+            {
+                string xmlDpto = "<root>";
+
+                for (int i = 0; i < zonales.Length; i++)
+                {
+                    xmlDpto += "<zonal Zonal = '" + zonales[i].ToString() + "' />";
+                }
+                xmlDpto += "</root>";
+
+                DataTable dt = Cartera.Instancia.ListarDepartamentoxZonal(gestionCliente, fechaFin, xmlDpto);
+
+                string fields = "[{\"name\":\"Departamento\",\"type\":\"string\"}]";
+
+                var lista = (from c in dt.AsEnumerable()
+                             select new { Departamento = c["Departamento"].ToString() }).ToList<object>();
+
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
+            public JsonResult ListarGestiones(string cliente, short gestionCliente, string fechaFin,  object[] zonal, object[] departamento, DateTime fechaDesde, DateTime fechaHasta, bool mejorGestion)
+            {
+                string xmlZonal = "<root>";
+                string xmlDpto = "<root>";
+
+                if (zonal != null)
+                {
+                    for (int i = 0; i < zonal.Length; i++)
+                    {
+                        xmlZonal += "<zonal Zonal = '" + zonal[i].ToString() + "' />";
+                    }
+                }
+                xmlZonal += "</root>";
+
+                if (departamento != null)
+                {
+                    for (int i = 0; i < departamento.Length; i++)
+                    {
+                        xmlDpto += "<departamento Departamento = '" + departamento[i].ToString() + "' />";
+                    }
+                }
+                xmlDpto += "</root>";
+                DataTable dt = new DataTable();
+                if (!mejorGestion)
+                {
+                    dt = Cartera.Instancia.ListarGestiones(cliente, gestionCliente, fechaFin, xmlZonal, xmlDpto, fechaDesde, fechaHasta);
+                }
+                else
+                {
+                    dt = Cartera.Instancia.ListarMejorGestion(cliente, gestionCliente, fechaFin, xmlZonal, xmlDpto, fechaDesde, fechaHasta);
+                }
+                //DataTable dt = Cartera.Instancia.ListarGestiones(cliente, gestionCliente, fechaFin, xmlZonal, xmlDpto, fechaDesde, fechaHasta);
+                string fields = "[{\"name\":\"codcartera\",\"type\":\"string\"},{\"name\":\"cliente\",\"type\":\"string\"},{\"name\":\"cuenta\",\"type\":\"string\"},";
+                fields += "{\"name\":\"servicio\",\"type\":\"string\"},{\"name\":\"razonsocial\",\"type\":\"string\"},{\"name\":\"FechaRegistro\",\"type\":\"string\"},";
+                fields += "{\"name\":\"Codigo\",\"type\":\"string\"},{\"name\":\"Respuesta\",\"type\":\"string\"},{\"name\":\"Incidencia\",\"type\":\"string\"},";
+                fields += "{\"name\":\"Observacion\",\"type\":\"string\"},{\"name\":\"fechapromesa\",\"type\":\"string\"},{\"name\":\"departamento\",\"type\":\"string\"},";
+                fields += "{\"name\":\"provincia\",\"type\":\"string\"},{\"name\":\"distrito\",\"type\":\"string\"},{\"name\":\"zonal\",\"type\":\"string\"},";
+                fields += "{\"name\":\"usuarioregistro\",\"type\":\"string\"}]";
+
+                string columns = "[{\"xtype\":\"rownumberer\",\"resizable\":true,\"width\":60},{\"text\":\"Cartera\",\"dataIndex\":\"codcartera\",\"width\":200},";
+                columns += "{\"text\":\"CodCliente\",\"dataIndex\":\"cliente\",\"width\":90,\"filterable\":true},";
+                columns += "{\"text\":\"Cuenta\",\"dataIndex\":\"cuenta\",\"width\":90,\"filterable\":true},";
+                columns += "{\"text\":\"Servicio\",\"dataIndex\":\"servicio\",\"width\":90,\"filterable\":true},";
+                columns += "{\"text\":\"Nombre\",\"dataIndex\":\"razonsocial\",\"width\":250,\"filterable\":true},";
+                columns += "{\"text\":\"Fecha de Gestión\",\"dataIndex\":\"FechaRegistro\",\"width\":100},";
+                columns += "{\"text\":\"Código\",\"dataIndex\":\"Codigo\",\"width\":60},";
+                columns += "{\"text\":\"Respuesta\",\"dataIndex\":\"Respuesta\",\"width\":150},";
+                columns += "{\"text\":\"Incidencia\",\"dataIndex\":\"Incidencia\",\"width\":150},";
+                columns += "{\"text\":\"Observación\",\"dataIndex\":\"Observacion\",\"width\":300},";
+                columns += "{\"text\":\"Fecha de Promesa\",\"dataIndex\":\"fechapromesa\",\"width\":100},";
+                columns += "{\"text\":\"Departamento\",\"dataIndex\":\"departamento\",\"width\":120,\"filterable\":true},";
+                columns += "{\"text\":\"Provincia\",\"dataIndex\":\"provincia\",\"width\":120},";
+                columns += "{\"text\":\"Distrito\",\"dataIndex\":\"distrito\",\"width\":120},";
+                columns += "{\"text\":\"Zonal\",\"dataIndex\":\"zonal\",\"width\":60},";
+                columns += "{\"text\":\"Usuario\",\"dataIndex\":\"usuarioregistro\",\"width\":100}]";
+                var lista = (from m in dt.AsEnumerable()
+                             select new
+                             {
+                                 codcartera = m["codcartera"].ToString(),
+                                 cliente = m["cliente"].ToString(),
+                                 cuenta = m["cuenta"].ToString(),
+                                 servicio = m["servicio"].ToString(),
+                                 razonsocial = m["razonsocial"].ToString(),
+                                 FechaRegistro = (m["FechaRegistro"] == DBNull.Value ? "" : Convert.ToDateTime(m["FechaRegistro"]).ToString("yyyy/MM/dd")),
+                                 Codigo = m["Codigo"].ToString(),
+                                 Respuesta = m["Respuesta"].ToString(),
+                                 Incidencia = m["Incidencia"].ToString(),
+                                 Observacion = m["Observacion"].ToString(),
+                                 fechapromesa = (m["fechapromesa"] == DBNull.Value ? "" : Convert.ToDateTime(m["fechapromesa"]).ToString("yyyy/MM/dd")),
+                                 departamento = m["departamento"].ToString(),
+                                 provincia = m["provincia"].ToString(),
+                                 distrito = m["distrito"].ToString(),
+                                 zonal = m["zonal"].ToString(),
+                                 usuarioregistro = m["usuarioregistro"].ToString()
+                             }).ToList<object>();
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                var jsColumns = new JavaScriptSerializer().Deserialize(columns, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields, columns = jsColumns }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
+            public JsonResult ListarPagos(string cliente, short gestionCliente, string fechaFin, object[] zonal, object[] departamento, DateTime fechaDesde, DateTime fechaHasta, bool acumulado)
+            {
+                string xmlZonal = "<root>";
+                string xmlDpto = "<root>";
+
+                if (zonal != null)
+                {
+                    for (int i = 0; i < zonal.Length; i++)
+                    {
+                        xmlZonal += "<zonal Zonal = '" + zonal[i].ToString() + "' />";
+                    }
+                }
+                xmlZonal += "</root>";
+
+                if (departamento != null)
+                {
+                    for (int i = 0; i < departamento.Length; i++)
+                    {
+                        xmlDpto += "<departamento Departamento = '" + departamento[i].ToString() + "' />";
+                    }
+                }
+                xmlDpto += "</root>";
+                if (!acumulado)
+                {
+                    DataTable dt = Cartera.Instancia.ListarPagos(cliente, gestionCliente, fechaFin, xmlZonal, xmlDpto, fechaDesde, fechaHasta);
+                    string fields = "[{\"name\":\"codcartera\",\"type\":\"string\"},{\"name\":\"cliente\",\"type\":\"string\"},{\"name\":\"cuenta\",\"type\":\"string\"},";
+                    fields += "{\"name\":\"servicio\",\"type\":\"string\"},{\"name\":\"razonsocial\",\"type\":\"string\"},{\"name\":\"Moneda\",\"type\":\"string\"},";
+                    fields += "{\"name\":\"TipoDocumento\",\"type\":\"string\"},{\"name\":\"MontoDeuda\",\"type\":\"float\"},{\"name\":\"FechaVencimiento\",\"type\":\"string\"},";
+                    fields += "{\"name\":\"FechaEmision\",\"type\":\"string\"},{\"name\":\"FechaPago\",\"type\":\"string\"},{\"name\":\"MontoPagado\",\"type\":\"float\"},{\"name\":\"MontoDiferencia\",\"type\":\"float\"},{\"name\":\"departamento\",\"type\":\"string\"},";
+                    fields += "{\"name\":\"provincia\",\"type\":\"string\"},{\"name\":\"distrito\",\"type\":\"string\"},{\"name\":\"zonal\",\"type\":\"string\"},";
+                    fields += "{\"name\":\"FechaRegistro\",\"type\":\"string\"}]";
+
+                    string columns = "[{\"xtype\":\"rownumberer\",\"resizable\":true,\"width\":60},{\"text\":\"Cartera\",\"dataIndex\":\"codcartera\",\"width\":200},";
+                    columns += "{\"text\":\"CodCliente\",\"dataIndex\":\"cliente\",\"width\":90,\"filterable\":true},";
+                    columns += "{\"text\":\"Cuenta\",\"dataIndex\":\"cuenta\",\"width\":90,\"filterable\":true},";
+                    columns += "{\"text\":\"Servicio\",\"dataIndex\":\"servicio\",\"width\":90,\"filterable\":true},";
+                    columns += "{\"text\":\"Nombre\",\"dataIndex\":\"razonsocial\",\"width\":250,\"filterable\":true},";
+                    columns += "{\"text\":\"Moneda\",\"dataIndex\":\"Moneda\",\"width\":60},";
+                    columns += "{\"text\":\"TipoDocumento\",\"dataIndex\":\"TipoDocumento\",\"width\":60},";
+                    columns += "{\"xtype\":\"numbercolumn\",\"text\":\"MontoDeuda\",\"dataIndex\":\"MontoDeuda\",\"format\":\"0,000.##\",\"width\":100},";
+                    columns += "{\"text\":\"Vencimiento\",\"dataIndex\":\"FechaVencimiento\",\"width\":100},";
+                    columns += "{\"text\":\"Emisión\",\"dataIndex\":\"FechaEmision\",\"width\":100},";
+                    columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Monto Pagado\",\"dataIndex\":\"MontoPagado\",\"format\":\"0,000.##\",\"width\":100},";
+                    columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Saldo\",\"dataIndex\":\"MontoDiferencia\",\"format\":\"0,000.##\",\"width\":100},";
+                    columns += "{\"text\":\"Fecha de Pago\",\"dataIndex\":\"FechaPago\",\"width\":100},";
+                    columns += "{\"text\":\"Departamento\",\"dataIndex\":\"departamento\",\"width\":120,\"filterable\":true},";
+                    columns += "{\"text\":\"Provincia\",\"dataIndex\":\"provincia\",\"width\":120},";
+                    columns += "{\"text\":\"Distrito\",\"dataIndex\":\"distrito\",\"width\":120},";
+                    columns += "{\"text\":\"Zonal\",\"dataIndex\":\"zonal\",\"width\":60},";
+                    columns += "{\"text\":\"Fecha de Registro\",\"dataIndex\":\"FechaRegistro\",\"width\":100}]";
+                    var lista = (from m in dt.AsEnumerable()
+                                 select new
+                                 {
+                                     codcartera = m["codcartera"].ToString(),
+                                     cliente = m["cliente"].ToString(),
+                                     cuenta = m["cuenta"].ToString(),
+                                     servicio = m["servicio"].ToString(),
+                                     razonsocial = m["razonsocial"].ToString(),
+                                     Moneda = m["Moneda"].ToString(),
+                                     TipoDocumento = m["TipoDocumento"].ToString(),
+                                     FechaVencimiento = (m["FechaVencimiento"] == DBNull.Value ? "" : Convert.ToDateTime(m["FechaVencimiento"]).ToString("yyyy/MM/dd")),
+                                     FechaEmision = (m["FechaEmision"] == DBNull.Value ? "" : Convert.ToDateTime(m["FechaEmision"]).ToString("yyyy/MM/dd")),
+                                     MontoPagado = Convert.ToDecimal(m["MontoPagado"]),
+                                     MontoDiferencia = Convert.ToDecimal(m["MontoDiferencia"]),
+                                     FechaPago = (m["FechaPago"] == DBNull.Value ? "" : Convert.ToDateTime(m["FechaPago"]).ToString("yyyy/MM/dd")),
+                                     departamento = m["departamento"].ToString(),
+                                     provincia = m["provincia"].ToString(),
+                                     distrito = m["distrito"].ToString(),
+                                     zonal = m["zonal"].ToString(),
+                                     FechaRegistro = (m["FechaRegistro"] == DBNull.Value ? "" : Convert.ToDateTime(m["FechaRegistro"]).ToString("yyyy/MM/dd"))
+                                 }).ToList<object>();
+                    var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                    var jsColumns = new JavaScriptSerializer().Deserialize(columns, typeof(object));
+                    return Json(new { success = "true", metaData = new { fields = jsFields, columns = jsColumns }, data = lista }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    DataTable dt = Cartera.Instancia.ListarPagosAcumulados(cliente, gestionCliente, fechaFin, xmlZonal, xmlDpto, fechaDesde, fechaHasta);
+                    string fields = "[{\"name\":\"codcartera\",\"type\":\"string\"},{\"name\":\"cliente\",\"type\":\"string\"},{\"name\":\"cuenta\",\"type\":\"string\"},";
+                    fields += "{\"name\":\"servicio\",\"type\":\"string\"},{\"name\":\"razonsocial\",\"type\":\"string\"},{\"name\":\"Moneda\",\"type\":\"string\"},";
+                    fields += "{\"name\":\"DeudaTotal\",\"type\":\"float\"},{\"name\":\"PagoTotal\",\"type\":\"float\"},{\"name\":\"Saldo\",\"type\":\"float\"},";
+                    fields += "{\"name\":\"departamento\",\"type\":\"string\"},";
+                    fields += "{\"name\":\"provincia\",\"type\":\"string\"},{\"name\":\"distrito\",\"type\":\"string\"},{\"name\":\"zonal\",\"type\":\"string\"}]";
+
+                    string columns = "[{\"xtype\":\"rownumberer\",\"resizable\":true,\"width\":60},{\"text\":\"Cartera\",\"dataIndex\":\"codcartera\",\"width\":200},";
+                    columns += "{\"text\":\"CodCliente\",\"dataIndex\":\"cliente\",\"width\":90,\"filterable\":true},";
+                    columns += "{\"text\":\"Cuenta\",\"dataIndex\":\"cuenta\",\"width\":90,\"filterable\":true},";
+                    columns += "{\"text\":\"Servicio\",\"dataIndex\":\"servicio\",\"width\":90,\"filterable\":true},";
+                    columns += "{\"text\":\"Nombre\",\"dataIndex\":\"razonsocial\",\"width\":250,\"filterable\":true},";
+                    columns += "{\"text\":\"Moneda\",\"dataIndex\":\"Moneda\",\"width\":60},";
+                    columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Deuda Total\",\"dataIndex\":\"DeudaTotal\",\"format\":\"0,000.##\",\"width\":100},";
+                    columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Pago Total\",\"dataIndex\":\"PagoTotal\",\"format\":\"0,000.##\",\"width\":100},";
+                    //columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Saldo\",\"dataIndex\":\"Saldo\",\"format\":\"0,000.##\",\"width\":100},";
+                    columns += "{\"text\":\"Departamento\",\"dataIndex\":\"departamento\",\"width\":120,\"filterable\":true},";
+                    columns += "{\"text\":\"Provincia\",\"dataIndex\":\"provincia\",\"width\":120},";
+                    columns += "{\"text\":\"Distrito\",\"dataIndex\":\"distrito\",\"width\":120},";
+                    columns += "{\"text\":\"Zonal\",\"dataIndex\":\"zonal\",\"width\":60}]";
+                    var lista = (from m in dt.AsEnumerable()
+                                 select new
+                                 {
+                                     codcartera = m["codcartera"].ToString(),
+                                     cliente = m["cliente"].ToString(),
+                                     cuenta = m["cuenta"].ToString(),
+                                     servicio = m["servicio"].ToString(),
+                                     razonsocial = m["razonsocial"].ToString(),
+                                     Moneda = m["Moneda"].ToString(),
+                                     DeudaTotal = Convert.ToDecimal(m["DeudaTotal"]),
+                                     PagoTotal = Convert.ToDecimal(m["PagoTotal"]),
+                                     Saldo = Convert.ToDecimal(m["Saldo"]),
+                                     departamento = m["departamento"].ToString(),
+                                     provincia = m["provincia"].ToString(),
+                                     distrito = m["distrito"].ToString(),
+                                     zonal = m["zonal"].ToString()
+                                 }).ToList<object>();
+                    var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                    var jsColumns = new JavaScriptSerializer().Deserialize(columns, typeof(object));
+                    return Json(new { success = "true", metaData = new { fields = jsFields, columns = jsColumns }, data = lista }, JsonRequestBehavior.AllowGet);
+                }
+                
             }
 
             public JsonResult ListarMorososEnCartera(string cliente, short gestionCliente, string fechaFin, string tramo, object[] cluster, object[] departamento)
@@ -191,6 +426,91 @@ namespace RJ.Areas.Cobranza.Controllers
             {
                 List<object> lista = Cartera.Instancia.ListarGestionMoroso(detalleMoroso);
                 return Json(lista, JsonRequestBehavior.AllowGet);
+            }
+
+            public void ExportarGestion(string cliente, short gestionCliente, string fechaFin, object[] zonal, object[] departamento, DateTime fechaDesde, DateTime fechaHasta, bool mejorGestion)
+            {
+                string xmlZonal = "<root>";
+                string xmlDpto = "<root>";
+
+                if (zonal != null)
+                {
+                    for (int i = 0; i < zonal.Length; i++)
+                    {
+                        xmlZonal += "<zonal Zonal = '" + zonal[i].ToString() + "' />";
+                    }
+                }
+                xmlZonal += "</root>";
+
+                if (departamento != null)
+                {
+                    for (int i = 0; i < departamento.Length; i++)
+                    {
+                        xmlDpto += "<departamento Departamento = '" + departamento[i].ToString() + "' />";
+                    }
+                }
+                xmlDpto += "</root>";
+                DataTable dt = new DataTable();
+                if (!mejorGestion)
+                {
+                    dt = Cartera.Instancia.ListarGestiones(cliente, gestionCliente, fechaFin, xmlZonal, xmlDpto, fechaDesde, fechaHasta);
+                }
+                else
+                {
+                    dt = Cartera.Instancia.ListarMejorGestion(cliente, gestionCliente, fechaFin, xmlZonal, xmlDpto, fechaDesde, fechaHasta);
+                }
+                //DataTable dt = Cartera.Instancia.ListarGestiones(cliente, gestionCliente, fechaFin, xmlZonal, xmlDpto, fechaDesde, fechaHasta);
+                Response.Clear();
+                Response.AddHeader("content-disposition", "attachment;filename=gestiones.csv");
+                Response.Charset = "";
+                Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                Response.ContentType = "application/vnd.csv";
+                Response.Charset = "UTF-8";
+                Response.ContentEncoding = System.Text.Encoding.Unicode;
+                Response.BinaryWrite(ConvertirTablaToExcel(dt, "Gestiones").ToArray());
+                Response.End();
+            }
+
+            public void ExportarPagos(string cliente, short gestionCliente, string fechaFin, object[] zonal, object[] departamento, DateTime fechaDesde, DateTime fechaHasta, bool acumulado)
+            {
+                string xmlZonal = "<root>";
+                string xmlDpto = "<root>";
+
+                if (zonal != null)
+                {
+                    for (int i = 0; i < zonal.Length; i++)
+                    {
+                        xmlZonal += "<zonal Zonal = '" + zonal[i].ToString() + "' />";
+                    }
+                }
+                xmlZonal += "</root>";
+
+                if (departamento != null)
+                {
+                    for (int i = 0; i < departamento.Length; i++)
+                    {
+                        xmlDpto += "<departamento Departamento = '" + departamento[i].ToString() + "' />";
+                    }
+                }
+                xmlDpto += "</root>";
+                DataTable dt = new DataTable();
+                if (!acumulado)
+                {
+                    dt = Cartera.Instancia.ListarPagos(cliente, gestionCliente, fechaFin, xmlZonal, xmlDpto, fechaDesde, fechaHasta);
+                }
+                else
+                {
+                    dt = Cartera.Instancia.ListarPagosAcumulados(cliente, gestionCliente, fechaFin, xmlZonal, xmlDpto, fechaDesde, fechaHasta);
+                }
+                Response.Clear();
+                Response.AddHeader("content-disposition", "attachment;filename=pagos.csv");
+                Response.Charset = "";
+                Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                Response.ContentType = "application/vnd.csv";
+                Response.Charset = "UTF-8";
+                Response.ContentEncoding = System.Text.Encoding.Unicode;
+                Response.BinaryWrite(ConvertirTablaToExcel(dt, "Pagos").ToArray());
+                Response.End();
             }
 
             public void ExportarMorosos(string cliente, short gestionCliente, string fechaFin, string tramo, object[] cluster, object[] departamento)
@@ -499,7 +819,8 @@ namespace RJ.Areas.Cobranza.Controllers
                 {
                     cell = sheet[row + r, col + c];
                     if (item.DataType == typeof(DateTime))
-                        cell.Value = Convert.ToDateTime(dr[item.Ordinal]).ToString("dd/MM/yyyy");
+                        //cell.Value = Convert.ToDateTime(dr[item.Ordinal]).ToString("dd/MM/yyyy");
+                        cell.Value=dr[item.Ordinal]==DBNull.Value? "":Convert.ToDateTime(dr[item.Ordinal]).ToString("dd/MM/yyyy");
                     else
                         cell.Value = dr[item.Ordinal];
                     r++;
