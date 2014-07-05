@@ -44,6 +44,16 @@ namespace RJ.Areas.Cobranza.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
+            public DataTable ListarZonal(int gestionCliente, string fechaFin)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarZonal");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
             public DataTable ListarCluster(int gestionCliente, string fechaFin, string tramo)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
@@ -66,6 +76,72 @@ namespace RJ.Areas.Cobranza.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
+            public DataTable ListarDepartamentoxZonal(int gestionCliente, string fechaFin, string zonales)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarDepartamentoxZonal");
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonales);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarGestiones(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento, DateTime fechaDesde, DateTime fechaHasta)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarGestiones");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                db.AddInParameter(cmd, "@prmdatFechaDesde", DbType.DateTime, fechaDesde);
+                db.AddInParameter(cmd, "@prmdatFechaHasta", DbType.DateTime, fechaHasta);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+            public DataTable ListarMejorGestion(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento, DateTime fechaDesde, DateTime fechaHasta)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarMejorGestion");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                db.AddInParameter(cmd, "@prmdatFechaDesde", DbType.DateTime, fechaDesde);
+                db.AddInParameter(cmd, "@prmdatFechaHasta", DbType.DateTime, fechaHasta);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+            public DataTable ListarPagos(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento, DateTime fechaDesde, DateTime fechaHasta)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarPagos");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                db.AddInParameter(cmd, "@prmdatFechaDesde", DbType.DateTime, fechaDesde);
+                db.AddInParameter(cmd, "@prmdatFechaHasta", DbType.DateTime, fechaHasta);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+            public DataTable ListarPagosAcumulados(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento, DateTime fechaDesde, DateTime fechaHasta)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarPagosAgrupados");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                db.AddInParameter(cmd, "@prmdatFechaDesde", DbType.DateTime, fechaDesde);
+                db.AddInParameter(cmd, "@prmdatFechaHasta", DbType.DateTime, fechaHasta);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
             public DataTable ListarMorososEnCartera(string cliente, short gestionCliente, string fechaFin, string tramo, string cluster, string departamento)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());

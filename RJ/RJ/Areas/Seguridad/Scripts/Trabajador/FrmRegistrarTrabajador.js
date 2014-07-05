@@ -222,6 +222,7 @@
                     itemId: 'dtpFechaNacimiento',
                     format: 'd/m/Y',
                     fieldLabel: 'Fecha Nacimiento',
+                    allowBlank: false,
                     value: new Date()
                 },
                 {
