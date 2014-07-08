@@ -1375,10 +1375,10 @@
                     var respuesta = Ext.decode(response.responseText);
                     if (respuesta['success'] == "true") {
                         if (codigo == 0) {
-                            Ext.example.msg('Información', 'Se registro con exitó');
+                            Ext.example.msg('Información', 'Se registró con éxito');
                         }
                         else {
-                            Ext.example.msg('Información', 'Actualización realizada con exitó');
+                            Ext.example.msg('Información', 'Actualización realizada con éxito');
                         }
                         //this.onBtnActualizarClick(null, null, null);
                         this.fnLimpiarControles();
@@ -1505,6 +1505,6 @@
                 break;
             default:
         }
-    },
+    }
 
 });
