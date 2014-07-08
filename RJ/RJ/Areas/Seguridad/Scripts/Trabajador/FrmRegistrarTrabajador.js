@@ -385,7 +385,6 @@
                 }]
             }]
         });
-
         me.callParent(arguments);
     },
 
@@ -744,5 +743,4 @@
         }
         return true;
     }
-
 });

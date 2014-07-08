@@ -97,15 +97,15 @@ namespace RJ.Areas.Cobranza.Controllers
 
             public JsonResult ListarDepartamentoxZonal(int gestionCliente, string fechaFin, object[] zonales)
             {
-                string xmlDpto = "<root>";
+                string xmlZonal = "<root>";
 
                 for (int i = 0; i < zonales.Length; i++)
                 {
-                    xmlDpto += "<zonal Zonal = '" + zonales[i].ToString() + "' />";
+                    xmlZonal += "<zonal Zonal = '" + zonales[i].ToString() + "' />";
                 }
-                xmlDpto += "</root>";
+                xmlZonal += "</root>";
 
-                DataTable dt = Cartera.Instancia.ListarDepartamentoxZonal(gestionCliente, fechaFin, xmlDpto);
+                DataTable dt = Cartera.Instancia.ListarDepartamentoxZonal(gestionCliente, fechaFin, xmlZonal);
 
                 string fields = "[{\"name\":\"Departamento\",\"type\":\"string\"}]";
 
@@ -115,6 +115,72 @@ namespace RJ.Areas.Cobranza.Controllers
                 var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
                 return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
             }
+
+        public JsonResult ListarProvinciaxDpto(int gestionCliente, string fechaFin, object[] zonal, object[] departamento)
+            {
+                string xmlDpto = "<root>";
+                if (departamento != null)
+                {
+                    for (int i = 0; i < departamento.Length; i++)
+                    {
+                        xmlDpto += "<departamento Departamento = '" + departamento[i].ToString() + "' />";
+                    }
+                }
+                xmlDpto += "</root>";
+            
+                string xmlZonal = "<root>";
+                if (zonal != null)
+                {
+                    for (int i = 0; i < zonal.Length; i++)
+                    {
+                        xmlZonal += "<zonal Zonal = '" + zonal[i].ToString() + "' />";
+                    }
+                }
+                xmlZonal += "</root>";
+
+                DataTable dt = Cartera.Instancia.ListarProvinciaxDpto(gestionCliente, fechaFin, xmlZonal, xmlDpto);
+
+                string fields = "[{\"name\":\"Provincia\",\"type\":\"string\"}]";
+
+                var lista = (from c in dt.AsEnumerable()
+                             select new { Provincia = c["Provincia"].ToString() }).ToList<object>();
+
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
+        public JsonResult ListarDistritoxProv(int gestionCliente, string fechaFin, object[] zonal, object[] departamento, string provincia)
+        {
+            string xmlDpto = "<root>";
+            if (departamento != null)
+            {
+                for (int i = 0; i < departamento.Length; i++)
+                {
+                    xmlDpto += "<departamento Departamento = '" + departamento[i].ToString() + "' />";
+                }
+            }
+            xmlDpto += "</root>";
+
+            string xmlZonal = "<root>";
+            if (zonal != null)
+            {
+                for (int i = 0; i < zonal.Length; i++)
+                {
+                    xmlZonal += "<zonal Zonal = '" + zonal[i].ToString() + "' />";
+                }
+            }
+            xmlZonal += "</root>";
+
+            DataTable dt = Cartera.Instancia.ListarDistritoxProv(gestionCliente, fechaFin, xmlZonal, xmlDpto,provincia);
+
+            string fields = "[{\"name\":\"Distrito\",\"type\":\"string\"}]";
+
+            var lista = (from c in dt.AsEnumerable()
+                         select new { Distrito = c["Distrito"].ToString() }).ToList<object>();
+
+            var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+            return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+        }
 
             public JsonResult ListarGestiones(string cliente, short gestionCliente, string fechaFin,  object[] zonal, object[] departamento, DateTime fechaDesde, DateTime fechaHasta, bool mejorGestion)
             {
@@ -235,7 +301,7 @@ namespace RJ.Areas.Cobranza.Controllers
                     columns += "{\"text\":\"Nombre\",\"dataIndex\":\"razonsocial\",\"width\":250,\"filterable\":true},";
                     columns += "{\"text\":\"Moneda\",\"dataIndex\":\"Moneda\",\"width\":60},";
                     columns += "{\"text\":\"TipoDocumento\",\"dataIndex\":\"TipoDocumento\",\"width\":60},";
-                    columns += "{\"xtype\":\"numbercolumn\",\"text\":\"MontoDeuda\",\"dataIndex\":\"MontoDeuda\",\"format\":\"0,000.##\",\"width\":100},";
+                    columns += "{\"text\":\"Deuda\",\"dataIndex\":\"MontoDeuda\",\"width\":100},";
                     columns += "{\"text\":\"Vencimiento\",\"dataIndex\":\"FechaVencimiento\",\"width\":100},";
                     columns += "{\"text\":\"Emisión\",\"dataIndex\":\"FechaEmision\",\"width\":100},";
                     columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Monto Pagado\",\"dataIndex\":\"MontoPagado\",\"format\":\"0,000.##\",\"width\":100},";
@@ -258,6 +324,7 @@ namespace RJ.Areas.Cobranza.Controllers
                                      TipoDocumento = m["TipoDocumento"].ToString(),
                                      FechaVencimiento = (m["FechaVencimiento"] == DBNull.Value ? "" : Convert.ToDateTime(m["FechaVencimiento"]).ToString("yyyy/MM/dd")),
                                      FechaEmision = (m["FechaEmision"] == DBNull.Value ? "" : Convert.ToDateTime(m["FechaEmision"]).ToString("yyyy/MM/dd")),
+                                     MontoDeuda = Convert.ToDecimal(m["MontoDeuda"]),
                                      MontoPagado = Convert.ToDecimal(m["MontoPagado"]),
                                      MontoDiferencia = Convert.ToDecimal(m["MontoDiferencia"]),
                                      FechaPago = (m["FechaPago"] == DBNull.Value ? "" : Convert.ToDateTime(m["FechaPago"]).ToString("yyyy/MM/dd")),
@@ -409,7 +476,31 @@ namespace RJ.Areas.Cobranza.Controllers
                 var jsColumns = new JavaScriptSerializer().Deserialize(columns, typeof(object));
                 return Json(new { success = "true", metaData = new { fields = jsFields, columns = jsColumns }, data = lista }, JsonRequestBehavior.AllowGet);
             }
+            public JsonResult ListarDirecciones(string cliente, short gestionCliente, string fechaFin, object[] zonal, object[] departamento) 
+            {
+                string xmlZonal = "<root>";
+                string xmlDpto = "<root>";
 
+                if (zonal != null)
+                {
+                    for (int i = 0; i < zonal.Length; i++)
+                    {
+                        xmlZonal += "<zonal Zonal = '" + zonal[i].ToString() + "' />";
+                    }
+                }
+                xmlZonal += "</root>";
+
+                if (departamento != null)
+                {
+                    for (int i = 0; i < departamento.Length; i++)
+                    {
+                        xmlDpto += "<departamento Departamento = '" + departamento[i].ToString() + "' />";
+                    }
+                }
+                xmlDpto += "</root>";
+                List<object> lista = Cartera.Instancia.ListarDirecciones(cliente,gestionCliente,fechaFin,xmlZonal,xmlDpto);
+                return Json(lista, JsonRequestBehavior.AllowGet);
+            }
             public JsonResult ListarServicio(int detalleCartera)
             {
                 List<object> lista = Cartera.Instancia.ListarServicio(detalleCartera);
@@ -595,6 +686,55 @@ namespace RJ.Areas.Cobranza.Controllers
                     bool editable = Convert.ToBoolean(lista[0]["Editable"]);
 
                     Cartera.Instancia.InsUpdDetalleMoroso(detalleMoroso, moroso, tipoDetalle, descripcion, descripcionEstado, tipoEstado, editable, Session["Login"].ToString());
+                    return Json(new { success = "true", data = "1" }, JsonRequestBehavior.AllowGet);
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = "false", data = ex.Message }, JsonRequestBehavior.AllowGet);
+                }
+            }
+
+            public JsonResult InsUpdSector(object[] datos)
+            {
+                try
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    List<Dictionary<string, object>> lista = js.Deserialize<List<Dictionary<string, object>>>(datos[0].ToString());
+
+                    int detalleMoroso = Convert.ToInt32(lista[0]["DetalleMoroso"]);
+                    string sector = lista[0]["Sector"].ToString();
+                    if (sector.Length == 1) sector = "0" + sector;
+                    Cartera.Instancia.InsUpdSector(detalleMoroso, sector);
+                    return Json(new { success = "true", data = "1" }, JsonRequestBehavior.AllowGet);
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = "false", data = ex.Message }, JsonRequestBehavior.AllowGet);
+                }
+            }
+
+        [ValidateInput(false)]
+            public JsonResult InsUpdSectores(object[] datos)
+            {
+                try
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    List<Dictionary<string, object>> lista = js.Deserialize<List<Dictionary<string, object>>>(datos[0].ToString());
+
+                    
+                    string cliente = lista[0]["Cliente"].ToString();
+                    int gestionCliente = Convert.ToInt32(lista[0]["GestionCliente"]);
+                    string fechaFin = lista[0]["FechaFin"].ToString();
+                    string zonal = lista[0]["Zonal"].ToString();
+                    string departamento = lista[0]["Departamento"].ToString();
+                    string provincia = lista[0]["Provincia"].ToString();
+
+                    string distrito = lista[0]["Distrito"].ToString();
+
+                    string sector = lista[0]["Sector"].ToString();
+                    if (sector.Length == 1) sector = "0" + sector;
+
+                    Cartera.Instancia.InsUpdSectores(cliente, gestionCliente,fechaFin,zonal,departamento,provincia,distrito,sector);
                     return Json(new { success = "true", data = "1" }, JsonRequestBehavior.AllowGet);
                 }
                 catch (Exception ex)

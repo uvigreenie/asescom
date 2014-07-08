@@ -5,6 +5,7 @@
     closable: true,
     initComponent: function () {
         var me = this;
+
         var stCliente = Ext.create('Ext.data.Store', {
             autoLoad: false,
             proxy: {
@@ -389,5 +390,5 @@
             return false;
         }
         return true;
-    }
+    },
 });

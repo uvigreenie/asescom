@@ -86,6 +86,29 @@ namespace RJ.Areas.Cobranza.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
+            public DataTable ListarProvinciaxDpto(int gestionCliente, string fechaFin, string zonales, string departamento)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarProvinciaxDpto");
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonales);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarDistritoxProv(int gestionCliente, string fechaFin, string zonales, string departamento, string provincia)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarDistritoxProv");
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonales);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                db.AddInParameter(cmd, "@prmstrProvincia", DbType.String, provincia);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
             public DataTable ListarGestiones(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento, DateTime fechaDesde, DateTime fechaHasta)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
@@ -155,6 +178,32 @@ namespace RJ.Areas.Cobranza.Models
                 db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
+
+            public List<object> ListarDirecciones(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento) 
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarDirecciones");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                DataTable dt = db.ExecuteDataSet(cmd).Tables[0];
+                var lista = (from m in dt.AsEnumerable()
+                             select new
+                             {
+                                 DetalleMoroso = Convert.ToInt32(m["DetalleMoroso"]),
+                                 //NumeroDocumento = m["NumeroDocumento"].ToString(),
+                                 RazonSocial = m["RazonSocial"].ToString(),
+                                 Departamento = m["Departamento"].ToString(),
+                                 Provincia = m["Provincia"].ToString(),
+                                 Distrito = m["Distrito"].ToString(),
+                                 Direccion = m["Direccion"].ToString(),
+                                 Sector = m["Sector"].ToString()
+                             }).ToList<object>();
+                return lista;
+            }    
 
             public List<object> ListarServicio(int detalleCartera)
             {
@@ -269,6 +318,34 @@ namespace RJ.Areas.Cobranza.Models
                 db.AddInParameter(cmd, "@prmintTipoEstado", DbType.Byte, tipoEstado);
                 db.AddInParameter(cmd, "@prmbitEditable", DbType.Boolean, editable);
                 db.AddInParameter(cmd, "@prmstrLogin", DbType.String, login);
+
+                db.ExecuteNonQuery(cmd);
+            }
+
+            public void InsUpdSector(int detalleMoroso, string Sector)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_InsUpdSector");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmintDetalleMoroso", DbType.Int32, detalleMoroso);
+                db.AddInParameter(cmd, "@prmstrSector", DbType.String, Sector);
+
+                db.ExecuteNonQuery(cmd);
+            }
+
+            public void InsUpdSectores(string cliente, int gestionCliente, string fechaFin, string zonal, string departamento, string provincia, string distrito,string sector)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_InsUpdSectores");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                db.AddInParameter(cmd, "@prmstrProvincia", DbType.String, provincia);
+                db.AddInParameter(cmd, "@prmstrDistrito", DbType.String, distrito);
+                db.AddInParameter(cmd, "@prmstrSector", DbType.String, sector);
 
                 db.ExecuteNonQuery(cmd);
             }

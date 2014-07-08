@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Cobranza\Scripts\Cartera\FrmCargarCartera.js" />
+    <Content Include="Areas\Cobranza\Scripts\Cartera\FrmSectorizarCartera.js" />
     <Content Include="Areas\Cobranza\Scripts\GestionCliente\FrmGestionCliente.js" />
     <Content Include="Areas\Cobranza\Scripts\Moroso\FrmListarGestion.js" />
     <Content Include="Areas\Cobranza\Scripts\Moroso\FrmGestionMoroso.js" />
@@ -4050,7 +4051,9 @@
     <Content Include="Scripts\ExtJs\ux\TabScrollerMenu.js" />
     <Content Include="Scripts\ExtJs\ux\ToolbarDroppable.js" />
     <Content Include="Scripts\ExtJs\ux\TreePicker.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
