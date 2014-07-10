@@ -47,9 +47,13 @@ namespace RJ.Areas.Common.Models
                 {
                     cell = sheet[row + r, col + c];
                     if (item.DataType == typeof(DateTime))
+                    {
                         cell.Value = Convert.ToDateTime(dr[item.Ordinal]).ToString("dd/MM/yyyy");
+                    }
                     else
-                        cell.Value = dr[item.Ordinal];
+                    {
+                        cell.Value = dr[item.Ordinal].ToString();
+                    }
                     r++;
                 }
                 c++;
