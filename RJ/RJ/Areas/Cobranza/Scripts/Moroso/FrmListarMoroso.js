@@ -1,6 +1,6 @@
-﻿Ext.define('CobApp.Moroso.FrmListarGestion', {
+﻿Ext.define('CobApp.Moroso.FrmListarMoroso', {
     extend: 'Ext.panel.Panel',
-    itemId: 'FrmListarGestion',
+    itemId: 'FrmListarMoroso',
     layout: 'border',
     closable: true,
     initComponent: function () {
@@ -53,17 +53,17 @@
                 reader: { type: 'json', root: 'data' }
             }
         });
-        var stListadoGestion = Ext.create('Ext.data.Store', {
+        var stListadoMoroso = Ext.create('Ext.data.Store', {
             autoLoad: false,
-            model: Ext.define('ListadoGestion', { extend: 'Ext.data.Model' }),
+            model: Ext.define('ListadoMoroso', { extend: 'Ext.data.Model' }),
             proxy: {
                 type: 'ajax',
-                url: '../../Cobranza/Cartera/ListarGestiones',
+                url: '../../Cobranza/Cartera/ListarMorosos',
                 reader: { type: 'json', root: 'data' }
             },
             listeners: {
                 'metachange': function (store, meta) {
-                    this.getComponent('grdListadoGestion').reconfigure(store, meta.columns);
+                    this.getComponent('grdListadoMoroso').reconfigure(store, meta.columns);
                 },
                 scope: this
             }
@@ -73,15 +73,21 @@
             items:
             [{
                 xtype: 'gridpanel',
-                itemId: 'grdListadoGestion',
+                itemId: 'grdListadoMoroso',
                 region: 'center',
                 title: 'Lista de Gestiones',
-                store: stListadoGestion,
+                store: stListadoMoroso,
                 filterable: true,
                 columnLines: true,
                 columns: [],
                 emptyText: 'No se encontraron datos.',
                 tbar: [
+                    {
+                        xtype: 'label',
+                        name: 'message',
+                        text: 'Sólo se muestran las primeras 200 filas. Para ver la totalidad de filas, exportar.',
+                        colspan: 2
+                    },
                     {
                         xtype: 'tbfill'
                     },
@@ -207,42 +213,42 @@
                     valueField: 'Departamento',
                     multiSelect: true,
                     queryMode: 'local'
-                },
-                {
-                    xtype: 'datefield',
-                    itemId: 'dtpFechaInicio',
-                    format: 'd/m/Y',
-                    fieldLabel: 'Desde',
-                    maxValue: new Date(),
-                    value: new Date(),
-                    allowBlank: false,
-                    listeners: {
-                        select: {
-                            fn: me.ondtpFechaInicioSelect,
-                            scope: me
-                        }
-                    }
-                },
-                {
-                    xtype: 'datefield',
-                    itemId: 'dtpFechaFin',
-                    format: 'd/m/Y',
-                    fieldLabel: 'Hasta',
-                    maxValue: new Date(),
-                    value: new Date(),
-                    allowBlank: false,
-                    listeners: {
-                        select: {
-                            fn: me.ondtpFechaFinSelect,
-                            scope: me
-                        }
-                    }
-                },
-                {
-                    xtype: 'checkbox',
-                    itemId: 'chkMejorGestion',
-                    fieldLabel: 'Mejor gestión'
                 }
+//                {
+//                    xtype: 'datefield',
+//                    itemId: 'dtpFechaInicio',
+//                    format: 'd/m/Y',
+//                    fieldLabel: 'Desde',
+//                    maxValue: new Date(),
+//                    value: new Date(),
+//                    allowBlank: false,
+//                    listeners: {
+//                        select: {
+//                            fn: me.ondtpFechaInicioSelect,
+//                            scope: me
+//                        }
+//                    }
+//                },
+//                {
+//                    xtype: 'datefield',
+//                    itemId: 'dtpFechaFin',
+//                    format: 'd/m/Y',
+//                    fieldLabel: 'Hasta',
+//                    maxValue: new Date(),
+//                    value: new Date(),
+//                    allowBlank: false,
+//                    listeners: {
+//                        select: {
+//                            fn: me.ondtpFechaFinSelect,
+//                            scope: me
+//                        }
+//                    }
+//                },
+//                {
+//                    xtype: 'checkbox',
+//                    itemId: 'chkMejorGestion',
+//                    fieldLabel: 'Mejor gestión'
+//                }
                 ],
                 buttons: [{
                     xtype: 'button',
@@ -259,7 +265,7 @@
                     text: 'Exportar',
                     textAlign: 'right',
                     iconCls: 'icon-export',
-                    href: '../../Cobranza/Cartera/ExportarGestion'
+                    href: '../../Cobranza/Cartera/ExportarListaMorosos'
                 },
                 {
                     xtype: 'button',
@@ -279,11 +285,9 @@
     listeners: {
         afterrender: {
             fn: function (component, options) {
-                //                component.fnEstadoForm('visualizacion');
-                this.getComponent('pnlFiltro').getComponent('dtpFechaFin').setDisabled(true);
+//                this.getComponent('pnlFiltro').getComponent('dtpFechaFin').setDisabled(true);
                 this.getComponent('pnlFiltro').getComponent('cbxCliente').getStore().load();
                 this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(true);
-//                component.getComponent('grdListadoGestion').getStore().load();
                 Ext.MessageBox.hide();
             }
         }
@@ -318,14 +322,14 @@
         });
     },
 
-    ondtpFechaInicioSelect: function (field, value, eOpts) {
-        this.getComponent('pnlFiltro').getComponent('dtpFechaFin').setDisabled(false);
-        this.getComponent('pnlFiltro').getComponent('dtpFechaFin').setMinValue(this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue())
-    },
+//    ondtpFechaInicioSelect: function (field, value, eOpts) {
+//        this.getComponent('pnlFiltro').getComponent('dtpFechaFin').setDisabled(false);
+//        this.getComponent('pnlFiltro').getComponent('dtpFechaFin').setMinValue(this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue())
+//    },
 
-    ondtpFechaFinSelect: function (field, value, eOpts) {
-        this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').setMaxValue(this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue())
-    },
+//    ondtpFechaFinSelect: function (field, value, eOpts) {
+//        this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').setMaxValue(this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue())
+//    },
 
     oncbxZonalSelect: function (combo, records, eOpts) {
         var datos = [];
@@ -356,16 +360,16 @@
             if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
                 dtDepartamento = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
             }
-            this.getComponent('grdListadoGestion').getStore().load({
+            this.getComponent('grdListadoMoroso').getStore().load({
                 params: {
                     cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
                     gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
                     fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
                     zonal: dtZonal,
-                    departamento: dtDepartamento,
-                    fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
-                    fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue(),
-                    mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue()
+                    departamento: dtDepartamento
+//                    fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
+//                    fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue()
+//                    mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue()
                 }
             });
             this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
@@ -373,10 +377,10 @@
                 gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
                 fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
                 zonal: dtZonal,
-                departamento: dtDepartamento,
-                fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
-                fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue(),
-                mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue()
+                departamento: dtDepartamento//,
+//                fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
+//                fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue(),
+//                mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue()
             });
             this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(false);
         }
@@ -395,12 +399,12 @@
         if (!this.getComponent('pnlFiltro').getComponent('cbxZonal').isValid()) {
             return false;
         }
-        if (!this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').isValid()) {
-            return false;
-        }
-        if (!this.getComponent('pnlFiltro').getComponent('dtpFechaFin').isValid()) {
-            return false;
-        }
+//        if (!this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').isValid()) {
+//            return false;
+//        }
+//        if (!this.getComponent('pnlFiltro').getComponent('dtpFechaFin').isValid()) {
+//            return false;
+//        }
         return true;
     }
 });

@@ -165,6 +165,33 @@ namespace RJ.Areas.Cobranza.Models
                 db.AddInParameter(cmd, "@prmdatFechaHasta", DbType.DateTime, fechaHasta);
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
+
+            public DataTable ListarMorosos(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ExportarMorosos");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarMorososGrid(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ExportarMorososGrid");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
             public DataTable ListarMorososEnCartera(string cliente, short gestionCliente, string fechaFin, string tramo, string cluster, string departamento)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
@@ -373,7 +400,6 @@ namespace RJ.Areas.Cobranza.Models
 
                 db.ExecuteNonQuery(cmd);
             }
-
         #endregion
     }
 }

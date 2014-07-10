@@ -226,7 +226,6 @@
                             allowBlank: true
                         }
                     }
-
                 ],
                 emptyText: 'No se encontraron datos.',
                 tbar: [
