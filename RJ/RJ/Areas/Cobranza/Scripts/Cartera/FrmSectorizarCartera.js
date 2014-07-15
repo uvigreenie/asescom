@@ -188,7 +188,8 @@
                     {
                         dataIndex: 'RazonSocial',
                         text: 'Moroso',
-                        width: 200
+                        width: 200,
+                        filterable: true
                     },
                     {
                         dataIndex: 'Departamento',
@@ -197,6 +198,7 @@
                     },
                     {
                         dataIndex: 'Provincia',
+                        itemId: 'provincias',
                         text: 'Prov.',
                         width: 150,
                         hideable: false
@@ -228,6 +230,18 @@
                     }
                 ],
                 emptyText: 'No se encontraron datos.',
+                features: [{
+                    ftype: 'filters',
+                    //                    autoReload: false,
+                    local: true,
+                    filters:
+                    [
+                        { type: 'string', dataIndex: 'RazonSocial' },
+                        { type: 'string', dataIndex: 'Departamento' },
+                        { type: 'string', dataIndex: 'Provincia' },
+                        { type: 'string', dataIndex: 'Distrito' }
+                    ]
+                }],
                 tbar: [
                     {
                         xtype: 'tbfill'
@@ -637,6 +651,7 @@ onBtnBuscarClick: function (button, e, options) {
             }
         });
         this.getComponent('pnlSector').setDisabled(false);
+        //        this.getComponent('grdDirecciones').getView().getHeaderCt().child('#provincias').setDisabled(true);
         this.getComponent('pnlSector').getComponent('cbxProvincia').getStore().load({
             params: {
                 cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
@@ -646,6 +661,7 @@ onBtnBuscarClick: function (button, e, options) {
                 departamento: dtDepartamento
             }
         });
+        this.getComponent('grdDirecciones').getView().getHeaderCt().child('#provincias').initialConfig.filter.options=this.getComponent('pnlSector').getComponent('cbxProvincia').getStore().collect('Provincia');
     }
 },
 

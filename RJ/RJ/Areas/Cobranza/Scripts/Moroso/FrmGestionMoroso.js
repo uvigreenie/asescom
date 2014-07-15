@@ -44,12 +44,19 @@
                 reader: { type: 'json', root: 'data' }
             }
         });
-
+        var stZonal = Ext.create('Ext.data.Store', {
+            autoLoad: false,
+            proxy: {
+                type: 'ajax',
+                url: '../../Cobranza/Cartera/ListarZonal',
+                reader: { type: 'json', root: 'data' }
+            }
+        });
         var stTramo = Ext.create('Ext.data.Store', {
             autoLoad: false,
             proxy: {
                 type: 'ajax',
-                url: '../../Cobranza/Cartera/ListarTramo',
+                url: '../../Cobranza/Cartera/ListarTramoxDepartamento',
                 reader: { type: 'json', root: 'data' }
             }
         });
@@ -58,7 +65,7 @@
             autoLoad: false,
             proxy: {
                 type: 'ajax',
-                url: '../../Cobranza/Cartera/ListarCluster',
+                url: '../../Cobranza/Cartera/ListarClusterxTramo',
                 reader: { type: 'json', root: 'data' }
             }
         });
@@ -67,7 +74,7 @@
             autoLoad: false,
             proxy: {
                 type: 'ajax',
-                url: '../../Cobranza/Cartera/ListarDepartamento',
+                url: '../../Cobranza/Cartera/ListarDepartamentoxZonal',
                 reader: { type: 'json', root: 'data' }
             }
         });
@@ -92,10 +99,10 @@
 
         var stMoroso = Ext.create('Ext.data.Store', {
             autoLoad: false,
-            model: Ext.define('Moroso', {extend: 'Ext.data.Model'}),
+            model: Ext.define('Moroso', { extend: 'Ext.data.Model' }),
             proxy: {
                 type: 'ajax',
-                url: '../../Cobranza/Cartera/ListarMorososEnCartera',
+                url: '../../Cobranza/Cartera/ListarMorososEnCarteraV2',
                 reader: { type: 'json', root: 'data' }
             },
             listeners: {
@@ -272,8 +279,8 @@
                         ftype: 'filters',
                         autoReload: false,
                         local: true,
-                        filters: [ { type: 'string', dataIndex: 'Cluster'},
-                            { type: 'string', dataIndex: 'Departamento'},
+                        filters: [{ type: 'string', dataIndex: 'Cluster' },
+                            { type: 'string', dataIndex: 'Departamento' },
                             { type: 'string', dataIndex: 'NumeroDocumento' },
                             { type: 'string', dataIndex: 'CodCliente' },
                             { type: 'string', dataIndex: 'Cuenta' },
@@ -282,9 +289,9 @@
                             { type: 'numeric', dataIndex: 'DeudaTotal' },
                             { type: 'numeric', dataIndex: 'PagoTotal' },
                             { type: 'numeric', dataIndex: 'Saldo' },
-                            { type: 'boolean', dataIndex: 'Gestionado', defaultValue: null, yesText: 'Si', noText:'No'},
-                            { type: 'boolean', dataIndex: 'Contactado', defaultValue: null, yesText: 'Si', noText:'No'},
-                            { type: 'boolean', dataIndex: 'PromesaPago', defaultValue: null, yesText: 'Si', noText:'No'},
+                            { type: 'boolean', dataIndex: 'Gestionado', defaultValue: null, yesText: 'Si', noText: 'No' },
+                            { type: 'boolean', dataIndex: 'Contactado', defaultValue: null, yesText: 'Si', noText: 'No' },
+                            { type: 'boolean', dataIndex: 'PromesaPago', defaultValue: null, yesText: 'Si', noText: 'No' },
                             { type: 'string', dataIndex: 'Zonal' }
                         ]
                     }],
@@ -917,6 +924,46 @@
                     },
                     {
                         xtype: 'combo',
+                        itemId: 'cbxZonal',
+                        lastQuery: '',
+                        fieldLabel: 'Zonal',
+                        emptyText: '< Seleccione >',
+                        store: stZonal,
+                        displayField: 'Zonal',
+                        valueField: 'Zonal',
+                        allowBlank: false,
+                        multiSelect: true,
+                        forceSelection: true,
+                        queryMode: 'local',
+                        listeners: {
+                            select: {
+                                fn: me.oncbxZonalSelect,
+                                scope: me
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'combo',
+                        itemId: 'cbxDepartamento',
+                        lastQuery: '',
+                        fieldLabel: 'Departamento',
+                        emptyText: '< Seleccione >',
+                        store: stDepartamento,
+                        displayField: 'Departamento',
+                        valueField: 'Departamento',
+                        allowBlank: false,
+                        forceSelection: true,
+                        multiSelect: true,
+                        queryMode: 'local',
+                        listeners: {
+                            select: {
+                                fn: me.oncbxDepartamentoSelect,
+                                scope: me
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'combo',
                         itemId: 'cbxTramo',
                         lastQuery: '',
                         fieldLabel: 'Tramo',
@@ -924,6 +971,7 @@
                         store: stTramo,
                         displayField: 'Tramo',
                         valueField: 'Tramo',
+                        multiSelect: true,
                         allowBlank: false,
                         forceSelection: true,
                         queryMode: 'local',
@@ -951,18 +999,6 @@
                                 scope: me
                             }
                         }
-                    },
-                    {
-                        xtype: 'combo',
-                        itemId: 'cbxDepartamento',
-                        lastQuery: '',
-                        fieldLabel: 'Departamento',
-                        emptyText: '< Todos >',
-                        store: stDepartamento,
-                        displayField: 'Departamento',
-                        valueField: 'Departamento',
-                        multiSelect: true,
-                        queryMode: 'local'
                     }
                 ],
                 buttons: [
@@ -1010,6 +1046,7 @@
                     itemId: 'btnExportar',
                     iconCls: 'icon-export',
                     text: 'Exportar',
+                    hidden: true,
                     href: '../../Cobranza/Cartera/ExportarMorosos'
                 },
                 {
@@ -1102,6 +1139,12 @@
                 cliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue())
             }
         });
+        this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
     },
 
     oncbxGestionClienteSelect: function (combo, records, eOpts) {
@@ -1110,48 +1153,112 @@
                 gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
             }
         });
+        this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
     },
 
     oncbxFechaFinSelect: function (combo, records, eOpts) {
-        this.getComponent('pnlFiltro').getComponent('cbxTramo').getStore().load({
+        this.getComponent('pnlFiltro').getComponent('cbxZonal').getStore().load({
             params: {
                 gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
                 fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue()
             }
         });
+        this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
     },
 
-    oncbxTramoSelect: function (combo, records, eOpts) {
-        this.getComponent('pnlFiltro').getComponent('cbxCluster').getStore().load({
-            params: {
-                gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
-                fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-                tramo: this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue()
-            }
-        });
-    },
-
-    oncbxClusterSelect: function (combo, records, eOpts) {
+    oncbxZonalSelect: function (combo, records, eOpts) {
         var datos = [];
-        if (this.getComponent('pnlFiltro').getComponent('cbxCluster').getValue() != null) {
-            datos = this.getComponent('pnlFiltro').getComponent('cbxCluster').getValue();
+        if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
+            datos = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
         }
         this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getStore().load({
             params: {
                 gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
                 fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-                tramo: this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue(),
-                clusters: datos
+                zonales: datos
             }
         });
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
+        //this.getComponent('pnlSector').setDisabled(true);
+    },
+
+    oncbxDepartamentoSelect: function (combo, records, eOpts) {
+        var zon = [];
+        var dpto = [];
+        if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
+            zon = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
+        }
+        if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
+            dpto = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
+        }
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').getStore().load({
+            params: {
+                gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
+                fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
+                zonales: zon,
+                departamento: dpto
+            }
+        });
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
+        //this.getComponent('pnlSector').setDisabled(true);
+    },
+
+    oncbxTramoSelect: function (combo, records, eOpts) {
+        var zon = [];
+        var dpto = [];
+        var tram = [];
+        if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
+            zon = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
+        }
+        if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
+            dpto = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
+        }
+        if (this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue() != null) {
+            tram = this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue();
+        }
+        this.getComponent('pnlFiltro').getComponent('cbxCluster').getStore().load({
+            params: {
+                gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
+                fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
+                zonales: zon,
+                departamento: dpto,
+                tramo: tram
+            }
+        });
+        this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
+    },
+
+    oncbxClusterSelect: function (combo, records, eOpts) {
+        //        var datos = [];
+        //        if (this.getComponent('pnlFiltro').getComponent('cbxCluster').getValue() != null) {
+        //            datos = this.getComponent('pnlFiltro').getComponent('cbxCluster').getValue();
+        //        }
+        //        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getStore().load({
+        //            params: {
+        //                gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
+        //                fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
+        //                tramo: this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue(),
+        //                clusters: datos
+        //            }
+        //        });
     },
 
     oncbxClaseGestionSelect: function (combo, records, eOpts) {
-        if ( records[0].get('AplicaPromesa').toString() == 'true' ) {
+        if (records[0].get('AplicaPromesa').toString() == 'true') {
             this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('dtpFechaPromesa').setDisabled(false);
             this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtMonto').setDisabled(false);
         }
-        else{
+        else {
             this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('dtpFechaPromesa').setDisabled(true);
             this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtMonto').setDisabled(true);
             this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('dtpFechaPromesa').setValue(null);
@@ -1177,7 +1284,7 @@
                 }
             });
         }
-            console.log(Ext.encode(this.onBtnBuscarClick));
+        console.log(Ext.encode(this.onBtnBuscarClick));
     },
 
     onGridDetalleMorosoSelectionChange: function (tablepanel, selections, options) {
@@ -1194,7 +1301,7 @@
                 }
             });
             this.fnLimpiarControles();
-            
+
         }
     },
 
@@ -1280,7 +1387,8 @@
         if (this.fnEsValidoBuscar()) {
             var dtCluster = [];
             var dtDepartamento = [];
-
+            var dtTramo = [];
+            var dtZonal = [];
             if (this.getComponent('pnlFiltro').getComponent('cbxCluster').getValue() != null) {
                 dtCluster = this.getComponent('pnlFiltro').getComponent('cbxCluster').getValue();
             }
@@ -1289,35 +1397,46 @@
                 dtDepartamento = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
             }
 
+            if (this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue() != null) {
+                dtTramo = this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue();
+            }
+
+            if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
+                dtZonal = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
+            }
+
             this.getComponent('pnlBusqueda').getComponent('grdMoroso').getStore().load({
                 params: {
                     cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
                     gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
                     fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-                    tramo: this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue(),
-                    cluster: dtCluster,
-                    departamento: dtDepartamento
+                    zonal: dtZonal,
+                    departamento: dtDepartamento,
+                    tramo: dtTramo,
+                    cluster: dtCluster
                 }
             });
 
             this.getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
-                    cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
-                    gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
-                    fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-                    tramo: this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue(),
-                    cluster: dtCluster,
-                    departamento: dtDepartamento});
-            }
+                cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
+                zonal: dtZonal,
+                departamento: dtDepartamento,
+                tramo: dtTramo,
+                cluster: dtCluster
+            });
+        }
     },
 
-    onBtnNuevoClick: function (button, e, options) {    
-        if ( this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtDetalleMoroso').getValue().toString() == '' ){
+    onBtnNuevoClick: function (button, e, options) {
+        if (this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtDetalleMoroso').getValue().toString() == '') {
             Ext.MessageBox.show({
-                            title: 'Sistema RJ Abogados',
-                            msg: 'Seleccione un detalle moroso.',
-                            buttons: Ext.MessageBox.OK,
-                            animateTarget: button,
-                            icon: Ext.Msg.WARNING
+                title: 'Sistema RJ Abogados',
+                msg: 'Seleccione un detalle moroso.',
+                buttons: Ext.MessageBox.OK,
+                animateTarget: button,
+                icon: Ext.Msg.WARNING
             });
         }
         else {
@@ -1329,14 +1448,14 @@
     },
 
     onBtnEditarClick: function (button, e, options) {
-        if ( this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionMoroso').getValue().toString() == '' ) {
+        if (this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionMoroso').getValue().toString() == '') {
             Ext.MessageBox.show({
-                            title: 'Sistema RJ Abogados',
-                            msg: 'No hay datos para editar.',
-                            buttons: Ext.MessageBox.OK,
-                            animateTarget: button,
-                            icon: Ext.Msg.WARNING
-                        });
+                title: 'Sistema RJ Abogados',
+                msg: 'No hay datos para editar.',
+                buttons: Ext.MessageBox.OK,
+                animateTarget: button,
+                icon: Ext.Msg.WARNING
+            });
         }
         else {
             this.fnEstadoForm('registro');
@@ -1434,6 +1553,12 @@
             return false;
         }
         if (!this.getComponent('pnlFiltro').getComponent('cbxDepartamento').isValid()) {
+            return false;
+        }
+        if (!this.getComponent('pnlFiltro').getComponent('cbxZonal').isValid()) {
+            return false;
+        }
+        if (!this.getComponent('pnlFiltro').getComponent('cbxFechaFin').isValid()) {
             return false;
         }
         return true;

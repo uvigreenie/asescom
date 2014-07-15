@@ -99,9 +99,12 @@ namespace RJ.Areas.Cobranza.Controllers
             {
                 string xmlZonal = "<root>";
 
-                for (int i = 0; i < zonales.Length; i++)
+                if (zonales != null)
                 {
-                    xmlZonal += "<zonal Zonal = '" + zonales[i].ToString() + "' />";
+                    for (int i = 0; i < zonales.Length; i++)
+                    {
+                        xmlZonal += "<zonal Zonal = '" + zonales[i].ToString() + "' />";
+                    }
                 }
                 xmlZonal += "</root>";
 
@@ -111,6 +114,84 @@ namespace RJ.Areas.Cobranza.Controllers
 
                 var lista = (from c in dt.AsEnumerable()
                              select new { Departamento = c["Departamento"].ToString() }).ToList<object>();
+
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
+            public JsonResult ListarTramoxDepartamento(int gestionCliente, string fechaFin, object[] zonales, object[] departamento)
+            {
+                string xmlZonal = "<root>";
+                string xmlDpto = "<root>";
+
+                if (departamento != null)
+                {
+                    for (int i = 0; i < departamento.Length; i++)
+                    {
+                        xmlDpto += "<departamento Departamento = '" + departamento[i].ToString() + "' />";
+                    }
+                }
+                xmlDpto += "</root>";
+
+                if (zonales != null)
+                {
+                    for (int i = 0; i < zonales.Length; i++)
+                    {
+                        xmlZonal += "<zonal Zonal = '" + zonales[i].ToString() + "' />";
+                    }
+                }
+                xmlZonal += "</root>";
+
+                DataTable dt = Cartera.Instancia.ListarTramoxDepartamento(gestionCliente, fechaFin, xmlZonal, xmlDpto);
+
+                string fields = "[{\"name\":\"Tramo\",\"type\":\"string\"}]";
+
+                var lista = (from c in dt.AsEnumerable()
+                             select new { Tramo = c["Tramo"].ToString() }).ToList<object>();
+
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
+            }
+
+            public JsonResult ListarClusterxTramo(int gestionCliente, string fechaFin, object[] zonales, object[] departamento, object[] tramo)
+            {
+                string xmlZonal = "<root>";
+                string xmlDpto = "<root>";
+                string xmlTramo = "<root>";
+
+                if (departamento != null)
+                {
+                    for (int i = 0; i < departamento.Length; i++)
+                    {
+                        xmlDpto += "<departamento Departamento = '" + departamento[i].ToString() + "' />";
+                    }
+                }
+                xmlDpto += "</root>";
+
+                if (zonales != null)
+                {
+                    for (int i = 0; i < zonales.Length; i++)
+                    {
+                        xmlZonal += "<zonal Zonal = '" + zonales[i].ToString() + "' />";
+                    }
+                }
+                xmlZonal += "</root>";
+
+                if (tramo != null)
+                {
+                    for (int i = 0; i < tramo.Length; i++)
+                    {
+                        xmlTramo += "<tramo Tramo = '" + tramo[i].ToString() + "' />";
+                    }
+                }
+                xmlTramo += "</root>";
+
+                DataTable dt = Cartera.Instancia.ListarClusterxTramo(gestionCliente, fechaFin, xmlZonal, xmlDpto, xmlTramo);
+
+                string fields = "[{\"name\":\"Cluster\",\"type\":\"string\"}]";
+
+                var lista = (from c in dt.AsEnumerable()
+                             select new { Cluster = c["Cluster"].ToString() }).ToList<object>();
 
                 var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
                 return Json(new { success = "true", metaData = new { fields = jsFields }, data = lista }, JsonRequestBehavior.AllowGet);
@@ -382,6 +463,119 @@ namespace RJ.Areas.Cobranza.Controllers
                     return Json(new { success = "true", metaData = new { fields = jsFields, columns = jsColumns }, data = lista }, JsonRequestBehavior.AllowGet);
                 }
                 
+            }
+
+            public JsonResult ListarMorososEnCarteraV2(string cliente, short gestionCliente, string fechaFin, object[] zonal, object[] departamento, object[] tramo, object[] cluster)
+            {
+                string xmlCluster = "<root>";
+                string xmlDpto = "<root>";
+                string xmlZonal = "<root>";
+                string xmlTramo = "<root>";
+
+                if (zonal != null)
+                {
+                    for (int i = 0; i < zonal.Length; i++)
+                    {
+                        xmlZonal += "<zonal Zonal = '" + zonal[i].ToString() + "' />";
+                    }
+                }
+                xmlZonal += "</root>";
+
+                if (cluster != null)
+                {
+                    for (int i = 0; i < cluster.Length; i++)
+                    {
+                        xmlCluster += "<cluster Cluster = '" + cluster[i].ToString() + "' />";
+                    }
+                }
+                xmlCluster += "</root>";
+
+                if (tramo != null)
+                {
+                    for (int i = 0; i < tramo.Length; i++)
+                    {
+                        xmlTramo += "<tramo Tramo = '" + tramo[i].ToString() + "' />";
+                    }
+                }
+                xmlTramo += "</root>";
+
+                if (departamento != null)
+                {
+                    for (int i = 0; i < departamento.Length; i++)
+                    {
+                        xmlDpto += "<departamento Departamento = '" + departamento[i].ToString() + "' />";
+                    }
+                }
+                xmlDpto += "</root>";
+
+                DataTable dt = Cartera.Instancia.ListarMorososEnCarteraV2(cliente, gestionCliente, fechaFin, xmlZonal, xmlDpto, xmlTramo, xmlCluster);
+
+                string fields = "[{\"name\":\"Cartera\",\"type\":\"int\"},{\"name\":\"DCliente\",\"type\":\"string\"},{\"name\":\"DGestionCliente\",\"type\":\"string\"},";
+                fields += "{\"name\":\"CodCartera\",\"type\":\"string\"},{\"name\":\"Zonal\",\"type\":\"string\"},{\"name\":\"Departamento\",\"type\":\"string\"},";
+                fields += "{\"name\":\"Cuenta\",\"type\":\"string\"},{\"name\":\"Servicio\",\"type\":\"string\"},{\"name\":\"CodCliente\",\"type\":\"string\"},";
+                fields += "{\"name\":\"Provincia\",\"type\":\"string\"},{\"name\":\"Distrito\",\"type\":\"string\"},{\"name\":\"Cluster\",\"type\":\"string\"},";
+                fields += "{\"name\":\"Tramo\",\"type\":\"string\"},{\"name\":\"TipoTecnologia\",\"type\":\"string\"},{\"name\":\"DetalleCartera\",\"type\":\"int\"},";
+                fields += "{\"name\":\"NumeroDocumento\",\"type\":\"string\"},{\"name\":\"Moroso\",\"type\":\"int\"},{\"name\":\"DMoroso\",\"type\":\"string\"},";
+                fields += "{\"name\":\"DeudaTotal\",\"type\":\"float\"},{\"name\":\"PagoTotal\",\"type\":\"float\"},{\"name\":\"Saldo\",\"type\":\"float\"},";
+                fields += "{\"name\":\"Gestionado\",\"type\":\"bool\"},{\"name\":\"Contactado\",\"type\":\"bool\"},{\"name\":\"PromesaPago\",\"type\":\"bool\"}]";
+
+                string columns = "[{\"xtype\":\"rownumberer\",\"resizable\":true,\"width\":60},{\"text\":\"Cartera\",\"dataIndex\":\"Cartera\",\"hidden\":true,\"hideable\":false},";
+                columns += "{\"text\":\"Cluster\",\"dataIndex\":\"Cluster\",\"width\":60,\"filterable\":true},";
+                columns += "{\"text\":\"Cliente\",\"dataIndex\":\"DCliente\",\"width\":150,\"hideable\":false,\"hidden\":true},";
+                columns += "{\"text\":\"Gestión\",\"dataIndex\":\"DGestionCliente\",\"width\":100,\"hideable\":false,\"hidden\":true},";
+                columns += "{\"text\":\"N° Documento\",\"dataIndex\":\"NumeroDocumento\",\"width\":100,\"filterable\":true},";
+                columns += "{\"text\":\"CodCliente\",\"dataIndex\":\"CodCliente\",\"width\":90,\"filterable\":true},";
+                columns += "{\"text\":\"Cuenta\",\"dataIndex\":\"Cuenta\",\"width\":90,\"filterable\":true},";
+                columns += "{\"text\":\"Servicio\",\"dataIndex\":\"Servicio\",\"width\":90,\"filterable\":true},"; columns += "{\"text\":\"Moroso\",\"dataIndex\":\"Moroso\",\"hideable\":false,\"hidden\":true},";
+                columns += "{\"text\":\"Moroso\",\"dataIndex\":\"DMoroso\",\"width\":280,\"filterable\":true},";
+                columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Deuda\",\"dataIndex\":\"DeudaTotal\",\"format\":\"0,000.##\",\"width\":70,\"filterable\":true},";
+                columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Pago\",\"dataIndex\":\"PagoTotal\",\"format\":\"0,000.##\",\"width\":70,\"filterable\":true},";
+                columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Saldo\",\"dataIndex\":\"Saldo\",\"format\":\"0,000.##\",\"width\":70,\"filterable\":true},";
+                columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Gestionado\",\"dataIndex\":\"Gestionado\",\"processEvent\":'function() { return false; }',\"width\":100,\"filterable\":true},";
+                columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Contactado\",\"dataIndex\":\"Contactado\",\"processEvent\":'function() { return false; }',\"width\":100,\"filterable\":true},";
+                columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Con Promesa\",\"dataIndex\":\"PromesaPago\",\"processEvent\":'function () { return false; }',\"width\":100,\"filterable\":true},";
+                columns += "{\"text\":\"Zonal\",\"dataIndex\":\"Zonal\",\"width\":60,\"filterable\":true},";
+                columns += "{\"text\":\"Provincia\",\"dataIndex\":\"Provincia\",\"width\":140,\"hideable\":false,\"hidden\":true},";
+                columns += "{\"text\":\"Departamento\",\"dataIndex\":\"Departamento\",\"width\":110,\"filterable\":true},";
+                columns += "{\"text\":\"Distrito\",\"dataIndex\":\"Distrito\",\"width\":140},";
+                columns += "{\"text\":\"Tramo\",\"dataIndex\":\"Tramo\",\"width\":80,\"hideable\":false,\"hidden\":true},";
+                columns += "{\"text\":\"Cartera\",\"dataIndex\":\"CodCartera\",\"width\":190},";
+                columns += "{\"text\":\"Tipo Tecnología\",\"dataIndex\":\"TipoTecnologia\",\"width\":110},";
+                columns += "{\"text\":\"DetalleCartera\",\"dataIndex\":\"DetalleCartera\",\"hideable\":false,\"hidden\":true},";
+                columns += "{\"flex\":1,\"menuDisabled\":true,\"hideable\":false}]";
+
+                var lista = (from m in dt.AsEnumerable()
+                             select new
+                             {
+                                 Cartera = Convert.ToInt32(m["Cartera"]),
+                                 DCliente = m["DCliente"].ToString(),
+                                 CodCliente = m["CodCliente"].ToString(),
+                                 Cuenta = m["Cuenta"].ToString(),
+                                 Servicio = m["Servicio"].ToString(),
+                                 DGestionCliente = m["DGestionCliente"].ToString(),
+                                 CodCartera = m["CodCartera"].ToString(),
+                                 Zonal = m["Zonal"].ToString(),
+                                 Departamento = m["Departamento"].ToString(),
+                                 Provincia = m["Provincia"].ToString(),
+                                 Distrito = m["Distrito"].ToString(),
+                                 Cluster = m["Cluster"].ToString(),
+                                 Tramo = m["Tramo"].ToString(),
+                                 TipoTecnologia = m["TipoTecnologia"].ToString(),
+                                 DetalleCartera = Convert.ToInt32(m["DetalleCartera"]),
+                                 NumeroDocumento = m["NumeroDocumento"].ToString(),
+                                 Moroso = Convert.ToInt32(m["Moroso"]),
+                                 DMoroso = m["DMoroso"].ToString(),
+                                 DeudaTotal = Convert.ToDecimal(m["DeudaTotal"]),
+                                 PagoTotal = Convert.ToDecimal(m["PagoTotal"]),
+                                 Saldo = Convert.ToDecimal(m["Saldo"]),
+                                 Gestionado = Convert.ToBoolean(m["Gestionado"]),
+                                 Contactado = Convert.ToBoolean(m["Contactado"]),
+                                 PromesaPago = Convert.ToBoolean(m["PromesaPago"])
+                             }).ToList<object>();
+
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                var jsColumns = new JavaScriptSerializer().Deserialize(columns, typeof(object));
+                return Json(new { success = "true", metaData = new { fields = jsFields, columns = jsColumns }, data = lista }, JsonRequestBehavior.AllowGet);
             }
 
             public JsonResult ListarMorososEnCartera(string cliente, short gestionCliente, string fechaFin, string tramo, object[] cluster, object[] departamento)

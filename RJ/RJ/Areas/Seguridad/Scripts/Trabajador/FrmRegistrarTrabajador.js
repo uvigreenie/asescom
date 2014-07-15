@@ -103,7 +103,7 @@
                     [
                         { type: 'string', dataIndex: 'ApellidoPaterno' },
                         { type: 'string', dataIndex: 'ApellidoMaterno' },
-                        { type: 'list', dataIndex: 'DZonal', options: ['OF. AREQUIPA', 'OF. AYACUCHO', 'OF. CHICLAYO', 'OF. CHIMBOTE', 'OF. HUARAZ', 'OF. IQUITOS', 'OF. PIURA', 'OF. TACNA', 'OF. TRUJILLO'] },
+                        { type: 'list', dataIndex: 'DZonal', options: ['OF. AREQUIPA', 'OF. AYACUCHO', 'OF. CAJAMARCA','OF. CHICLAYO', 'OF. CHIMBOTE', 'OF. HUARAZ', 'OF. IQUITOS', 'OF. PUCALLPA','OF. PIURA', 'OF. TACNA', 'OF. TRUJILLO'] },
                         { type: 'list', dataIndex: 'TipoPuesto', options: ['ADMINISTRATIVO', 'GESTION DE CAMPO', 'GESTION DE CALL','RESPONSABLE DE ZONAL'] },
                         { type: 'list', dataIndex: 'Sexo', options: ['F', 'M'] },
                         { type: 'string', dataIndex: 'NumeroDocumento' },
