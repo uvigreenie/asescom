@@ -40283,7 +40283,7 @@ Ext.define('Ext.LoadMask', {
 
     
     
-    msg : 'Loading...',
+    msg : 'Cargando...',
     
 
     
@@ -88546,7 +88546,7 @@ Ext.define('Ext.window.MessageBox', {
     titleText: {
         confirm: 'Confirm',
         prompt: 'Prompt',
-        wait: 'Loading...',
+        wait: 'Cargando...',
         alert: 'Attention'
     },
     
@@ -94013,7 +94013,7 @@ Ext.define('Ext.view.AbstractView', {
 
     
     
-    loadingText: 'Loading...',
+    loadingText: 'Cargando...',
     
 
     

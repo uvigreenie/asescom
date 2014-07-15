@@ -86,6 +86,29 @@ namespace RJ.Areas.Cobranza.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
+            public DataTable ListarTramoxDepartamento(int gestionCliente, string fechaFin, string zonales, string departamento)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarTramoxDpto");
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonales);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarClusterxTramo(int gestionCliente, string fechaFin, string zonales, string departamento, string tramo)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarClusterxTramo");
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonales);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                db.AddInParameter(cmd, "@prmstrTramo", DbType.String, tramo);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
             public DataTable ListarProvinciaxDpto(int gestionCliente, string fechaFin, string zonales, string departamento)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
@@ -203,6 +226,21 @@ namespace RJ.Areas.Cobranza.Models
                 db.AddInParameter(cmd, "@prmstrTramo", DbType.String, tramo);
                 db.AddInParameter(cmd, "@prmstrCluster", DbType.String, cluster);
                 db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarMorososEnCarteraV2(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento, string tramo, string cluster)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaMorososEnCarteraV2");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
+                db.AddInParameter(cmd, "@prmstrTramo", DbType.String, tramo);
+                db.AddInParameter(cmd, "@prmstrCluster", DbType.String, cluster);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
