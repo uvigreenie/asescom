@@ -1083,7 +1083,7 @@ namespace RJ.Areas.Cobranza.Controllers
                         string xmlDetalle = string.Empty;
                         string valor = string.Empty;
                         StringBuilder cadena = new StringBuilder();
-                        cadena.Append("<root>");
+                        cadena.Append("<?xml version='1.0' encoding='UTF-8'><root>");
 
                         for (int i = 1; i < sheet.Rows.Count; i++)
                         {
@@ -1342,6 +1342,10 @@ namespace RJ.Areas.Cobranza.Controllers
                 prmstrCadena = prmstrCadena.Replace( "‰", "&#8240;");
                 prmstrCadena = prmstrCadena.Replace( "•", "&#8226;");
                 prmstrCadena = prmstrCadena.Replace( "†", "&#8224;");
+                prmstrCadena = prmstrCadena.Replace("¶", "&#20;");
+                prmstrCadena = prmstrCadena.Replace("╚", "&#200;");
+                prmstrCadena = prmstrCadena.Replace("╬", "&#206;");
+                
                 return prmstrCadena;
             }
             catch (Exception)
