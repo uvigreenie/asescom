@@ -44,6 +44,16 @@
                 reader: { type: 'json', root: 'data' }
             }
         });
+
+        var stFechaInicio = Ext.create('Ext.data.Store', {
+            autoLoad: false,
+            proxy: {
+                type: 'ajax',
+                url: '../../Cobranza/Cartera/ListarFechaInicioCartera',
+                reader: { type: 'json', root: 'data' }
+            }
+        });
+
         var stZonal = Ext.create('Ext.data.Store', {
             autoLoad: false,
             proxy: {
@@ -52,11 +62,21 @@
                 reader: { type: 'json', root: 'data' }
             }
         });
+
         var stTramo = Ext.create('Ext.data.Store', {
             autoLoad: false,
             proxy: {
                 type: 'ajax',
                 url: '../../Cobranza/Cartera/ListarTramoxDepartamento',
+                reader: { type: 'json', root: 'data' }
+            }
+        });
+
+        var stProducto = Ext.create('Ext.data.Store', {
+            autoLoad: false,
+            proxy: {
+                type: 'ajax',
+                url: '../../Cobranza/Cartera/ListarProductoxDepartamento',
                 reader: { type: 'json', root: 'data' }
             }
         });
@@ -75,6 +95,15 @@
             proxy: {
                 type: 'ajax',
                 url: '../../Cobranza/Cartera/ListarDepartamentoxZonal',
+                reader: { type: 'json', root: 'data' }
+            }
+        });
+
+        var stDepartamentoIBK = Ext.create('Ext.data.Store', {
+            autoLoad: false,
+            proxy: {
+                type: 'ajax',
+                url: '../../Cobranza/Cartera/ListarDepartamentoIBK',
                 reader: { type: 'json', root: 'data' }
             }
         });
@@ -115,28 +144,20 @@
         });
 
         var stServicio = Ext.create('Ext.data.Store', {
-            fields: [
-                { name: 'IDServicio', type: 'int' },
-                { name: 'TipoDocumento', type: 'string' },
-                { name: 'NumeroDocumento', type: 'string' },
-                { name: 'FechaEmision', type: 'string' },
-                { name: 'FechaVencimiento', type: 'string' },
-                { name: 'Moneda', type: 'string' },
-                { name: 'MontoDeuda', type: 'float' },
-                { name: 'MontoPagado', type: 'float' },
-                { name: 'FechaPago', type: 'string' }
-            ],
+            autoLoad: false,
+            model: Ext.define('Servicio', { extend: 'Ext.data.Model' }),
             proxy: {
                 type: 'ajax',
-                url: '../../Cobranza/Cartera/ListarServicio',
-                reader: {
-                    type: 'json'
-                },
-                params: {
-                    detalleCartera: 0
-                }
+                url: '../../Cobranza/Cartera/ListarServicioV2',
+                reader: { type: 'json', root: 'data' }
             },
-            autoLoad: false
+            listeners: {
+                'metachange': function (store, meta) {
+                    this.getComponent('pnlBusqueda').getComponent('grdServicio').reconfigure(store, meta.columns);
+                    console.log(this.getComponent('pnlBusqueda').getComponent('grdServicio'));
+                },
+                scope: this
+            }
         });
 
         var stDetalleMoroso = Ext.create('Ext.data.Store', {
@@ -159,6 +180,12 @@
                 params: {
                     moroso: 0
                 }
+            },
+            listeners: {
+                load: function () {
+                    this.getComponent('pnlBusqueda').getComponent('grdDetalleMoroso').getSelectionModel().select(0); ;
+                },
+                scope: this
             },
             autoLoad: false
         });
@@ -256,7 +283,8 @@
             items: [
             {
                 itemId: 'pnlBusqueda',
-                title: 'Lista de Morosos',
+                header: false,
+                //                title: 'Lista de Morosos',
                 region: 'west',
                 border: false,
                 split: true,
@@ -269,12 +297,18 @@
                 {
                     xtype: 'gridpanel',
                     itemId: 'grdMoroso',
-                    header: false,
+                    title: 'Lista de Morosos',
+                    //                    header: false,
                     store: stMoroso,
                     columnLines: true,
                     emptyText: 'No se encontraron datos.',
-                    flex: 1,
+                    flex: 1.5,
                     columns: [],
+                    plugins: {
+                        ptype: 'bufferedrenderer',
+                        trailingBufferZone: 20,
+                        leadingBufferZone: 30
+                    },
                     features: [{
                         ftype: 'filters',
                         autoReload: false,
@@ -289,9 +323,9 @@
                             { type: 'numeric', dataIndex: 'DeudaTotal' },
                             { type: 'numeric', dataIndex: 'PagoTotal' },
                             { type: 'numeric', dataIndex: 'Saldo' },
-                            { type: 'boolean', dataIndex: 'Gestionado', defaultValue: null, yesText: 'Si', noText: 'No' },
-                            { type: 'boolean', dataIndex: 'Contactado', defaultValue: null, yesText: 'Si', noText: 'No' },
-                            { type: 'boolean', dataIndex: 'PromesaPago', defaultValue: null, yesText: 'Si', noText: 'No' },
+                            { type: 'boolean', dataIndex: 'GestionadoCall', defaultValue: null, yesText: 'Si', noText: 'No' },
+                            { type: 'boolean', dataIndex: 'ContactadoCall', defaultValue: null, yesText: 'Si', noText: 'No' },
+                            { type: 'date', dataIndex: 'PromesaPago', beforeText: 'Antes del', afterText: 'Después del', onText: 'En el' },
                             { type: 'string', dataIndex: 'Zonal' }
                         ]
                     }],
@@ -310,92 +344,7 @@
                     columnLines: true,
                     emptyText: 'No se encontraron datos.',
                     flex: 1,
-                    columns: [
-                        {
-                            xtype: 'rownumberer'
-                        },
-                        {
-                            xtype: 'numbercolumn',
-                            dataIndex: 'IDServicio',
-                            hidden: true,
-                            hideable: false
-                        },
-                        {
-                            dataIndex: 'TipoDocumento',
-                            text: 'T. Documento',
-                            width: 100,
-                            hideable: false
-                        },
-                        {
-                            dataIndex: 'NumeroDocumento',
-                            text: 'N° Documento',
-                            width: 100,
-                            hideable: false
-                        },
-                        {
-                            xtype: 'datecolumn',
-                            dataIndex: 'FechaEmision',
-                            text: 'Emisión',
-                            width: 90,
-                            renderer: function (v) {
-                                var dateObject = Ext.Date.parse(v, 'MS');
-                                var ymdString = Ext.util.Format.date(dateObject, 'd/m/Y');
-                                return ymdString;
-                            },
-                            hideable: false
-                        },
-                        {
-                            xtype: 'datecolumn',
-                            dataIndex: 'FechaVencimiento',
-                            text: 'Vencimiento',
-                            width: 90,
-                            renderer: function (v) {
-                                var dateObject = Ext.Date.parse(v, 'MS');
-                                var ymdString = Ext.util.Format.date(dateObject, 'd/m/Y');
-                                return ymdString;
-                            },
-                            hideable: false
-                        },
-                        {
-                            dataIndex: 'Moneda',
-                            text: 'Moneda',
-                            width: 80,
-                            hideable: false
-                        },
-                        {
-                            xtype: 'numbercolumn',
-                            dataIndex: 'MontoDeuda',
-                            text: 'Deuda',
-                            format: '0,000.##',
-                            width: 80,
-                            hideable: false
-                        },
-                        {
-                            xtype: 'numbercolumn',
-                            dataIndex: 'MontoPagado',
-                            text: 'Monto Pagado',
-                            format: '0,000.##',
-                            width: 80,
-                            hideable: false
-                        },
-                        {
-                            xtype: 'datecolumn',
-                            dataIndex: 'FechaPago',
-                            text: 'Ult.Fecha Pago',
-                            width: 90,
-                            renderer: function (v) {
-                                var dateObject = Ext.Date.parse(v, 'MS');
-                                var ymdString = Ext.util.Format.date(dateObject, 'd/m/Y');
-                                return ymdString;
-                            },
-                            hideable: false
-                        },
-                        {
-                            flex: 1,
-                            menuDisabled: true,
-                            hideable: false
-                        }
-                    ]
+                    columns: []
                 },
                 {
                     xtype: 'gridpanel',
@@ -434,7 +383,7 @@
                         {
                             dataIndex: 'TipoDetalle',
                             text: 'Tipo Detalle',
-                            width: 150,
+                            width: 100,
                             hideable: false,
                             renderer: function (v, metaData, record) {
                                 var data;
@@ -474,7 +423,7 @@
                         {
                             dataIndex: 'Descripcion',
                             text: 'Descripción',
-                            width: 150,
+                            width: 250,
                             hideable: false,
                             renderer: function (v, metaData, record) {
                                 var data;
@@ -508,7 +457,7 @@
                         {
                             dataIndex: 'DescripcionEstado',
                             text: 'DescripcionEstado',
-                            width: 150,
+                            width: 100,
                             hideable: false,
                             renderer: function (v, metaData, record) {
                                 var data;
@@ -527,7 +476,7 @@
                         {
                             dataIndex: 'TipoEstado',
                             text: 'Tipo Estado',
-                            width: 100,
+                            width: 150,
                             hideable: false,
                             renderer: function (v, metaData, record) {
                                 var data;
@@ -550,15 +499,20 @@
                             },
                             flex: 1
                         },
+                    //                        {
+                    //                            flex: 1,
+                    //                            menuDisabled: true,
+                    //                            hideable: false
+                    //                        },
                         {
-                            xtype: 'checkcolumn',
-                            dataIndex: 'Editable',
-                            text: 'Editable',
-                            lockable: false,
-                            processEvent: function () { return false; },
-                            hidden: true,
-                            hideable: false
-                        }
+                        xtype: 'checkcolumn',
+                        dataIndex: 'Editable',
+                        text: 'Editable',
+                        lockable: false,
+                        processEvent: function () { return false; },
+                        hidden: true,
+                        hideable: false
+                    }
                     ],
                     plugins: [{
                         ptype: 'rowediting',
@@ -611,6 +565,7 @@
                             dataIndex: 'GestionMoroso',
                             text: 'N° Gestión',
                             format: '0',
+                            hidden: true,
                             hideable: false
                         },
                         {
@@ -715,7 +670,8 @@
                     {
                         itemId: 'pnlRegistro',
                         title: 'Registro de Gestión',
-                        bodyStyle: 'padding:15px;',
+                        autoScroll: true,
+                        bodyStyle: 'padding:10px;',
                         layout: {
                             type: 'table',
                             columns: 2,
@@ -729,12 +685,25 @@
                         {
                             xtype: 'textfield',
                             itemId: 'txtGestionMoroso',
+                            hidden: true,
                             fieldLabel: 'N° Gestión'
                         },
                         {
                             xtype: 'textfield',
                             itemId: 'txtDetalleMoroso',
                             fieldLabel: 'DetalleMoroso',
+                            hidden: true
+                        },
+                        {
+                            xtype: 'textfield',
+                            itemId: 'txtTrabajador',
+                            fieldLabel: 'Trabajador',
+                            hidden: true
+                        },
+                        {
+                            xtype: 'textfield',
+                            itemId: 'txtGestionCliente',
+                            fieldLabel: 'txtGestionCliente',
                             hidden: true
                         },
                         {
@@ -747,6 +716,7 @@
                             displayField: 'DTipoGestion',
                             valueField: 'TipoGestion',
                             allowBlank: false,
+                            colspan: 2,
                             forceSelection: true,
                             queryMode: 'local'
                         },
@@ -764,7 +734,7 @@
                             queryMode: 'local',
                             colspan: 2,
                             //anchor: '100%',
-                            width: 520
+                            width: 450
                         },
                         {
                             xtype: 'combo',
@@ -777,7 +747,7 @@
                             valueField: 'ClaseGestion',
                             colspan: 2,
                             //anchor: '100%',
-                            width: 520,
+                            width: 450,
                             allowBlank: false,
                             forceSelection: true,
                             queryMode: 'local',
@@ -802,18 +772,22 @@
                             queryMode: 'local',
                             colspan: 2,
                             //anchor: '100%',
-                            width: 520
+                            width: 450
                         },
                         {
                             xtype: 'datefield',
                             itemId: 'dtpFechaGestion',
                             format: 'd/m/Y',
+                            anchor: '100%',
+                            width: '90%',
                             fieldLabel: 'Fecha Gestión',
+                            maxValue: new Date(),
                             value: new Date()
                         },
                         {
                             xtype: 'datefield',
                             itemId: 'dtpFechaPromesa',
+                            width: '90%',
                             format: 'd/m/Y',
                             fieldLabel: 'Fecha Promesa'
                         },
@@ -846,7 +820,7 @@
                             itemId: 'txtObservacion',
                             grow: true,
                             anchor: '100%',
-                            width: '100%',
+                            width: '95%',
                             colspan: 2
                         }
                         ]
@@ -861,7 +835,7 @@
                 split: true,
                 collapsed: true,
                 collapsible: true,
-                width: 350,
+                width: 280,
                 bodyStyle: 'padding:20px;',
                 layout: 'form',
                 items: [
@@ -899,6 +873,25 @@
                         listeners: {
                             select: {
                                 fn: me.oncbxGestionClienteSelect,
+                                scope: me
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'combo',
+                        itemId: 'cbxFechaInicio',
+                        lastQuery: '',
+                        fieldLabel: 'Inicio Cartera',
+                        emptyText: '< Seleccione >',
+                        store: stFechaInicio,
+                        displayField: 'DFechaInicio',
+                        valueField: 'FechaInicio',
+                        allowBlank: false,
+                        forceSelection: true,
+                        queryMode: 'local',
+                        listeners: {
+                            select: {
+                                fn: me.oncbxFechaInicioSelect,
                                 scope: me
                             }
                         }
@@ -964,16 +957,36 @@
                     },
                     {
                         xtype: 'combo',
+                        itemId: 'cbxDepartamentoIBK',
+                        lastQuery: '',
+                        fieldLabel: 'Departamento',
+                        emptyText: '< Todos >',
+                        store: stDepartamentoIBK,
+                        displayField: 'Departamento',
+                        valueField: 'Departamento',
+                        allowBlank: true,
+                        //                        forceSelection: true,
+                        multiSelect: true,
+                        queryMode: 'local',
+                        listeners: {
+                            select: {
+                                fn: me.oncbxDepartamentoIBKSelect,
+                                scope: me
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'combo',
                         itemId: 'cbxTramo',
                         lastQuery: '',
                         fieldLabel: 'Tramo',
-                        emptyText: '< Seleccione >',
+                        emptyText: '< Todos >',
                         store: stTramo,
                         displayField: 'Tramo',
                         valueField: 'Tramo',
                         multiSelect: true,
-                        allowBlank: false,
-                        forceSelection: true,
+                        allowBlank: true,
+                        //                        forceSelection: true,
                         queryMode: 'local',
                         listeners: {
                             select: {
@@ -981,6 +994,21 @@
                                 scope: me
                             }
                         }
+                    },
+                    {
+                        xtype: 'combo',
+                        itemId: 'cbxProducto',
+                        lastQuery: '',
+                        fieldLabel: 'Producto',
+                        emptyText: '< Todos >',
+                        store: stProducto,
+                        displayField: 'Producto',
+                        valueField: 'Producto',
+                        multiSelect: true,
+                        allowBlank: true,
+                        hidden: true,
+                        //                        forceSelection: true,
+                        queryMode: 'local'
                     },
                     {
                         xtype: 'combo',
@@ -999,6 +1027,55 @@
                                 scope: me
                             }
                         }
+                    },
+                    {
+                        xtype: 'checkbox',
+                        itemId: 'chkOtrosFiltros',
+                        labelWidth: 100,
+                        hidden: true,
+                        fieldLabel: 'Más opciones',
+                        listeners: {
+                            change: {
+                                fn: me.onchkOtrosFiltrosChange,
+                                scope: me
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'combo',
+                        itemId: 'cbxBuscarEn',
+                        lastQuery: '',
+                        hidden: true,
+                        fieldLabel: 'Buscar en',
+                        emptyText: '< Seleccione >',
+                        //                        store: stCluster,
+                        //                        displayField: 'Cluster',
+                        //                        valueField: 'Cluster',
+                        queryMode: 'local',
+                        listeners: {
+                            select: {
+                                fn: me.oncbxBuscarEnSelect,
+                                scope: me
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'combo',
+                        itemId: 'cbxBuscarPor',
+                        lastQuery: '',
+                        hidden: true,
+                        fieldLabel: 'Buscar por',
+                        emptyText: '< Seleccione >',
+                        //                        store: stCluster,
+                        //                        displayField: 'Cluster',
+                        //                        valueField: 'Cluster',
+                        queryMode: 'local'//,
+                        //                        listeners: {
+                        //                            select: {
+                        //                                fn: me.oncbxBuscarPorSelect,
+                        //                                scope: me
+                        //                            }
+                        //                        }
                     }
                 ],
                 buttons: [
@@ -1065,9 +1142,18 @@
         afterrender: {
             fn: function (component, options) {
                 this.getComponent('pnlFiltro').getComponent('cbxCliente').getStore().load();
+                this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
+                this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
+                this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(false);
+                this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(false);
+                this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').setVisible(false);
+                this.getComponent('pnlFiltro').getComponent('cbxTramo').setVisible(false);
+                this.getComponent('pnlFiltro').getComponent('cbxProducto').setVisible(false);
+                this.getComponent('pnlFiltro').getComponent('cbxCluster').setVisible(false);
                 this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').getStore().load();
-                this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').getStore().load();
                 this.fnEstadoForm('visualizacion');
+                this.getComponent('pnlFiltro').getComponent('cbxBuscarEn').setDisabled(true);
+                this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').setDisabled(true);
                 Ext.MessageBox.hide();
             }
         }
@@ -1141,23 +1227,93 @@
         });
         this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxProducto').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('cbxProducto').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('cbxCluster').setVisible(false);
+
+    },
+
+    onchkOtrosFiltrosChange: function (cb, checked) {
+        //        this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').setDisabled(!checked);
+        this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setDisabled(checked);
+        this.getComponent('pnlFiltro').getComponent('cbxZonal').setDisabled(checked);
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setDisabled(checked);
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').setDisabled(checked);
+        this.getComponent('pnlFiltro').getComponent('cbxCluster').setDisabled(checked);
+        this.getComponent('pnlFiltro').getComponent('cbxBuscarEn').setDisabled(!checked);
+        this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').setDisabled(!checked);
     },
 
     oncbxGestionClienteSelect: function (combo, records, eOpts) {
-        this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getStore().load({
+        if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxCluster').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getStore().load({
+                params: {
+                    gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
+                }
+            });
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxProducto').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
+        } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').setVisible(true);
+            //            this.getComponent('pnlFiltro').getComponent('cbxProducto').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getStore().load({
+                params: {
+                    gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
+                }
+            });
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBk').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
+        }
+    },
+
+    oncbxFechaInicioSelect: function (combo, records, eOpts) {
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').getStore().load({
             params: {
-                gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
+                gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
+                fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue()
             }
         });
-        this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').getStore().load({
+            params: {
+                gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
+                fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue()
+            }
+        });
         this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxProducto').clearValue();
     },
 
     oncbxFechaFinSelect: function (combo, records, eOpts) {
@@ -1188,7 +1344,6 @@
         this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
-        //this.getComponent('pnlSector').setDisabled(true);
     },
 
     oncbxDepartamentoSelect: function (combo, records, eOpts) {
@@ -1211,6 +1366,22 @@
         this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
         //this.getComponent('pnlSector').setDisabled(true);
+    },
+
+    oncbxDepartamentoIBKSelect: function (combo, records, eOpts) {
+        var dpto = [];
+        if (this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').getValue() != null) {
+            dpto = this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').getValue();
+        }
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').getStore().load({
+            params: {
+                gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
+                fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue(),
+                departamento: dpto
+            }
+        });
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxProducto').clearValue();
     },
 
     oncbxTramoSelect: function (combo, records, eOpts) {
@@ -1239,18 +1410,11 @@
     },
 
     oncbxClusterSelect: function (combo, records, eOpts) {
-        //        var datos = [];
-        //        if (this.getComponent('pnlFiltro').getComponent('cbxCluster').getValue() != null) {
-        //            datos = this.getComponent('pnlFiltro').getComponent('cbxCluster').getValue();
-        //        }
-        //        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getStore().load({
-        //            params: {
-        //                gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
-        //                fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-        //                tramo: this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue(),
-        //                clusters: datos
-        //            }
-        //        });
+
+    },
+
+    oncbxBuscarEnSelect: function (combo, records, eOpts) {
+
     },
 
     oncbxClaseGestionSelect: function (combo, records, eOpts) {
@@ -1272,19 +1436,40 @@
     },
 
     onGridMorosoSelectionChange: function (tablepanel, selections, options) {
-        if (selections.length > 0) {
-            this.getComponent('pnlBusqueda').getComponent('grdServicio').getStore().load({
-                params: {
-                    detalleCartera: parseInt(selections[0].get('DetalleCartera'))
-                }
-            });
-            this.getComponent('pnlBusqueda').getComponent('grdDetalleMoroso').getStore().load({
-                params: {
-                    moroso: parseInt(selections[0].get('Moroso'))
-                }
-            });
+        if (this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').getValue().toString() == '1') {
+            if (selections.length > 0) {
+                this.getComponent('pnlBusqueda').getComponent('grdServicio').getStore().load({
+                    params: {
+                        detalleCartera: parseInt(selections[0].get('DetalleCartera')),
+                        gestionCliente: this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').getValue(),
+                        moroso: parseInt(selections[0].get('Moroso')),
+                        cartera: parseInt(selections[0].get('Cartera'))
+                    }
+                });
+                this.getComponent('pnlBusqueda').getComponent('grdDetalleMoroso').getStore().load({
+                    params: {
+                        moroso: parseInt(selections[0].get('Moroso'))
+                    }
+                });
+            }
+            console.log(Ext.encode(this.onBtnBuscarClick));
+        } else if (this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').getValue() == '2') {
+            if (selections.length > 0) {
+                this.getComponent('pnlBusqueda').getComponent('grdServicio').getStore().load({
+                    params: {
+                        gestionCliente: this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').getValue(),
+                        moroso: parseInt(selections[0].get('Moroso')),
+                        cartera: parseInt(selections[0].get('Cartera')),
+                        detalleCartera: 0
+                    }
+                });
+                this.getComponent('pnlBusqueda').getComponent('grdDetalleMoroso').getStore().load({
+                    params: {
+                        moroso: parseInt(selections[0].get('Moroso'))
+                    }
+                });
+            }
         }
-        console.log(Ext.encode(this.onBtnBuscarClick));
     },
 
     onGridDetalleMorosoSelectionChange: function (tablepanel, selections, options) {
@@ -1384,48 +1569,74 @@
     },
 
     onBtnBuscarClick: function (button, e, options) {
-        if (this.fnEsValidoBuscar()) {
-            var dtCluster = [];
-            var dtDepartamento = [];
-            var dtTramo = [];
-            var dtZonal = [];
-            if (this.getComponent('pnlFiltro').getComponent('cbxCluster').getValue() != null) {
-                dtCluster = this.getComponent('pnlFiltro').getComponent('cbxCluster').getValue();
-            }
+        if (this.fnEsValidoComprobar()) {
+            if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+                if (this.fnEsValidoBuscar()) {
+                    this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').setValue(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue());
+                    var dtCluster = [];
+                    var dtDepartamento = [];
+                    var dtTramo = [];
+                    var dtZonal = [];
+                    if (this.getComponent('pnlFiltro').getComponent('cbxCluster').getValue() != null) {
+                        dtCluster = this.getComponent('pnlFiltro').getComponent('cbxCluster').getValue();
+                    }
 
-            if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
-                dtDepartamento = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
-            }
+                    if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
+                        dtDepartamento = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
+                    }
 
-            if (this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue() != null) {
-                dtTramo = this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue();
-            }
+                    if (this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue() != null) {
+                        dtTramo = this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue();
+                    }
 
-            if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
-                dtZonal = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
-            }
+                    if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
+                        dtZonal = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
+                    }
 
-            this.getComponent('pnlBusqueda').getComponent('grdMoroso').getStore().load({
-                params: {
-                    cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
-                    gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
-                    fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-                    zonal: dtZonal,
-                    departamento: dtDepartamento,
-                    tramo: dtTramo,
-                    cluster: dtCluster
+                    this.getComponent('pnlBusqueda').getComponent('grdMoroso').getStore().load({
+                        params: {
+                            cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                            gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                            fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
+                            zonal: dtZonal,
+                            departamento: dtDepartamento,
+                            tramo: dtTramo,
+                            cluster: dtCluster
+                        }
+                    });
+                    this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').getStore().load({
+                        params: {
+                            gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString()
+                        }
+                    });
                 }
-            });
-
-            this.getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
-                cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
-                gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
-                fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-                zonal: dtZonal,
-                departamento: dtDepartamento,
-                tramo: dtTramo,
-                cluster: dtCluster
-            });
+            } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
+                if (this.fnEsValidoBuscarIBK()) {
+                    this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').setValue(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue());
+                    var dtDepartamento = [];
+                    var dtTramo = [];
+                    if (this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').getValue() != null) {
+                        dtDepartamento = this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').getValue();
+                    }
+                    if (this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue() != null) {
+                        dtTramo = this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue();
+                    }
+                    this.getComponent('pnlBusqueda').getComponent('grdMoroso').getStore().load({
+                        params: {
+                            cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                            gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                            fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue(),
+                            departamento: dtDepartamento,
+                            tramo: dtTramo
+                        }
+                    });
+                    this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').getStore().load({
+                        params: {
+                            gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString()
+                        }
+                    });
+                }
+            }
         }
     },
 
@@ -1441,9 +1652,17 @@
         }
         else {
             this.fnLimpiarControles();
-            this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').setValue(this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').store.getAt(0).get('Trabajador'));
+            if (this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').getStore().getCount() ==1) {
+                this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').setValue(this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').store.getAt(0).get('Trabajador'));
+            } 
             this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTipoGestion').setValue(this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTipoGestion').store.getAt(0).get('TipoGestion'));
             this.fnEstadoForm('registro');
+            if (this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTipoGestion').getValue() == 1) {
+                this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('dtpFechaGestion').setValue(new Date());
+                this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('dtpFechaGestion').setDisabled(true);
+            } else {
+                this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('dtpFechaGestion').setDisabled(false);
+            }
         }
     },
 
@@ -1499,7 +1718,6 @@
                         else {
                             Ext.example.msg('Información', 'Actualización realizada con éxito');
                         }
-                        //this.onBtnActualizarClick(null, null, null);
                         this.fnLimpiarControles();
                         var selections = this.getComponent('pnlBusqueda').getComponent('grdDetalleMoroso').getSelectionModel().getSelection();
                         if (selections.length > 0) {
@@ -1539,17 +1757,27 @@
         }
     },
 
-    fnEsValidoBuscar: function () {
+    fnColorearPago: function (val) {
+        if (val > 0) {
+            return '<span style="color:red;">' + val + '%</span>';
+        } else if (val < 0) {
+            return '<span style="color:green;">' + val + '%</span>';
+        }
+        return val;
+    },
+
+    fnEsValidoComprobar: function () {
         if (!this.getComponent('pnlFiltro').getComponent('cbxCliente').isValid()) {
             return false;
         }
         if (!this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').isValid()) {
             return false;
         }
+        return true;
+    },
+
+    fnEsValidoBuscar: function () {
         if (!this.getComponent('pnlFiltro').getComponent('cbxCluster').isValid()) {
-            return false;
-        }
-        if (!this.getComponent('pnlFiltro').getComponent('cbxTramo').isValid()) {
             return false;
         }
         if (!this.getComponent('pnlFiltro').getComponent('cbxDepartamento').isValid()) {
@@ -1559,6 +1787,13 @@
             return false;
         }
         if (!this.getComponent('pnlFiltro').getComponent('cbxFechaFin').isValid()) {
+            return false;
+        }
+        return true;
+    },
+
+    fnEsValidoBuscarIBK: function () {
+        if (!this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').isValid()) {
             return false;
         }
         return true;
@@ -1631,5 +1866,4 @@
             default:
         }
     }
-
 });
