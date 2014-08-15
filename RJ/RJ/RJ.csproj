@@ -1015,6 +1015,9 @@
     <Content Include="Scripts\ExtJs\ext-all-debug.js" />
     <Content Include="Scripts\ExtJs\ext-all.js" />
     <Content Include="Scripts\ExtJs\ext.js" />
+    <Content Include="Scripts\ExtJs\form\field\Trigger.css" />
+    <Content Include="Scripts\ExtJs\form\field\Trigger.js" />
+    <Content Include="Scripts\ExtJs\grid\plugin\BufferedRenderer.js" />
     <Content Include="Scripts\ExtJs\locale\ext-lang-es.js" />
     <Content Include="Scripts\ExtJs\resources\css\ext-all-access-debug.css" />
     <Content Include="Scripts\ExtJs\resources\css\ext-all-access-rtl-debug.css" />
@@ -3300,6 +3303,7 @@
     <Content Include="Scripts\ExtJs\resources\ext-theme-neptune\images\window-header\window-header-default-top-sides.gif" />
     <Content Include="Scripts\ExtJs\resources\ext-theme-neptune\images\window\window-default-corners.gif" />
     <Content Include="Scripts\ExtJs\resources\ext-theme-neptune\images\window\window-default-sides.gif" />
+    <Content Include="Scripts\ExtJs\format.js" />
     <Content Include="Scripts\ExtJs\resources\themes\images\access\boundlist\trigger-arrow.png" />
     <Content Include="Scripts\ExtJs\resources\themes\images\access\box\corners-blue.gif" />
     <Content Include="Scripts\ExtJs\resources\themes\images\access\box\corners.gif" />

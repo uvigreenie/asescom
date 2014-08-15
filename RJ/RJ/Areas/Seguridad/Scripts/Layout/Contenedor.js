@@ -216,7 +216,7 @@ var updateSession = function () {
 
 var task = {
     run: updateSession,
-    interval: 10000
+    interval: 60000
 }
 
 var runner = new Ext.util.TaskRunner();
@@ -249,7 +249,7 @@ Ext.define('SegApp.Layout.Contenedor', {
             fn: function (component, options) {
                 Ext.Ajax.request({
                     url: "../../Seguridad/Autenticacion/ObtenerDatosSession",
-                    timeout: 300000,
+                    timeout: 400000,
                     success: function (response) {
                         var data = Ext.decode(response.responseText);
                         if (data.length == 0) {

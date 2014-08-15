@@ -36,9 +36,9 @@ namespace RJ.Areas.Cobranza.Controllers
                 return Json(lista, JsonRequestBehavior.AllowGet);
             }
 
-            public JsonResult ListarClaseGestion()
+            public JsonResult ListarClaseGestion(short gestionCliente)
             {
-                List<object> lista = GestionCliente.Instancia.ListarClaseGestion();
+                List<object> lista = GestionCliente.Instancia.ListarClaseGestion(gestionCliente);
                 return Json(lista, JsonRequestBehavior.AllowGet);
             }
 

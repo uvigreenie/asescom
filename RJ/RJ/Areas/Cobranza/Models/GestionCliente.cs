@@ -51,11 +51,12 @@ namespace RJ.Areas.Cobranza.Models
                 return lista;
             }
 
-            public List<object> ListarClaseGestion()
+            public List<object> ListarClaseGestion(short gestionCliente)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarClaseGestion");
                 cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
                 DataTable dt = db.ExecuteDataSet(cmd).Tables[0];
 
                 var lista = (from m in dt.AsEnumerable()

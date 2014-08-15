@@ -29,6 +29,14 @@
                 reader: { type: 'json', root: 'data' }
             }
         });
+        var stFechaInicio = Ext.create('Ext.data.Store', {
+            autoLoad: false,
+            proxy: {
+                type: 'ajax',
+                url: '../../Cobranza/Cartera/ListarFechaInicioCartera',
+                reader: { type: 'json', root: 'data' }
+            }
+        });
         var stZonal = Ext.create('Ext.data.Store', {
             autoLoad: false,
             proxy: {
@@ -184,6 +192,25 @@
                 },
                 {
                     xtype: 'combo',
+                    itemId: 'cbxFechaInicio',
+                    lastQuery: '',
+                    fieldLabel: 'Inicio Cartera',
+                    emptyText: '< Seleccione >',
+                    store: stFechaInicio,
+                    displayField: 'DFechaInicio',
+                    valueField: 'FechaInicio',
+                    allowBlank: false,
+                    forceSelection: true,
+                    queryMode: 'local',
+                    listeners: {
+                        select: {
+                            fn: me.oncbxFechaInicioSelect,
+                            scope: me
+                        }
+                    }
+                },
+                {
+                    xtype: 'combo',
                     itemId: 'cbxZonal',
                     lastQuery: '',
                     fieldLabel: 'Zonal',
@@ -214,41 +241,41 @@
                     multiSelect: true,
                     queryMode: 'local'
                 }
-//                {
-//                    xtype: 'datefield',
-//                    itemId: 'dtpFechaInicio',
-//                    format: 'd/m/Y',
-//                    fieldLabel: 'Desde',
-//                    maxValue: new Date(),
-//                    value: new Date(),
-//                    allowBlank: false,
-//                    listeners: {
-//                        select: {
-//                            fn: me.ondtpFechaInicioSelect,
-//                            scope: me
-//                        }
-//                    }
-//                },
-//                {
-//                    xtype: 'datefield',
-//                    itemId: 'dtpFechaFin',
-//                    format: 'd/m/Y',
-//                    fieldLabel: 'Hasta',
-//                    maxValue: new Date(),
-//                    value: new Date(),
-//                    allowBlank: false,
-//                    listeners: {
-//                        select: {
-//                            fn: me.ondtpFechaFinSelect,
-//                            scope: me
-//                        }
-//                    }
-//                },
-//                {
-//                    xtype: 'checkbox',
-//                    itemId: 'chkMejorGestion',
-//                    fieldLabel: 'Mejor gestión'
-//                }
+                //                {
+                //                    xtype: 'datefield',
+                //                    itemId: 'dtpFechaInicio',
+                //                    format: 'd/m/Y',
+                //                    fieldLabel: 'Desde',
+                //                    maxValue: new Date(),
+                //                    value: new Date(),
+                //                    allowBlank: false,
+                //                    listeners: {
+                //                        select: {
+                //                            fn: me.ondtpFechaInicioSelect,
+                //                            scope: me
+                //                        }
+                //                    }
+                //                },
+                //                {
+                //                    xtype: 'datefield',
+                //                    itemId: 'dtpFechaFin',
+                //                    format: 'd/m/Y',
+                //                    fieldLabel: 'Hasta',
+                //                    maxValue: new Date(),
+                //                    value: new Date(),
+                //                    allowBlank: false,
+                //                    listeners: {
+                //                        select: {
+                //                            fn: me.ondtpFechaFinSelect,
+                //                            scope: me
+                //                        }
+                //                    }
+                //                },
+                //                {
+                //                    xtype: 'checkbox',
+                //                    itemId: 'chkMejorGestion',
+                //                    fieldLabel: 'Mejor gestión'
+                //                }
                 ],
                 buttons: [{
                     xtype: 'button',
@@ -285,8 +312,12 @@
     listeners: {
         afterrender: {
             fn: function (component, options) {
-//                this.getComponent('pnlFiltro').getComponent('dtpFechaFin').setDisabled(true);
+                //                this.getComponent('pnlFiltro').getComponent('dtpFechaFin').setDisabled(true);
                 this.getComponent('pnlFiltro').getComponent('cbxCliente').getStore().load();
+                this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
+                this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
+                this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(false);
+                this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(false);
                 this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(true);
                 Ext.MessageBox.hide();
             }
@@ -303,14 +334,45 @@
                 cliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue())
             }
         });
+        this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').clearValue();
     },
 
     oncbxGestionClienteSelect: function (combo, records, eOpts) {
-        this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getStore().load({
-            params: {
-                gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
-            }
-        });
+        if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getStore().load({
+                params: {
+                    gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
+                }
+            });
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getStore().load({
+                params: {
+                    gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
+                }
+            });
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        }
     },
 
     oncbxFechaFinSelect: function (combo, records, eOpts) {
@@ -320,16 +382,20 @@
                 fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue()
             }
         });
+        this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
     },
 
-//    ondtpFechaInicioSelect: function (field, value, eOpts) {
-//        this.getComponent('pnlFiltro').getComponent('dtpFechaFin').setDisabled(false);
-//        this.getComponent('pnlFiltro').getComponent('dtpFechaFin').setMinValue(this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue())
-//    },
-
-//    ondtpFechaFinSelect: function (field, value, eOpts) {
-//        this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').setMaxValue(this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue())
-//    },
+    oncbxFechaInicioSelect: function (combo, records, eOpts) {
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getStore().load({
+            params: {
+                gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
+                fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue()
+            }
+        });
+        this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+    },
 
     oncbxZonalSelect: function (combo, records, eOpts) {
         var datos = [];
@@ -343,6 +409,7 @@
                 zonales: datos
             }
         });
+        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
     },
 
     onBtnCancelarClick: function (button, e, options) {
@@ -350,61 +417,85 @@
     },
 
     onBtnBuscarClick: function (button, e, options) {
-        if (this.fnEsValidoBuscar()) {
-            var dtZonal = [];
-            var dtDepartamento = [];
-            if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
-                dtZonal = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
-            }
+        if (this.fnEsValidoComprobar()) {
+            if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+                if (this.fnEsValidoBuscar()) {
+                    var dtZonal = [];
+                    var dtDepartamento = [];
+                    if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
+                        dtZonal = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
+                    }
 
-            if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
-                dtDepartamento = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
-            }
-            this.getComponent('grdListadoMoroso').getStore().load({
-                params: {
-                    cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
-                    gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
-                    fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-                    zonal: dtZonal,
-                    departamento: dtDepartamento
-//                    fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
-//                    fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue()
-//                    mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue()
+                    if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
+                        dtDepartamento = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
+                    }
+                    this.getComponent('grdListadoMoroso').getStore().load({
+                        params: {
+                            cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                            gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                            fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
+                            zonal: dtZonal,
+                            departamento: dtDepartamento
+                        }
+                    });
+                    this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
+                        cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                        gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                        fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
+                        zonal: dtZonal,
+                        departamento: dtDepartamento//,
+                    });
+                    this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(false);
                 }
-            });
-            this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
-                cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
-                gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
-                fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-                zonal: dtZonal,
-                departamento: dtDepartamento//,
-//                fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
-//                fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue(),
-//                mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue()
-            });
-            this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(false);
+            } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
+                if (this.fnEsValidoBuscarIBK()) {
+                    var dtDepartamento = [];
+                    if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
+                        dtDepartamento = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
+                    }
+                    this.getComponent('grdListadoMoroso').getStore().load({
+                        params: {
+                            cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                            gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                            fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue(),
+                            departamento: dtDepartamento
+                        }
+                    });
+                    this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
+                        cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                        gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                        fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue(),
+                        departamento: dtDepartamento//,
+                    });
+                    this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(false);
+                }
+            }
         }
     },
 
-    fnEsValidoBuscar: function () {
+    fnEsValidoComprobar: function () {
         if (!this.getComponent('pnlFiltro').getComponent('cbxCliente').isValid()) {
             return false;
         }
         if (!this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').isValid()) {
             return false;
         }
+        return true;
+    },
+
+    fnEsValidoBuscar: function () {
         if (!this.getComponent('pnlFiltro').getComponent('cbxFechaFin').isValid()) {
             return false;
         }
         if (!this.getComponent('pnlFiltro').getComponent('cbxZonal').isValid()) {
             return false;
         }
-//        if (!this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').isValid()) {
-//            return false;
-//        }
-//        if (!this.getComponent('pnlFiltro').getComponent('dtpFechaFin').isValid()) {
-//            return false;
-//        }
+        return true;
+    },
+    fnEsValidoBuscarIBK: function () {
+        if (!this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').isValid()) {
+            return false;
+        }
         return true;
     }
 });
