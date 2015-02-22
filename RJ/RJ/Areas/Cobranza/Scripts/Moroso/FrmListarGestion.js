@@ -280,6 +280,17 @@
                     xtype: 'checkbox',
                     itemId: 'chkMejorGestion',
                     fieldLabel: 'Mejor gestión'
+                },
+                {
+                    xtype: 'checkbox',
+                    itemId: 'chkPromesas',
+                    fieldLabel: 'Sólo Promesas',
+                    listeners: {
+                        change: {
+                            fn: me.onchkPromesasChange,
+                            scope: me
+                        }
+                    }
                 }
                 ],
                 buttons: [{
@@ -325,8 +336,9 @@
                 this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(false);
                 this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(false);
                 this.getComponent('pnlFiltro').getComponent('chkMejorGestion').setVisible(false);
+                this.getComponent('pnlFiltro').getComponent('chkPromesas').setVisible(false);
                 this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(true);
-//                component.getComponent('grdListadoGestion').getStore().load();
+                //                component.getComponent('grdListadoGestion').getStore().load();
                 Ext.MessageBox.hide();
             }
         }
@@ -334,6 +346,18 @@
 
     onBtnActualizarClick: function (button, e, options) {
         this.onBtnBuscarClick(null, null, null);
+    },
+
+    onchkPromesasChange: function (cb, checked) {
+        //        this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').setDisabled(!checked);
+        //        this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setDisabled(checked);
+        //        this.getComponent('pnlFiltro').getComponent('cbxZonal').setDisabled(checked);
+        //        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setDisabled(checked);
+        //        this.getComponent('pnlFiltro').getComponent('cbxTramo').setDisabled(checked);
+        //        this.getComponent('pnlFiltro').getComponent('cbxCluster').setDisabled(checked);
+        this.getComponent('pnlFiltro').getComponent('chkMejorGestion').setDisabled(checked);
+        this.getComponent('pnlFiltro').getComponent('chkMejorGestion').setValue(false);
+        //        this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').setDisabled(!checked);
     },
 
     oncbxClienteSelect: function (combo, records, eOpts) {
@@ -352,15 +376,17 @@
         this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').clearValue();
         this.getComponent('pnlFiltro').getComponent('chkMejorGestion').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('chkPromesas').setVisible(false);
     },
 
     oncbxGestionClienteSelect: function (combo, records, eOpts) {
-        if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+        if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 4 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 6) {
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
             this.getComponent('pnlFiltro').getComponent('chkMejorGestion').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('chkPromesas').setVisible(false);
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getStore().load({
                 params: {
                     gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
@@ -369,12 +395,13 @@
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
-        } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
+        } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 5) {
             this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
             this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(false);
             this.getComponent('pnlFiltro').getComponent('chkMejorGestion').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('chkPromesas').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getStore().load({
                 params: {
                     gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
@@ -383,6 +410,17 @@
             this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 7 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 8) {
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('chkMejorGestion').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('chkPromesas').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
         }
     },
 
@@ -438,7 +476,7 @@
 
     onBtnBuscarClick: function (button, e, options) {
         if (this.fnEsValidoComprobar()) {
-            if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+            if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 4 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 6) {
                 if (this.fnEsValidoBuscar()) {
                     var dtZonal = [];
                     var dtDepartamento = [];
@@ -449,18 +487,22 @@
                     if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
                         dtDepartamento = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
                     }
-                    this.getComponent('grdListadoGestion').getStore().load({
-                        params: {
-                            cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
-                            gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
-                            fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-                            zonal: dtZonal,
-                            departamento: dtDepartamento,
-                            fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
-                            fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue(),
-                            mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue()
-                        }
-                    });
+                    if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+                        this.getComponent('grdListadoGestion').getStore().load({
+                            params: {
+                                cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                                gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                                fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
+                                zonal: dtZonal,
+                                departamento: dtDepartamento,
+                                fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
+                                fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue(),
+                                mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue(),
+                                promesa: this.getComponent('pnlFiltro').getComponent('chkPromesas').getValue()
+                            }
+                        });
+                    } else { Ext.example.msg('Información', 'Haga click en exportar para descargar el listado de gestiones.'); }
+
                     this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
                         cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
                         gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
@@ -469,27 +511,30 @@
                         departamento: dtDepartamento,
                         fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
                         fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue(),
-                        mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue()
+                        mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue(),
+                        promesa: this.getComponent('pnlFiltro').getComponent('chkPromesas').getValue()
                     });
                     this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(false);
                 }
-            } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
+            } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 5) {
                 if (this.fnEsValidoBuscarIBK()) {
                     var dtDepartamento = [];
                     if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
                         dtDepartamento = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
                     }
-                    this.getComponent('grdListadoGestion').getStore().load({
-                        params: {
-                            cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
-                            gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
-                            fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue(),
-                            departamento: dtDepartamento,
-                            fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
-                            fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue(),
-                            mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue()
-                        }
-                    });
+//                    this.getComponent('grdListadoGestion').getStore().load({
+//                        params: {
+//                            cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+//                            gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+//                            fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue(),
+//                            departamento: dtDepartamento,
+//                            fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
+//                            fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue(),
+//                            mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue(),
+//                            promesa: this.getComponent('pnlFiltro').getComponent('chkPromesas').getValue()
+//                        }
+                    //                    });
+                    Ext.example.msg('Información', 'Haga click en Exportar para descargar el listado de gestiones.');
                     this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
                         cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
                         gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
@@ -497,14 +542,29 @@
                         departamento: dtDepartamento,
                         fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
                         fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue(),
-                        mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue()
+                        mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue(),
+                        promesa: this.getComponent('pnlFiltro').getComponent('chkPromesas').getValue()
                     });
                     this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(false);
                 }
+            } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 7 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 8)
+            {
+                Ext.example.msg('Información', 'Haga click en Exportar para descargar el listado de gestiones.');
+                this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
+                    cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                    gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                    fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue(),
+//                    departamento: dtDepartamento,
+                    fechaDesde: this.getComponent('pnlFiltro').getComponent('dtpFechaInicio').getValue(),
+                    fechaHasta: this.getComponent('pnlFiltro').getComponent('dtpFechaFin').getValue(),
+                    mejorGestion: this.getComponent('pnlFiltro').getComponent('chkMejorGestion').getValue(),
+                    promesa: this.getComponent('pnlFiltro').getComponent('chkPromesas').getValue()
+                });
+                this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(false);
             }
         }
     },
-        
+
     fnEsValidoComprobar: function () {
         if (!this.getComponent('pnlFiltro').getComponent('cbxCliente').isValid()) {
             return false;

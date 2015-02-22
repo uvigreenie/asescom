@@ -216,7 +216,7 @@ var updateSession = function () {
 
 var task = {
     run: updateSession,
-    interval: 60000
+    interval: 600000
 }
 
 var runner = new Ext.util.TaskRunner();

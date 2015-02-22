@@ -21,7 +21,7 @@ Ext.define('Ext.ux.form.SearchField', {
         });
 
         // We're going to use filtering
-        me.store.remoteFilter = true;
+        me.store.remoteFilter = false;
 
         // Set up the proxy to encode the filter in the simplest way as a name/value pair
 

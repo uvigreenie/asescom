@@ -115,6 +115,16 @@ namespace RJ.Areas.Cobranza.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
+            public DataTable ListarProductoxZonalBBVA(int gestionCliente, string fechaInicio, string zonales)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarProductoxZonalBBVA");
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaInicio", DbType.String, fechaInicio);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonales);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
             public DataTable ListarTramoxDptoIBK(int gestionCliente, string fechaInicio, string departamento)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
@@ -122,6 +132,17 @@ namespace RJ.Areas.Cobranza.Models
                 db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int32, gestionCliente);
                 db.AddInParameter(cmd, "@prmdatFechaInicio", DbType.String, fechaInicio);
                 db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarTramoxProductoBBVA(int gestionCliente, string fechaInicio, string zonales, string producto)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarTramoxProductoBBVA");
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaInicio", DbType.String, fechaInicio);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonales);
+                db.AddInParameter(cmd, "@prmstrProducto", DbType.String, producto);
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
@@ -221,11 +242,23 @@ namespace RJ.Areas.Cobranza.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
+            public DataTable ListarGestionesBBVA(string cliente, short gestionCliente, DateTime fechaDesde, DateTime fechaHasta)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarGestionesBBVA");
+                cmd.CommandTimeout = 30;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaDesde", DbType.DateTime, fechaDesde);
+                db.AddInParameter(cmd, "@prmdatFechaHasta", DbType.DateTime, fechaHasta);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
             public DataTable ListarGestionesIBK(string cliente, short gestionCliente, string fechaInicio, string departamento, DateTime fechaDesde, DateTime fechaHasta)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarGestionesIBK");
-                cmd.CommandTimeout = 180;
+                cmd.CommandTimeout = 300;
                 db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
                 db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
                 db.AddInParameter(cmd, "@prmdatFechaInicio", DbType.String, fechaInicio);
@@ -239,6 +272,46 @@ namespace RJ.Areas.Cobranza.Models
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarGestionesGridIBK");
+                cmd.CommandTimeout = 30;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaInicio", DbType.String, fechaInicio);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                db.AddInParameter(cmd, "@prmdatFechaDesde", DbType.DateTime, fechaDesde);
+                db.AddInParameter(cmd, "@prmdatFechaHasta", DbType.DateTime, fechaHasta);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarPromesasBBVA(string cliente, short gestionCliente, DateTime fechaDesde, DateTime fechaHasta)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarPromesasBBVA");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaDesde", DbType.DateTime, fechaDesde);
+                db.AddInParameter(cmd, "@prmdatFechaHasta", DbType.DateTime, fechaHasta);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarPromesasIBK(string cliente, short gestionCliente, string fechaInicio, string departamento, DateTime fechaDesde, DateTime fechaHasta)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarPromesasIBK");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaInicio", DbType.String, fechaInicio);
+                db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                db.AddInParameter(cmd, "@prmdatFechaDesde", DbType.DateTime, fechaDesde);
+                db.AddInParameter(cmd, "@prmdatFechaHasta", DbType.DateTime, fechaHasta);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarPromesasGridIBK(string cliente, short gestionCliente, string fechaInicio, string departamento, DateTime fechaDesde, DateTime fechaHasta)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarPromesasGridIBK");
                 cmd.CommandTimeout = 180;
                 db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
                 db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
@@ -279,6 +352,18 @@ namespace RJ.Areas.Cobranza.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
+            public DataTable ListarMejorGestionBBVA(string cliente, short gestionCliente, DateTime fechaDesde, DateTime fechaHasta)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarMejorGestionBBVA");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaDesde", DbType.DateTime, fechaDesde);
+                db.AddInParameter(cmd, "@prmdatFechaHasta", DbType.DateTime, fechaHasta);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
             public DataTable ListarMejorGestionIBK(string cliente, short gestionCliente, string fechaInicio, string departamento, DateTime fechaDesde, DateTime fechaHasta)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
@@ -297,7 +382,7 @@ namespace RJ.Areas.Cobranza.Models
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarMejorGestionGridIBK");
-                cmd.CommandTimeout = 180;
+                cmd.CommandTimeout = 30;
                 db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
                 db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
                 db.AddInParameter(cmd, "@prmdatFechaInicio", DbType.String, fechaInicio);
@@ -336,16 +421,17 @@ namespace RJ.Areas.Cobranza.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
-            public DataTable ListarMorosos(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento)
+            public DataTable ListarMorosos(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento, string tramo)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspCOB_ExportarMorosos");
-                cmd.CommandTimeout = 180;
+                cmd.CommandTimeout = 300;
                 db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
                 db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
                 db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
                 db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
                 db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                db.AddInParameter(cmd, "@prmstrTramo", DbType.String, tramo);
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
@@ -361,7 +447,19 @@ namespace RJ.Areas.Cobranza.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
-            public DataTable ListarMorososGrid(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento)
+            public DataTable ListarMorososBBVA(string cliente, short gestionCliente, string fechaInicio, string zonal)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ExportarMorososBBVA");
+                cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaInicio", DbType.String, fechaInicio);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarMorososGrid(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento, string tramo)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspCOB_ExportarMorososGrid");
@@ -371,6 +469,7 @@ namespace RJ.Areas.Cobranza.Models
                 db.AddInParameter(cmd, "@prmdatFechaFin", DbType.String, fechaFin);
                 db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
                 db.AddInParameter(cmd, "@prmstrDepartamento", DbType.String, departamento);
+                db.AddInParameter(cmd, "@prmstrTramo", DbType.String, tramo);
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
@@ -428,11 +527,116 @@ namespace RJ.Areas.Cobranza.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
+            public DataTable ListarMorososEnCarteraBBVA(string cliente, short gestionCliente, string fechaInicio, string zonal, string tramo, string producto)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaMorososEnCarteraBBVA");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmdatFechaInicio", DbType.String, fechaInicio);
+                db.AddInParameter(cmd, "@prmstrZonal", DbType.String, zonal);
+                db.AddInParameter(cmd, "@prmstrTramo", DbType.String, tramo);
+                db.AddInParameter(cmd, "@prmstrProducto", DbType.String, producto);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarAsignadosBBVA(string login)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaAsignadosBBVA");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrLogin", DbType.String, login);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarMorososEnCarteraOtrosFiltros(string cliente, short gestionCliente, int idParametro, string parametro, double valor1, double valor2)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaMorososEnCartera_OF");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmintidParametro", DbType.String, idParametro);
+                db.AddInParameter(cmd, "@prmintValor1", DbType.String, valor1);
+                db.AddInParameter(cmd, "@prmintValor2", DbType.String, valor2);
+                db.AddInParameter(cmd, "@prmstrParametro", DbType.String, parametro);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarMorososEnCarteraIBKOtrosFiltros(string cliente, short gestionCliente, int idParametro, string parametro)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaMorososEnCarteraIBK_OF");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmintidParametro", DbType.String, idParametro);
+                db.AddInParameter(cmd, "@prmstrParametro", DbType.String, parametro);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarMorososEnCarteraBBVAOtrosFiltros(string cliente, short gestionCliente, int idParametro, string parametro)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaMorososEnCarteraBBVA_OF");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
+                db.AddInParameter(cmd, "@prmintidParametro", DbType.String, idParametro);
+                db.AddInParameter(cmd, "@prmstrParametro", DbType.String, parametro);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
             public DataTable ListarServicioV2(int detalleCartera) {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaServiciosxDetalleCartera");
                 cmd.CommandTimeout = 180;
                 db.AddInParameter(cmd, "@prmintDetalleCartera", DbType.Int32, detalleCartera);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarServicioFija(int detalleCarteraFija)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaServicioFijaxDetalleCarteraFija");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmintDetalleCarteraFija", DbType.Int32, detalleCarteraFija);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarServicioMovil(int detalleCarteraMovil)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaServicioMovilxDetalleCarteraMovil");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmintDetalleCarteraMovil", DbType.Int32, detalleCarteraMovil);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarPagoXServicio(int idservicio)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarPagoXServicio");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmintIDServicio", DbType.Int32, idservicio);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }    
+
+            public DataTable ListarPagoXProducto(int detallecarterabanco)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarPagoXProducto");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmintDetalleCarteraBanco", DbType.Int32, detallecarterabanco);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarCampañaXProducto(int detallecarterabanco)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarCampañaXProducto");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmintDetalleCarteraBanco", DbType.Int32, detallecarterabanco);
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
@@ -442,6 +646,36 @@ namespace RJ.Areas.Cobranza.Models
                 DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarProductosxMoroso");
                 cmd.CommandTimeout = 180;
                 db.AddInParameter(cmd, "@prmintCartera", DbType.Int32, cartera);
+                db.AddInParameter(cmd, "@prmintMoroso", DbType.Int32, moroso);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarRazonNoPago(short gestionCliente)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarRazonNoPago");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int32, gestionCliente);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarProductosRecovery(int cartera, int moroso)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarProductosxMorosoRecovery");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmintCartera", DbType.Int32, cartera);
+                db.AddInParameter(cmd, "@prmintMoroso", DbType.Int32, moroso);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
+            public DataTable ListarProductosBBVA(int gestionCliente, int cartera, int moroso)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarProductosxMorosoBBVA");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmintCartera", DbType.Int32, cartera);
+                db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int32, gestionCliente);
                 db.AddInParameter(cmd, "@prmintMoroso", DbType.Int32, moroso);
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
@@ -565,8 +799,10 @@ namespace RJ.Areas.Cobranza.Models
                                  DTrabajador = m["DTrabajador"].ToString(),
                                  DescDClaseGestion = m["DescDClaseGestion"].ToString(),
                                  FechaGestion = Convert.ToDateTime(m["FechaGestion"]),
+                                 HoraGestion = Convert.ToDateTime(m["HoraGestion"]).ToString("HH:mm"),
                                  FechaPromesa = (m["FechaPromesa"] == DBNull.Value ? new DateTime?() : Convert.ToDateTime(m["FechaPromesa"])),
                                  Monto = Convert.ToDecimal(m["Monto"]),
+                                 RazonNoPago = Convert.ToDecimal(m["RazonNoPago"]),
                                  Observacion = m["Observacion"].ToString()
                              }).ToList<object>();
                 return lista;
@@ -576,7 +812,7 @@ namespace RJ.Areas.Cobranza.Models
 
         #region Insert
 
-            public int InsUpdGestionMoroso(int? gestionMoroso, int cartera, int detalleMoroso, byte tipoGestion, byte claseGestion, short dclaseGestion, DateTime fechaGestion, DateTime? fechaPromesa, decimal monto, string observacion, short trabajador,string login)
+            public int InsUpdGestionMoroso(int? gestionMoroso, int cartera, int detalleMoroso, byte tipoGestion, byte claseGestion, short dclaseGestion, DateTime fechaGestion, string horaGestion, DateTime? fechaPromesa, decimal monto, string observacion, short trabajador,string login, string razonNoPago)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspCOB_InsUpdGestionMoroso");
@@ -589,9 +825,11 @@ namespace RJ.Areas.Cobranza.Models
                 db.AddInParameter(cmd, "@prmintDClaseGestion", DbType.Int16, dclaseGestion);
                 db.AddInParameter(cmd, "@prmintTrabajador", DbType.Int16, trabajador);
                 db.AddInParameter(cmd, "@prmdatFechaGestion", DbType.DateTime, fechaGestion);
+                db.AddInParameter(cmd, "@prmstrHoraGestion", DbType.String, horaGestion);
                 db.AddInParameter(cmd, "@prmdatFechaPromesa", DbType.DateTime, fechaPromesa);
                 db.AddInParameter(cmd, "@prmdecMonto", DbType.Decimal, monto);
                 db.AddInParameter(cmd, "@prmstrObservacion", DbType.String, observacion);
+                db.AddInParameter(cmd, "@prmstrRazonNoPago", DbType.String, razonNoPago);
                 db.AddInParameter(cmd, "@prmstrLogin", DbType.String, login);
 
                 return Convert.ToInt32(db.ExecuteScalar(cmd));
@@ -658,6 +896,17 @@ namespace RJ.Areas.Cobranza.Models
                 db.ExecuteNonQuery(cmd);
             }
 
+            public void GuardarSectores(StringBuilder xml, string login)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_GuardarSectores");
+                cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmstrXML", System.Data.DbType.String, xml.ToString());
+                db.AddInParameter(cmd, "@prmstrLogin", System.Data.DbType.String, login);
+
+                db.ExecuteNonQuery(cmd);
+            }
+
             public void GuardarCartera(int gestionCliente, StringBuilder xml, string login)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
@@ -682,10 +931,70 @@ namespace RJ.Areas.Cobranza.Models
                 db.ExecuteNonQuery(cmd);
             }
 
+            public void GuardarDetalleCarteraMovil(int gestionCliente, StringBuilder xml, string login)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_InsertarDetalleCarteraMovil");
+                cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmintGestionCliente", System.Data.DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmstrXML", System.Data.DbType.String, xml.ToString());
+                db.AddInParameter(cmd, "@prmstrLogin", System.Data.DbType.String, login);
+
+                db.ExecuteNonQuery(cmd);
+            }
+
             public void GuardarCarteraIBK(int gestionCliente, StringBuilder xml, string login)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspCOB_InsertarCarteraIBK");
+                cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmintGestionCliente", System.Data.DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmstrXML", System.Data.DbType.String, xml.ToString());
+                db.AddInParameter(cmd, "@prmstrLogin", System.Data.DbType.String, login);
+
+                db.ExecuteNonQuery(cmd);
+            }
+
+            public void GuardarCarteraFija(int gestionCliente, StringBuilder xml, string login)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_InsertarCarteraFija");
+                cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmintGestionCliente", System.Data.DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmstrXML", System.Data.DbType.String, xml.ToString());
+                db.AddInParameter(cmd, "@prmstrLogin", System.Data.DbType.String, login);
+
+                db.ExecuteNonQuery(cmd);
+            }
+
+            public void GuardarCarteraBBVA(int gestionCliente, StringBuilder xml, string login)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_InsertarCarteraBBVA");
+                cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmintGestionCliente", System.Data.DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmstrXML", System.Data.DbType.String, xml.ToString());
+                db.AddInParameter(cmd, "@prmstrLogin", System.Data.DbType.String, login);
+
+                db.ExecuteNonQuery(cmd);
+            }
+
+            public void GuardarCarteraMovil(int gestionCliente, StringBuilder xml, string login)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_InsertarCarteraMovil");
+                cmd.CommandTimeout = 300;
+                db.AddInParameter(cmd, "@prmintGestionCliente", System.Data.DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmstrXML", System.Data.DbType.String, xml.ToString());
+                db.AddInParameter(cmd, "@prmstrLogin", System.Data.DbType.String, login);
+
+                db.ExecuteNonQuery(cmd);
+            }
+
+            public void ActualizarCarteraIBK(int gestionCliente, StringBuilder xml, string login)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ActualizarCarteraIBK");
                 cmd.CommandTimeout = 300;
                 db.AddInParameter(cmd, "@prmintGestionCliente", System.Data.DbType.Int32, gestionCliente);
                 db.AddInParameter(cmd, "@prmstrXML", System.Data.DbType.String, xml.ToString());

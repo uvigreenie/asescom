@@ -87,6 +87,23 @@ namespace RJ.Areas.Cobranza.Models
                 return lista;
             }
 
+            public List<object> ListarDClaseGestionBBVA()
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarDClaseGestionBBVA");
+                cmd.CommandTimeout = 180;
+                //db.AddInParameter(cmd, "@prmintClaseGestion", DbType.Byte, claseGestion);
+                DataTable dt = db.ExecuteDataSet(cmd).Tables[0];
+
+                var lista = (from m in dt.AsEnumerable()
+                             select new
+                             {
+                                 DClaseGestion = Convert.ToByte(m["DClaseGestion"]),
+                                 Descripcion = m["Descripcion"].ToString()
+                             }).ToList<object>();
+                return lista;
+            }
+
             public CobranzaDs.GestionMorosoDataTable ObtenerGestionMoroso(int gestionCliente, string tramo, string cluster, string departamento, string provincia, string distrito, int tipoEstado)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());

@@ -13,7 +13,8 @@
              ],
             data: { 'items': [
                     { 'Tipo': '1', "Descripcion": "Cabecera Cartera" },
-                    { 'Tipo': '2', "Descripcion": "Detalle Cartera" }
+                    { 'Tipo': '2', "Descripcion": "Detalle Cartera" },
+                    { 'Tipo': '3', "Descripcion": "Actualizar Cartera" }
                     ]
             },
             proxy: {

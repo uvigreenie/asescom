@@ -39,6 +39,19 @@ namespace RJ.Areas.Cobranza.Models
                 return 0;
             }
 
+            public int CargarPagosIbk(int gestionCliente, StringBuilder xml, string login)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_InsertarPagosIbk");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmintGestionCliente", System.Data.DbType.Int32, gestionCliente);
+                db.AddInParameter(cmd, "@prmstrXML", System.Data.DbType.String, xml.ToString());
+                db.AddInParameter(cmd, "@prmstrLogin", System.Data.DbType.String, login);
+                db.ExecuteNonQuery(cmd);
+
+                return 0;
+            }
+
         #endregion
     }
 }

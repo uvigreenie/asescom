@@ -38,8 +38,12 @@
     background-image: url(images/page_excel.png) !important;
 }
 
+.icon-import {
+    background-image: url(images/page_save.png) !important;
+}
+
 .icon-exit {
-    background-image: url(images/door_in.png) !important;
+    background-image: url(images/door_out.png) !important;
 }
 
 .icon-add {
@@ -56,6 +60,10 @@
 
 .icon-buscar {
     background-image: url(images/zoom.png) !important;
+}
+
+.icon-explorar {
+    background-image: url(images/zoom_in.png) !important;
 }
 
 .icon-tumi {
