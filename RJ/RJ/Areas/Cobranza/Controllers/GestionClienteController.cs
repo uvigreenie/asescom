@@ -42,10 +42,19 @@ namespace RJ.Areas.Cobranza.Controllers
                 return Json(lista, JsonRequestBehavior.AllowGet);
             }
 
-            public JsonResult ListarDClaseGestion(short claseGestion)
+            public JsonResult ListarDClaseGestion(short claseGestion, short gestionCliente)
             {
-                List<object> lista = GestionCliente.Instancia.ListarDClaseGestion(claseGestion);
-                return Json(lista, JsonRequestBehavior.AllowGet);
+                JsonResult respuestaJson = new JsonResult();
+                if (gestionCliente == 7)
+                {
+                    List<object> lista = GestionCliente.Instancia.ListarDClaseGestionBBVA();
+                    respuestaJson = Json(lista, JsonRequestBehavior.AllowGet);
+                }
+                else { 
+                    List<object> lista = GestionCliente.Instancia.ListarDClaseGestion(claseGestion);
+                    respuestaJson = Json(lista, JsonRequestBehavior.AllowGet);
+                }
+                return respuestaJson;
             }
 
         #endregion

@@ -61,6 +61,16 @@
                 reader: { type: 'json', root: 'data' }
             }
         });
+
+        var stTramo = Ext.create('Ext.data.Store', {
+            autoLoad: false,
+            proxy: {
+                type: 'ajax',
+                url: '../../Cobranza/Cartera/ListarTramoxDepartamento',
+                reader: { type: 'json', root: 'data' }
+            }
+        });
+
         var stListadoMoroso = Ext.create('Ext.data.Store', {
             autoLoad: false,
             model: Ext.define('ListadoMoroso', { extend: 'Ext.data.Model' }),
@@ -234,12 +244,40 @@
                     itemId: 'cbxDepartamento',
                     lastQuery: '',
                     fieldLabel: 'Departamento',
-                    emptyText: '< Todos >',
+                    emptyText: '< Seleccione >',
                     store: stDepartamento,
                     displayField: 'Departamento',
                     valueField: 'Departamento',
+                    allowBlank: false,
+                    forceSelection: true,
                     multiSelect: true,
-                    queryMode: 'local'
+                    queryMode: 'local',
+                    listeners: {
+                        select: {
+                            fn: me.oncbxDepartamentoSelect,
+                            scope: me
+                        }
+                    }
+                },
+                {
+                    xtype: 'combo',
+                    itemId: 'cbxTramo',
+                    lastQuery: '',
+                    fieldLabel: 'Tramo',
+                    emptyText: '< Seleccione >',
+                    store: stTramo,
+                    displayField: 'Tramo',
+                    valueField: 'Tramo',
+                    //                    multiSelect: true,
+                    allowBlank: false,
+                    forceSelection: true,
+                    queryMode: 'local'//,
+                    //                    listeners: {
+                    //                        select: {
+                    //                            fn: me.oncbxTramoSelect,
+                    //                            scope: me
+                    //                        }
+                    //                    }
                 }
                 //                {
                 //                    xtype: 'datefield',
@@ -280,7 +318,7 @@
                 buttons: [{
                     xtype: 'button',
                     itemId: 'btnBuscar',
-                    text: 'Buscar',
+                    text: 'Fijar parámetros',
                     textAlign: 'right',
                     iconCls: 'icon-save',
                     handler: me.onBtnBuscarClick,
@@ -318,6 +356,7 @@
                 this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
                 this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(false);
                 this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(false);
+                this.getComponent('pnlFiltro').getComponent('cbxTramo').setVisible(false);
                 this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(true);
                 Ext.MessageBox.hide();
             }
@@ -337,18 +376,21 @@
         this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
         this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
         this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(false);
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').setVisible(false);
         this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(false);
         this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').clearValue();
     },
 
     oncbxGestionClienteSelect: function (combo, records, eOpts) {
-        if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+        if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 4 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 6) {
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getStore().load({
@@ -358,12 +400,14 @@
             });
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
-        } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
+        } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 5) {
             this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
             this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').setVisible(false);
             this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getStore().load({
                 params: {
                     gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
@@ -371,6 +415,22 @@
             });
             this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        } else {
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getStore().load({
+                params: {
+                    gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
+                }
+            });
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
         }
     },
@@ -383,33 +443,73 @@
             }
         });
         this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
     },
 
     oncbxFechaInicioSelect: function (combo, records, eOpts) {
-        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getStore().load({
-            params: {
-                gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
-                fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue()
-            }
-        });
-        this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
-        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 5) {
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getStore().load({
+                params: {
+                    gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
+                    fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue()
+                }
+            });
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 7 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 8) {
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').getStore().load({
+                params: {
+                    gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
+                    fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue()
+                }
+            });
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        }
+
     },
 
     oncbxZonalSelect: function (combo, records, eOpts) {
-        var datos = [];
-        if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
-            datos = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
+        if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() != 7 && this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() != 8) {
+            var datos = [];
+            if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
+                datos = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
+            }
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getStore().load({
+                params: {
+                    gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
+                    fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
+                    zonales: datos
+                }
+            });
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
         }
-        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getStore().load({
+    },
+
+    oncbxDepartamentoSelect: function (combo, records, eOpts) {
+        var zon = [];
+        var dpto = [];
+        if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
+            zon = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
+        }
+        if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
+            dpto = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
+        }
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').getStore().load({
             params: {
                 gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()),
                 fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-                zonales: datos
+                zonales: zon,
+                departamento: dpto
             }
         });
-        this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
+        //        this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
+        //this.getComponent('pnlSector').setDisabled(true);
     },
 
     onBtnCancelarClick: function (button, e, options) {
@@ -418,10 +518,11 @@
 
     onBtnBuscarClick: function (button, e, options) {
         if (this.fnEsValidoComprobar()) {
-            if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+            if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 4 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 6) {
                 if (this.fnEsValidoBuscar()) {
                     var dtZonal = [];
                     var dtDepartamento = [];
+                    var dtTramo = [];
                     if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
                         dtZonal = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
                     }
@@ -429,43 +530,67 @@
                     if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
                         dtDepartamento = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
                     }
-                    this.getComponent('grdListadoMoroso').getStore().load({
-                        params: {
-                            cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
-                            gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
-                            fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-                            zonal: dtZonal,
-                            departamento: dtDepartamento
-                        }
-                    });
+
+                    if (this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue() != null) {
+                        dtTramo = this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue();
+                    }
+                    if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+                        this.getComponent('grdListadoMoroso').getStore().load({
+                            params: {
+                                cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                                gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                                fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
+                                zonal: dtZonal,
+                                tramo: dtTramo,
+                                departamento: dtDepartamento
+                            }
+                        });
+                    } else { Ext.example.msg('Información', 'Haga click en exportar para descargar el listado de morosos.'); }
                     this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
                         cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
                         gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
                         fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
                         zonal: dtZonal,
+                        tramo: dtTramo,
                         departamento: dtDepartamento//,
                     });
                     this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(false);
                 }
-            } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
+            } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 5) {
                 if (this.fnEsValidoBuscarIBK()) {
                     var dtDepartamento = [];
                     if (this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue() != null) {
                         dtDepartamento = this.getComponent('pnlFiltro').getComponent('cbxDepartamento').getValue();
                     }
-                    this.getComponent('grdListadoMoroso').getStore().load({
-                        params: {
-                            cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
-                            gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
-                            fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue(),
-                            departamento: dtDepartamento
-                        }
-                    });
+                    if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
+                        this.getComponent('grdListadoMoroso').getStore().load({
+                            params: {
+                                cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                                gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                                fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue(),
+                                departamento: dtDepartamento
+                            }
+                        });
+                    }
                     this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
                         cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
                         gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
                         fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue(),
                         departamento: dtDepartamento//,
+                    });
+                    this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(false);
+                }
+            } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 7 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 8) {
+                if (this.fnEsValidoBuscarBBVA()) {
+                    var dtZonal = [];
+                    if (this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue() != null) {
+                        dtZonal = this.getComponent('pnlFiltro').getComponent('cbxZonal').getValue();
+                    }
+                    this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
+                        cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+                        gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+                        fechaInicio: this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getValue(),
+                        zonal: dtZonal//,
                     });
                     this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setDisabled(false);
                 }
@@ -490,10 +615,25 @@
         if (!this.getComponent('pnlFiltro').getComponent('cbxZonal').isValid()) {
             return false;
         }
+        if (!this.getComponent('pnlFiltro').getComponent('cbxDepartamento').isValid()) {
+            return false;
+        }
+        if (!this.getComponent('pnlFiltro').getComponent('cbxTramo').isValid()) {
+            return false;
+        }
         return true;
     },
     fnEsValidoBuscarIBK: function () {
         if (!this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').isValid()) {
+            return false;
+        }
+        return true;
+    },
+    fnEsValidoBuscarBBVA: function () {
+        if (!this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').isValid()) {
+            return false;
+        }
+        if (!this.getComponent('pnlFiltro').getComponent('cbxZonal').isValid()) {
             return false;
         }
         return true;

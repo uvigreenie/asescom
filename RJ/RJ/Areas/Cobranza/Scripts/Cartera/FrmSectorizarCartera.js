@@ -239,7 +239,8 @@
                 itemId: 'grdDirecciones',
                 region: 'center',
                 title: 'Lista de Direcciones',
-                autoScroll: true,
+//                autoScroll: true,
+
                 store: stDirecciones,
                 flex: 1,
                 columnLines: true,
@@ -329,6 +330,13 @@
                         scope: me
                     },
                     {
+                        itemId: 'btnImportar',
+                        iconCls: 'icon-import',
+                        tooltip: 'Importar',
+                        handler: me.onBtnImportarClick,
+                        scope: me
+                    },
+                    {
                         itemId: 'btnExportar',
                         iconCls: 'icon-export',
                         hidden: true,
@@ -357,6 +365,11 @@
                             scope: me
                         }
                     }
+                },
+                {
+                    ptype: 'bufferedrenderer',
+                    trailingBufferZone: 20,
+                    leadingBufferZone: 30
                 }
                 ]
             },
@@ -590,6 +603,12 @@
         this.onBtnBuscarClick(null, null, null);
     },
 
+    onBtnImportarClick: function (button, e, options) {
+        var dialog = Ext.create('CobApp.Cartera.FrmCargarSectores');
+        dialog.setTitle('Importar sectores');
+        dialog.show();
+    },
+
     oncbxClienteSelect: function (combo, records, eOpts) {
         this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getStore().load({
             params: {
@@ -625,7 +644,7 @@
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
-        } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
+        } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 5) {
             this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
@@ -638,6 +657,19 @@
             this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBk').clearValue();
+        } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 4) {
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(true);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getStore().load({
+                params: {
+                    gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
+                }
+            });
+            this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
+            this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
         }
     },
 
@@ -714,7 +746,7 @@
 
     onBtnGuardarSectorClick: function (button, e, options) {
         if (this.fnEsValidoComprobar()) {
-            if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+            if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 4) {
                 if (this.fnEsValidoGuardar()) {
                     var dtZonal = [];
                     var dtDpto = [];
@@ -798,7 +830,7 @@
                         scope: this
                     })
                 }
-            } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
+            } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 5) {
                 if (this.fnEsValidoGuardarIBK()) {
 
                     var dtDistrito = [];
@@ -866,7 +898,7 @@
 
     onBtnBuscarClick: function (button, e, options) {
         if (this.fnEsValidoComprobar()) {
-            if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+            if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 4) {
                 if (this.fnEsValidoBuscar()) {
                     var dtZonal = [];
                     var dtDepartamento = [];
@@ -898,7 +930,7 @@
                     });
                     this.getComponent('grdDirecciones').getView().getHeaderCt().child('#provincias').initialConfig.filter.options = this.getComponent('pnlSector').getComponent('cbxProvincia').getStore().collect('Provincia');
                 }
-            } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
+            } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 5) {
                 if (this.fnEsValidoBuscarIBK()) {
                     this.getComponent('grdDirecciones').getStore().load({
                         params: {
@@ -918,7 +950,7 @@
                     });
                     this.getComponent('pnlSector').setDisabled(false);
                 }
-            }
+            } 
         }
     },
 

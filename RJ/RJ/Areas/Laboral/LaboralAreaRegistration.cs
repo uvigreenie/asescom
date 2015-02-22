@@ -1,22 +1,22 @@
 ﻿using System.Web.Mvc;
 
-namespace RJ.Areas.Cobranza
+namespace RJ.Areas.Laboral
 {
-    public class CobranzaAreaRegistration : AreaRegistration
+    public class LaboralAreaRegistration : AreaRegistration
     {
         public override string AreaName
         {
             get
             {
-                return "Cobranza";
+                return "Laboral";
             }
         }
 
         public override void RegisterArea(AreaRegistrationContext context)
         {
             context.MapRoute(
-                "Cobranza_default",
-                "Cobranza/{controller}/{action}/{id}",
+                "Laboral_default",
+                "Laboral/{controller}/{action}/{id}",
                 new { action = "Index", id = UrlParameter.Optional }
             );
         }

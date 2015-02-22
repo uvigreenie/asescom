@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DeployEncryptKey>Encryption password is used only if any deployment setting is marked as secure</DeployEncryptKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -97,6 +98,9 @@
     <Compile Include="Areas\Cobranza\Models\TipoEstado.cs" />
     <Compile Include="Areas\Common\CommonAreaRegistration.cs" />
     <Compile Include="Areas\Common\Models\FuncionComun.cs" />
+    <Compile Include="Areas\Laboral\Controllers\EmpleadoController.cs" />
+    <Compile Include="Areas\Laboral\LaboralAreaRegistration.cs" />
+    <Compile Include="Areas\Laboral\Models\Empleado.cs" />
     <Compile Include="Areas\Seguridad\Controllers\AutenticacionController.cs" />
     <Compile Include="Areas\Seguridad\Controllers\GrupoController.cs" />
     <Compile Include="Areas\Seguridad\Controllers\IndexController.cs" />
@@ -121,12 +125,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Cobranza\Scripts\Cartera\FrmCargarCartera.js" />
+    <Content Include="Areas\Cobranza\Scripts\Moroso\FrmCargarDetalleMoroso.js" />
+    <Content Include="Areas\Cobranza\Scripts\Cartera\FrmCargarSectores.js" />
+    <Content Include="Areas\Cobranza\Scripts\Cartera\FrmListarCampañaXProducto.js" />
     <Content Include="Areas\Cobranza\Scripts\Cartera\FrmSectorizarCartera.js" />
     <Content Include="Areas\Cobranza\Scripts\GestionCliente\FrmGestionCliente.js" />
     <Content Include="Areas\Cobranza\Scripts\Moroso\FrmListarGestion.js" />
     <Content Include="Areas\Cobranza\Scripts\Moroso\FrmGestionMoroso.js" />
     <Content Include="Areas\Cobranza\Scripts\Moroso\FrmListarMoroso.js" />
     <Content Include="Areas\Cobranza\Scripts\Moroso\FrmRegistrarDatosMoroso.js" />
+    <Content Include="Areas\Cobranza\Scripts\Cartera\FrmListarPagosXProducto.js" />
     <Content Include="Areas\Cobranza\Scripts\Pagos\FrmCargarPagos.js" />
     <Content Include="Areas\Cobranza\Scripts\Pagos\FrmListarPagos.js" />
     <Content Include="Areas\Seguridad\Scripts\Layout\Contenedor.js" />
@@ -4067,6 +4075,8 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Laboral\Views\Web.config" />
+    <None Include="Properties\PublishProfiles\Prueba.pubxml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.Data.xml" />
@@ -4091,6 +4101,7 @@
     <Folder Include="Areas\Cobranza\Views\Shared\" />
     <Folder Include="Areas\Common\Controllers\" />
     <Folder Include="Areas\Common\Views\Shared\" />
+    <Folder Include="Areas\Laboral\Views\Shared\" />
     <Folder Include="Areas\Seguridad\Views\Shared\" />
     <Folder Include="Controllers\" />
   </ItemGroup>
