@@ -768,6 +768,38 @@ namespace RJ.Areas.Cobranza.Controllers
                 }
             }
 
+            public JsonResult ListarControlGestionXTrabajador()
+            {
+                JsonResult respuestaJson = new JsonResult();
+                DataTable dt = Cartera.Instancia.ListarControlGestionXTrabajador(Session["Login"].ToString());
+
+                string fields = "[{\"name\":\"TipoGestion\",\"type\":\"string\"},";
+                //fields += "{\"name\":\"Tasa\",\"type\":\"string\"},";
+                //fields += "{\"name\":\"Descuento\",\"type\":\"number\"},";
+                fields += "{\"name\":\"NroGestiones\",\"type\":\"number\"}]";
+
+                string columns = "[{\"xtype\":\"rownumberer\",\"resizable\":true,\"width\":45, hidden: true},";
+                //columns += "{\"xtype\":\"numbercolumn\",\"align\":\"right\", \"text\":\"Capital Inicial\",\"dataIndex\":\"CapitalProductoInicial\",\"width\":100,\"format\":\"0,000.00\"},";
+                columns += "{\"align\":\"left\", \"text\":\"Tipo\",\"dataIndex\":\"TipoGestion\",\"width\":100,\"hideable\":false},";
+                //columns += "{\"xtype\":\"numbercolumn\",\"align\":\"right\",\"text\":\"Descuento\",\"dataIndex\":\"Descuento\",\"width\":100,\"hideable\":false,\"format\":\"0,000.00\"},";
+                columns += "{\"xtype\":\"numbercolumn\",\"align\":\"right\",\"text\":\"Clientes\",\"dataIndex\":\"NroGestiones\",\"width\":100,\"hideable\":false}]";
+
+                var lista = (from m in dt.AsEnumerable()
+                             select new
+                             {
+                                 //CapitalProductoInicial = Convert.ToDecimal(m["CapitalProductoInicial"]),
+                                 TipoGestion = m["TipoGestion"].ToString(),
+                                 //Descuento = Convert.ToDecimal(m["Descuento"]),
+                                 NroGestiones = Convert.ToDecimal(m["NroGestiones"])
+                             }).ToList<object>();
+
+                var jsFields = new JavaScriptSerializer().Deserialize(fields, typeof(object));
+                var jsColumns = new JavaScriptSerializer().Deserialize(columns, typeof(object));
+                respuestaJson = Json(new { success = "true", metaData = new { fields = jsFields, columns = jsColumns }, data = lista }, JsonRequestBehavior.AllowGet);
+
+                return respuestaJson;
+            }
+
             public JsonResult ListarCampañaXProducto(int detalleCarteraBanco) 
             {
                 JsonResult respuestaJson = new JsonResult();
@@ -3313,6 +3345,7 @@ namespace RJ.Areas.Cobranza.Controllers
                     int detalleMoroso = Convert.ToInt32(lista[0]["DetalleMoroso"]);
                     byte tipoGestion = Convert.ToByte(lista[0]["TipoGestion"]);
                     byte claseGestion = Convert.ToByte(lista[0]["ClaseGestion"]);
+                    int moroso = Convert.ToInt32(lista[0]["Moroso"]);
                     short dclaseGestion = Convert.ToInt16(lista[0]["DClaseGestion"]);
                     short trabajador = Convert.ToInt16(lista[0]["Trabajador"]);
                     DateTime fechaGestion = Convert.ToDateTime(lista[0]["FechaGestion"]);
@@ -3321,7 +3354,7 @@ namespace RJ.Areas.Cobranza.Controllers
                     decimal monto = Convert.ToDecimal(lista[0]["Monto"]);
                     string observacion = lista[0]["Observacion"].ToString();
                     string razonNoPago = (lista[0]["RazonNoPago"] == null ? null : lista[0]["RazonNoPago"].ToString());
-                    int result = Cartera.Instancia.InsUpdGestionMoroso(gestionMoroso,cartera,detalleMoroso,tipoGestion,claseGestion,dclaseGestion,fechaGestion,horaGestion,fechaPromesa,monto,observacion,trabajador,Session["Login"].ToString(), razonNoPago);
+                    int result = Cartera.Instancia.InsUpdGestionMoroso(gestionMoroso,cartera,detalleMoroso,tipoGestion,claseGestion,moroso,dclaseGestion,fechaGestion,horaGestion,fechaPromesa,monto,observacion,trabajador,Session["Login"].ToString(), razonNoPago);
                     return Json(new { success = "true", data = result.ToString() }, JsonRequestBehavior.AllowGet);
                 }
                 catch (Exception ex)
@@ -3469,6 +3502,97 @@ namespace RJ.Areas.Cobranza.Controllers
                                     //xml += (sheet[0, j].Value.Equals("VencidoME") ? "VencidoME = '" + valor + "' " : "");
                                     //xml += (sheet[0, j].Value.Equals("TotalVencido") ? "ToralVencido = '" + valor + "' " : "");
                                     xml += (sheet[0, j].Value.Equals("Importe_Cancelación") ? "ImporteCancelacion = '" + (valor.Equals("")? "0" : valor) + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Deuda_Total") ? "DeudaTotal = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Saldo Capital") ? "SaldoCapital = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Nombre_Empresa") ? "NombreEmpresa = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("RUC") ? "RucEmpresa = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("DIRECCION") ? "Direccion = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Dist") ? "Distrito = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Prov") ? "Provincia = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Dep") ? "Departamento = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Direccion_Empresa") ? "DireccionEmpresa = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Distrito_Empresa") ? "DistritoEmpresa = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Provincia_Empresa") ? "ProvinciaEmpresa = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Dep_Empresa") ? "DepartamentoEmpresa = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("SITUACION LABORAL") ? "SituacionLaboral = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("ESTATAL?") ? "Estatal = '" + (valor.Equals("Si") ? Convert.ToString(true) : Convert.ToString(false)) + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("RANGO_SUELDO") ? "RangoSueldo = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Moneda") ? "Moneda = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("FEC-DESEMB") && valor.Length > 0 ? "FechaPrestamo = '" + Convert.ToDateTime(sheet[i, j].Value).ToString("yyyyMMdd") + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("FEC-1ER-VENC") && valor.Length > 0 ? "FechaCuota = '" + Convert.ToDateTime(sheet[i, j].Value).ToString("yyyyMMdd") + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("CANT CUOTAS") ? "NroCuotas = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("DIRECC-CLIENTE") ? "DireccionCliente = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("IMP-CUO-ORD") ? "MontoCuota = '" + (valor.Length == 0 ? "0" : valor.Replace(",", "")) + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("FEC-PROX-VENC") && valor.Length > 0 ? "FechaProxVencimiento = '" + Convert.ToDateTime(sheet[i, j].Value).ToString("yyyyMMdd") + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("CUOTAS PAGADAS") ? "CuotasPagadas = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("CUOTAS PENDIENTES") ? "CuotasPendientes = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("CUOTAS VENCIDAS") ? "CuotasVencidas = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("IMP-CANCELACION") ? "ImporteCancelacion = '" + (valor.Length == 0 ? "0" : valor.Replace(",", "")) + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("NroDoc") ? "NumeroDocumento = '" + valor + "' TipoDocumento = 'DN' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Nombre") ? "RazonSocial = '" + valor + "' " : "");
+                                    //distrito = (distrito.Length == 0 ? (sheet[0, j].Value.Equals("Distrito") ? valor : "") : distrito);
+                                    //provincia = (provincia.Length == 0 ? (sheet[0, j].Value.Equals("Provincia") ? valor : "") : provincia);
+                                    //departamento = (departamento.Length == 0 ? (sheet[0, j].Value.Equals("Departamento") ? valor : "") : departamento);
+                                    direccion = (direccion.Length == 0 ? (sheet[0, j].Value.Equals("Dir") ? valor : "") : direccion);
+
+                                    //detallemoroso
+                                    xmlDetalle += (sheet[0, j].Value.ToString().Substring(0, sheet[0, j].Value.ToString().Length - 2).Equals("Telef_Casa") && valor.Length > 0 ? "<detalle Descripcion = '" + valor + "' TipoDetalle = '1' />" : "");
+                                    xmlDetalle += (sheet[0, j].Value.ToString().Substring(0, sheet[0, j].Value.ToString().Length - 2).Equals("Telef_Celular") && valor.Length > 0 ? "<detalle Descripcion = '" + valor + "' TipoDetalle = '1' />" : "");
+                                    xmlDetalle += (sheet[0, j].Value.ToString().Substring(0, sheet[0, j].Value.ToString().Length - 2).Equals("Telef_Trabajo") && valor.Length > 0 ? "<detalle Descripcion = '" + valor + "' TipoDetalle = '1' />" : "");
+                                    xmlDetalle += (sheet[0, j].Value.ToString().Substring(0, sheet[0, j].Value.ToString().Length - 2).Equals("Telef_Referencia") && valor.Length > 0 ? "<detalle Descripcion = '" + valor + "' TipoDetalle = '1' />" : "");
+                                    //xmlDetalle += (sheet[0, j].Value.ToString().Substring(0, sheet[0, j].Value.ToString().Length - 2).Equals("TlfDesconocido") && valor.Length > 0 ? "<detalle Descripcion = '" + valor + "' TipoDetalle = '1' />" : "");
+                                    xmlDetalle += (sheet[0, j].Value.Equals("Email1") && valor.Length > 0 ? "<detalle Descripcion = '" + valor + "' TipoDetalle = '4' />" : "");
+                                }
+                            }
+                            xmlDetalle += "<detalle Descripcion = '" + direccion + "' TipoDetalle = '2' />";
+                            cadena.Append(xml + " >");
+                            cadena.Append(xmlDetalle);
+                            cadena.Append("</cartera>");
+                        }
+                        cadena.Append("</root>");
+                        Cartera.Instancia.GuardarCarteraIBK(gestionCliente, cadena, Session["Login"].ToString());
+                        respuestaJson = Json(new { success = "true", data = "true" }, JsonRequestBehavior.AllowGet);
+                    }
+                    if (gestionCliente == 9)
+                    {
+                        C1XLBook book = new C1XLBook();
+                        book.Load(file.InputStream);
+                        XLSheet sheet = book.Sheets[0];
+
+                        string xml = string.Empty;
+                        string xmlDetalle = string.Empty;
+                        string valor = string.Empty;
+                        StringBuilder cadena = new StringBuilder();
+                        cadena.Append("<root>");
+
+                        for (int i = 1; i < sheet.Rows.Count; i++)
+                        {
+                            xml = "<cartera ";
+                            xmlDetalle = "";
+                            string distrito = "", provincia = "", departamento = "", direccion = "";
+                            for (int j = 0; j < sheet.Columns.Count; j++)
+                            {
+                                if (sheet[0, j].Value != null)
+                                {
+                                    valor = (sheet[i, j].Value == null ? "" : devuelveCadena(sheet[i, j].Value.ToString().Trim()));
+                                    //xml += (sheet[0, j].Value.Equals("FechaAsignacion") ? "CodCartera = 'VINTE" + DateTime.Now.ToString("yyyyMM") + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("FechaAsignacion") ? "FechaInicio = '" + Convert.ToDateTime(sheet[i, j].Value).ToString("yyyyMMdd") + "' FechaFin = '" + Convert.ToDateTime(sheet[i, j].Value).ToString("yyyyMMdd") + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Código") ? "CodigoCliente = '" + valor + "' CodCartera = 'CINTE" + DateTime.Now.ToString("yyyyMM") + "' FechaInicio = '" + DateTime.Now.ToString("yyyyMMdd") + "' FechaFin = '" + DateTime.Now.ToString("yyyyMMdd") + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("NroProdOrig") ? "NroProdOrig = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("NroTC") ? "NroTarjeta = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Número de CJ") ? "NroCJ = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("NomProd") ? "Producto = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("NomSubProd") ? "SubProducto = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("DescripMotivoBloqueo") ? "MotivoBloqueo = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("TramoClienteReal Inicial") ? "Tramo = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Días de Mora") ? "IniDMProducto = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("IniDMCliente") ? "IniDMCliente = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("MinimoMN") ? "MinimoMN = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("MinimoME") ? "MinimoME = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("VencidoMN") ? "VencidoMN = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("VencidoME") ? "VencidoME = '" + valor + "' " : "");
+                                    //xml += (sheet[0, j].Value.Equals("TotalVencido") ? "ToralVencido = '" + valor + "' " : "");
+                                    xml += (sheet[0, j].Value.Equals("Importe_Cancelación") ? "ImporteCancelacion = '" + (valor.Equals("") ? "0" : valor) + "' " : "");
                                     xml += (sheet[0, j].Value.Equals("Deuda_Total") ? "DeudaTotal = '" + valor + "' " : "");
                                     xml += (sheet[0, j].Value.Equals("Saldo Capital") ? "SaldoCapital = '" + valor + "' " : "");
                                     xml += (sheet[0, j].Value.Equals("Nombre_Empresa") ? "NombreEmpresa = '" + valor + "' " : "");
@@ -3843,7 +3967,7 @@ namespace RJ.Areas.Cobranza.Controllers
                                 xml += "DeudaVencida= '" + Convert.ToDouble(linea.Substring(339, 15).Trim())*0.01 + "' ";
                                 xml += "FechaMora= '" + linea.Substring(425, 10).Trim() + "' ";
                                 xml += "DiasMora= '" + linea.Substring(435, 5).Trim() + "' ";
-                                xml += "Distrito= '" + linea.Substring(470, 30).Trim() + "' ";
+                                xml += "Distrito= '" + linea.Substring(500, 30).Trim() + "' ";
                                 xml += "TramoBBVA= '" + linea.Substring(530, 14).Trim() + "' ";
                                 xml += "StatusBanco= '" + linea.Substring(921, 100).Trim() + "' ";
                                 //FIN DETALLECARTERABBVA

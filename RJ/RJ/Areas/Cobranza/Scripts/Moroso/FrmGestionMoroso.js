@@ -382,7 +382,7 @@
                 direction: 'DESC'
             }
             ],
-//            groupField: 'DTrabajador',
+            //            groupField: 'DTrabajador',
             proxy: {
                 type: 'ajax',
                 url: '../../Cobranza/Cartera/ListarGestionMoroso',
@@ -871,10 +871,10 @@
                             hideable: false
                         }
                         ],
-//                        features: [{
-//                            ftype: 'grouping',
-//                            groupHeaderTpl: 'Gestor: {name} ({rows.length} Gesti{[values.rows.length > 1 ? "ones" : "ón"]})'
-//                        }],
+                        //                        features: [{
+                        //                            ftype: 'grouping',
+                        //                            groupHeaderTpl: 'Gestor: {name} ({rows.length} Gesti{[values.rows.length > 1 ? "ones" : "ón"]})'
+                        //                        }],
                         listeners: {
                             selectionchange: {
                                 fn: me.onGridGestionSelectionChange,
@@ -915,6 +915,13 @@
                             itemId: 'txtPopupCampaña',
                             hidden: true,
                             fieldLabel: 'Popup Campaña',
+                            text: ''
+                        },
+                        {
+                            xtype: 'textfield',
+                            itemId: 'txtPopupInfoGestion',
+                            hidden: true,
+                            fieldLabel: 'Popup InfoGestion',
                             text: ''
                         },
                         {
@@ -1090,7 +1097,7 @@
                             hidden: true,
                             forceSelection: true,
                             queryMode: 'local',
-//                            colspan: 2,
+                            //                            colspan: 2,
                             //anchor: '100%',
                             width: 250
                         },
@@ -1517,8 +1524,8 @@
                 },
                 {
                     itemId: 'btnAsignacion',
-                    text: 'Asig.',
-                    iconCls: 'icon-export',
+                    text: 'Info.',
+                    iconCls: 'icon-estadistica',
                     handler: me.onBtnAsignacionClick,
                     scope: me
                 },
@@ -1539,7 +1546,7 @@
             fn: function (component, options) {
                 this.getComponent('pnlFiltro').getComponent('cbxCliente').getStore().load();
                 this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTrabajador').getStore().load();
-                
+
                 this.fnEstadoForm('visualizacion');
                 this.fnLimpiarFiltros();
                 this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxRazonNoPago').getStore().load({
@@ -1547,7 +1554,7 @@
                         gestionCliente: 7
                     }
                 });
-                
+
                 Ext.MessageBox.hide();
             }
         }
@@ -1632,9 +1639,9 @@
         this.getComponent('pnlFiltro').getComponent('cbxProductoBBVA').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
         this.getComponent('pnlFiltro').getComponent('cbxRango').clearValue();
-        
+
         this.getComponent('pnlFiltro').getComponent('cbxRango').setValue(this.getComponent('pnlFiltro').getComponent('cbxRango').store.getAt(0).get('Id'));
-        
+
     },
 
     onchkOtrosFiltrosChange: function (cb, checked) {
@@ -1673,14 +1680,14 @@
             this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxTramo').setVisible(true);
-            
+
             this.getComponent('pnlFiltro').getComponent('cbxCluster').setVisible(true);
-            
+
             this.getComponent('pnlFiltro').getComponent('cbxRango').setValue(this.getComponent('pnlFiltro').getComponent('cbxRango').store.getAt(0).get('Id'));
-            
+
             this.getComponent('pnlFiltro').getComponent('txtValor1').setDisabled(true);
             this.getComponent('pnlFiltro').getComponent('txtValor2').setDisabled(true);
-            
+
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getStore().load({
                 params: {
                     gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
@@ -1706,7 +1713,7 @@
 
             if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2) {
                 this.getComponent('pnlFiltro').getComponent('cbxTramo').setVisible(true);
-            } 
+            }
             //            this.getComponent('pnlFiltro').getComponent('cbxProducto').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').getStore().load({
                 params: {
@@ -1748,7 +1755,7 @@
     },
 
     oncbxFechaInicioSelect: function (combo, records, eOpts) {
-//        this.fnLimpiarFiltros();
+        //        this.fnLimpiarFiltros();
         if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 5) {
             this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').getStore().load({
                 params: {
@@ -1765,7 +1772,7 @@
             this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxDepartamentoIBK').clearValue();
-            
+
             this.getComponent('pnlFiltro').getComponent('cbxTramo').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxCluster').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxProducto').clearValue();
@@ -2520,8 +2527,8 @@
                                 claseGestion: 0
                             }
                         });
-//                        this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').setValue(this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').store.getAt(0).get('ClaseGestion'));
-                        
+                        //                        this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').setValue(this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').store.getAt(0).get('ClaseGestion'));
+
                     }
                 } else if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 2 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 5) {
                     if (this.fnEsValidoBuscarIBK()) {
@@ -2624,62 +2631,91 @@
     },
 
     onBtnAsignacionClick: function (button, e, options) {
-
-        Ext.Ajax.request({
-            url: "../../Cartera/ObtenerGestionClienteAsignado",
-            success: function (response) {
-                var respuesta = Ext.decode(response.responseText);
-                if (respuesta['success'] == "true") {
-                    this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').setValue(respuesta['data']);
-                }
-            },
-            failure: function (response) {
-                Ext.MessageBox.show({
-                    title: 'Sistema RJ Abogados',
-                    msg: 'Se Produjo un error en la conexión.',
-                    buttons: Ext.MessageBox.OK,
-                    animateTarget: button,
-                    icon: Ext.Msg.ERROR
-                });
-            },
-//                params: {
-//                    datos: '[' + Ext.encode(dtGestion) + ']'
-//                },
-            scope: this
-        });
-       
-
-//        this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').setValue('7');
-        this.getComponent('pnlBusqueda').getComponent('grdMoroso').getStore().load({
-            params: {
-                cliente: 0,
-                gestionCliente: this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').getValue(),
-                fechaFin: 'Asignados',
-//                zonal: dtZonal,
-//                departamento: dtDepartamento,
-//                tramo: dtTramo,
-                otrosFiltros: this.getComponent('pnlFiltro').getComponent('chkOtrosFiltros').getValue(),
-                idParametro: 0,
-//                cluster: dtCluster,
-                valor1: 0,
-                valor2: 0
+        var dialog = new Ext.create('CobApp.Cartera.FrmListarInfoGestion', {
+            title: 'Detalle de Gestión',
+            itemId: 'FrmListarInfoGestion',
+            animateTarget: button,
+            modal: false,
+            listeners: {
+                show: {
+                    fn: function (win, eOpts) {
+                        this.getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnAsignacion').setDisabled(true);
+                        this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtPopupInfoGestion').setValue(win.getId());
+                    }
+                },
+                close: {
+                    fn: function () {
+                        this.getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnAsignacion').setDisabled(false);
+                    }
+                },
+                scope: this
             }
         });
-        this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').getStore().load({
-            params: {
-                gestionCliente: this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').getValue()
-            }
-        });
-
-        if (this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').getValue() == '7' || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == '8') {
-            this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxDClaseGestion').getStore().load({
-                params: {
-                    gestionCliente: 7,
-                    claseGestion: 0
-                }
-            });
-        }
+        dialog.getComponent(0).getComponent('pnlConsulta').getComponent('grdControlGestion').getStore().load();
+        dialog.show();
+        console.log(this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtPopupInfoGestion').getValue());
+        //        if (this.getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnAsignacion').isDisabled()) {
+        //            Ext.getCmp(this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtPopupInfoGestion').getValue()).getComponent(0).getComponent('pnlConsulta').getComponent('grdControlGestion').getStore().load();
+        //        }
+        //        Ext.getCmp(this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtPopupInfoGestion').getValue()).getComponent(0).getComponent('pnlConsulta').getComponent('grdControlGestion').getStore().load();
     },
+    //    onBtnAsignacionClick: function (button, e, options) {
+
+    //        Ext.Ajax.request({
+    //            url: "../../Cartera/ObtenerGestionClienteAsignado",
+    //            success: function (response) {
+    //                var respuesta = Ext.decode(response.responseText);
+    //                if (respuesta['success'] == "true") {
+    //                    this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').setValue(respuesta['data']);
+    //                }
+    //            },
+    //            failure: function (response) {
+    //                Ext.MessageBox.show({
+    //                    title: 'Sistema RJ Abogados',
+    //                    msg: 'Se Produjo un error en la conexión.',
+    //                    buttons: Ext.MessageBox.OK,
+    //                    animateTarget: button,
+    //                    icon: Ext.Msg.ERROR
+    //                });
+    //            },
+    ////                params: {
+    ////                    datos: '[' + Ext.encode(dtGestion) + ']'
+    ////                },
+    //            scope: this
+    //        });
+    //       
+
+    ////        this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').setValue('7');
+    //        this.getComponent('pnlBusqueda').getComponent('grdMoroso').getStore().load({
+    //            params: {
+    //                cliente: 0,
+    //                gestionCliente: this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').getValue(),
+    //                fechaFin: 'Asignados',
+    ////                zonal: dtZonal,
+    ////                departamento: dtDepartamento,
+    ////                tramo: dtTramo,
+    //                otrosFiltros: this.getComponent('pnlFiltro').getComponent('chkOtrosFiltros').getValue(),
+    //                idParametro: 0,
+    ////                cluster: dtCluster,
+    //                valor1: 0,
+    //                valor2: 0
+    //            }
+    //        });
+    //        this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').getStore().load({
+    //            params: {
+    //                gestionCliente: this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').getValue()
+    //            }
+    //        });
+
+    //        if (this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtGestionCliente').getValue() == '7' || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == '8') {
+    //            this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxDClaseGestion').getStore().load({
+    //                params: {
+    //                    gestionCliente: 7,
+    //                    claseGestion: 0
+    //                }
+    //            });
+    //        }
+    //    },
 
     onBtnGuardarClick: function (button, e, options) {
         if (this.fnEsValidoGuardar()) {
@@ -2692,6 +2728,7 @@
             dtGestion['DetalleMoroso'] = this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtDetalleMoroso').getValue();
             dtGestion['TipoGestion'] = this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxTipoGestion').getValue();
             dtGestion['ClaseGestion'] = this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxClaseGestion').getValue();
+            dtGestion['Moroso'] = this.getComponent('pnlBusqueda').getComponent('grdMoroso').getSelectionModel().getSelection()[0].get('Moroso');
             dtGestion['DClaseGestion'] = this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxDClaseGestion').getValue();
             dtGestion['FechaGestion'] = this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('dtpFechaGestion').getValue();
             dtGestion['HoraGestion'] = this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('tfHoraGestion').getValue();
@@ -2704,16 +2741,21 @@
             Ext.Ajax.request({
                 url: "../../Cartera/InsUpdGestionMoroso",
                 success: function (response) {
-//                    this.getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnGuardar').setDisabled(false);
+                    //                    this.getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnGuardar').setDisabled(false);
                     var respuesta = Ext.decode(response.responseText);
                     if (respuesta['success'] == "true") {
-                        
+
                         if (codigo == 0) {
                             Ext.example.msg('Información', 'Se registró con éxito');
                         }
                         else {
                             Ext.example.msg('Información', 'Actualización realizada con éxito');
                         }
+
+                        if (this.getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnAsignacion').isDisabled()) {
+                            Ext.getCmp(this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtPopupInfoGestion').getValue()).getComponent(0).getComponent('pnlConsulta').getComponent('grdControlGestion').getStore().load();
+                        }
+
                         this.fnLimpiarControles();
                         var selections = this.getComponent('pnlBusqueda').getComponent('grdDetalleMoroso').getSelectionModel().getSelection();
                         if (selections.length > 0) {
@@ -2725,6 +2767,7 @@
                             this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('txtDetalleMoroso').setValue(selections[0].get('DetalleMoroso'));
                         }
                         this.fnEstadoForm('visualizacion');
+
                     }
                     else {
                         Ext.MessageBox.show({
@@ -2739,7 +2782,7 @@
                     }
                 },
                 failure: function (response) {
-//                    this.getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnGuardar').setDisabled(false);
+                    //                    this.getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnGuardar').setDisabled(false);
                     Ext.MessageBox.show({
                         title: 'Sistema RJ Abogados',
                         msg: 'Se Produjo un error en la conexión.',
@@ -2755,7 +2798,7 @@
                 },
                 scope: this
             });
-            
+
         }
     },
 
@@ -2876,7 +2919,7 @@
     },
 
     fnLimpiarFiltros: function (estado) {
-//        this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxRazonNoPago').setVisible(false);
+        //        this.getComponent('pnlContenido').getComponent('pnlRegistro').getComponent('cbxRazonNoPago').setVisible(false);
         this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(false);
         this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').setVisible(false);
         this.getComponent('pnlFiltro').getComponent('cbxZonal').setVisible(false);
