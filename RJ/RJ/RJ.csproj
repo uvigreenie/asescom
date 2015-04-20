@@ -125,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Cobranza\Scripts\Cartera\FrmCargarCartera.js" />
+    <Content Include="Areas\Cobranza\Scripts\Cartera\FrmListarInfoGestion.js" />
     <Content Include="Areas\Cobranza\Scripts\Moroso\FrmCargarDetalleMoroso.js" />
     <Content Include="Areas\Cobranza\Scripts\Cartera\FrmCargarSectores.js" />
     <Content Include="Areas\Cobranza\Scripts\Cartera\FrmListarCampañaXProducto.js" />
@@ -133,6 +134,7 @@
     <Content Include="Areas\Cobranza\Scripts\Moroso\FrmListarGestion.js" />
     <Content Include="Areas\Cobranza\Scripts\Moroso\FrmGestionMoroso.js" />
     <Content Include="Areas\Cobranza\Scripts\Moroso\FrmListarMoroso.js" />
+    <Content Include="Areas\Cobranza\Scripts\Moroso\FrmMostrarDesempenho.js" />
     <Content Include="Areas\Cobranza\Scripts\Moroso\FrmRegistrarDatosMoroso.js" />
     <Content Include="Areas\Cobranza\Scripts\Cartera\FrmListarPagosXProducto.js" />
     <Content Include="Areas\Cobranza\Scripts\Pagos\FrmCargarPagos.js" />

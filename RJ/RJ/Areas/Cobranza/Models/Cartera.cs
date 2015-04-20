@@ -631,6 +631,15 @@ namespace RJ.Areas.Cobranza.Models
                 return db.ExecuteDataSet(cmd).Tables[0];
             }
 
+            public DataTable ListarControlGestionXTrabajador(string login)
+            {
+                Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListarControlGestionXTrabajador");
+                cmd.CommandTimeout = 180;
+                db.AddInParameter(cmd, "@prmstrLogin", DbType.String, login);
+                return db.ExecuteDataSet(cmd).Tables[0];
+            }
+
             public DataTable ListarCampañaXProducto(int detallecarterabanco)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
@@ -812,7 +821,7 @@ namespace RJ.Areas.Cobranza.Models
 
         #region Insert
 
-            public int InsUpdGestionMoroso(int? gestionMoroso, int cartera, int detalleMoroso, byte tipoGestion, byte claseGestion, short dclaseGestion, DateTime fechaGestion, string horaGestion, DateTime? fechaPromesa, decimal monto, string observacion, short trabajador,string login, string razonNoPago)
+            public int InsUpdGestionMoroso(int? gestionMoroso, int cartera, int detalleMoroso, byte tipoGestion, byte claseGestion, int moroso, short dclaseGestion, DateTime fechaGestion, string horaGestion, DateTime? fechaPromesa, decimal monto, string observacion, short trabajador,string login, string razonNoPago)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
                 DbCommand cmd = db.GetStoredProcCommand("uspCOB_InsUpdGestionMoroso");
@@ -822,6 +831,7 @@ namespace RJ.Areas.Cobranza.Models
                 db.AddInParameter(cmd, "@prmintDetalleMoroso", DbType.Int32, detalleMoroso);
                 db.AddInParameter(cmd, "@prmintTipoGestion", DbType.Byte, tipoGestion);
                 db.AddInParameter(cmd, "@prmintClaseGestion", DbType.Byte, claseGestion);
+                db.AddInParameter(cmd, "@prmintMoroso", DbType.Int32, moroso);
                 db.AddInParameter(cmd, "@prmintDClaseGestion", DbType.Int16, dclaseGestion);
                 db.AddInParameter(cmd, "@prmintTrabajador", DbType.Int16, trabajador);
                 db.AddInParameter(cmd, "@prmdatFechaGestion", DbType.DateTime, fechaGestion);
