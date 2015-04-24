@@ -1537,15 +1537,18 @@ namespace RJ.Areas.Cobranza.Controllers
                              fields += "{\"name\":\"Tramo\",\"type\":\"string\"},{\"name\":\"Telefono\",\"type\":\"string\"},{\"name\":\"DetalleCarteraMovil\",\"type\":\"int\"},";
                              fields += "{\"name\":\"NumeroDocumento\",\"type\":\"string\"},{\"name\":\"Moroso\",\"type\":\"int\"},{\"name\":\"DMoroso\",\"type\":\"string\"},";
                              fields += "{\"name\":\"DeudaTotal\",\"type\":\"number\"},";
-                             fields += "{\"name\":\"Vencido\",\"type\":\"number\"},";
-                             fields += "{\"name\":\"PorVencer\",\"type\":\"number\"},";
+                             //fields += "{\"name\":\"Vencido\",\"type\":\"number\"},";
+                             //fields += "{\"name\":\"PorVencer\",\"type\":\"number\"},";
                              fields += "{\"name\":\"OfrecerDescuento\",\"type\":\"bool\"},";
                              fields += "{\"name\":\"PagoTotal\",\"type\":\"number\"},";
+                             fields += "{\"name\":\"Sector\",\"type\":\"string\"},";
+                             fields += "{\"name\":\"Reclamo\",\"type\":\"number\"},";
+                             fields += "{\"name\":\"NotaCredito\",\"type\":\"number\"},";
                              fields += "{\"name\":\"Saldo\",\"type\":\"number\"},";
-                             fields += "{\"name\":\"GestionadoCall\",\"type\":\"bool\"},{\"name\":\"TlfContactado\",\"type\":\"bool\"},{\"name\":\"Suspendido\",\"type\":\"bool\"},{\"name\":\"ContactadoCall\",\"type\":\"bool\"},{\"name\":\"PromesaPago\",\"type\":\"date\"}]";
+                             fields += "{\"name\":\"UltGestionCall\",\"type\":\"date\"},{\"name\":\"TlfContactado\",\"type\":\"bool\"},{\"name\":\"Suspendido\",\"type\":\"bool\"},{\"name\":\"EstadoGestionCall\",\"type\":\"string\"},{\"name\":\"PromesaPago\",\"type\":\"date\"}]";
 
                              string columns = "[{\"xtype\":\"rownumberer\",\"resizable\":true,\"width\":60},{\"text\":\"Cartera\",\"dataIndex\":\"Cartera\",\"hidden\":true,\"hideable\":false},";
-
+                             columns += "{\"text\":\"Sector\",\"dataIndex\":\"Sector\",\"width\":60,\"filterable\":true},";
                              columns += "{\"text\":\"Cliente\",\"dataIndex\":\"DCliente\",\"width\":150,\"hideable\":false,\"hidden\":true},";
                              columns += "{\"text\":\"Gestión\",\"dataIndex\":\"DGestionCliente\",\"width\":100,\"hideable\":false,\"hidden\":true},";
                              columns += "{\"text\":\"Teléfono\",\"dataIndex\":\"Telefono\",\"width\":110},";
@@ -1555,15 +1558,19 @@ namespace RJ.Areas.Cobranza.Controllers
                              //columns += "{\"text\":\"Inscripcion\",\"dataIndex\":\"Inscripcion\",\"width\":90,\"filterable\":true},"; 
                              columns += "{\"text\":\"Moroso\",\"dataIndex\":\"Moroso\",\"hideable\":false,\"hidden\":true},";
                              columns += "{\"text\":\"Moroso\",\"dataIndex\":\"DMoroso\",\"width\":280,\"filterable\":true},";
-                             columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Vencido\",\"align\":\"right\",\"dataIndex\":\"Vencido\",\"format\":\"0.00\",\"width\":70,\"filterable\":true},";
-                             columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Por Vencer\",\"align\":\"right\",\"dataIndex\":\"PorVencer\",\"format\":\"0.00\",\"width\":70,\"filterable\":true},";
+                             //columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Vencido\",\"align\":\"right\",\"dataIndex\":\"Vencido\",\"format\":\"0.00\",\"width\":70,\"filterable\":true},";
+                             //columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Por Vencer\",\"align\":\"right\",\"dataIndex\":\"PorVencer\",\"format\":\"0.00\",\"width\":70,\"filterable\":true},";
                              columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Deuda\",\"align\":\"right\",\"dataIndex\":\"DeudaTotal\",\"format\":\"0.00\",\"width\":70,\"filterable\":true},";
                              //columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Exigible\",\"align\":\"right\",\"dataIndex\":\"Exigible\",\"format\":\"0.00\",\"width\":70,\"filterable\":true, \"renderer\": \"fnColorearPago\"},";
                              columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Pago\",\"align\":\"right\",\"dataIndex\":\"PagoTotal\",\"format\":\"0.00\",\"width\":70,\"filterable\":true, \"renderer\": \"fnColorearPago\"},";
+                             columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Reclamo\",\"align\":\"right\",\"dataIndex\":\"Reclamo\",\"format\":\"0.00\",\"width\":70,\"filterable\":true, \"renderer\": \"fnColorearPago\"},";
+                             columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Nota Crédito\",\"align\":\"right\",\"dataIndex\":\"NotaCredito\",\"format\":\"0.00\",\"width\":70,\"filterable\":true, \"renderer\": \"fnColorearPago\"},";
                              columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Saldo\",\"align\":\"right\",\"dataIndex\":\"Saldo\",\"format\":\"0.00\",\"width\":70,\"filterable\":true},";
                              columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Tlf. Contactado\",\"dataIndex\":\"TlfContactado\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
-                             columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Gestión Call\",\"dataIndex\":\"GestionadoCall\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
-                             columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Contacto Call\",\"dataIndex\":\"ContactadoCall\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
+                             //columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Gestión Call\",\"dataIndex\":\"GestionadoCall\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
+                             columns += "{\"xtype\":\"datecolumn\",\"text\":\"Ult. Gestión\",\"dataIndex\":\"UltGestionCall\",\"width\":110,\"filterable\":true, \"format\":\"d/m/Y\"},";
+                             //columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Contacto Call\",\"dataIndex\":\"ContactadoCall\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
+                             columns += "{\"text\":\"Estado Gestion Call\",\"dataIndex\":\"EstadoGestionCall\",\"width\":60,\"filterable\":true},";
                              columns += "{\"xtype\":\"datecolumn\",\"text\":\"Promesa\",\"dataIndex\":\"PromesaPago\",\"width\":110,\"filterable\":true, \"format\":\"d/m/Y\"},";
                              columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Descuento\",\"dataIndex\":\"OfrecerDescuento\",\"processEvent\":'function () { return false; }',\"width\":100,\"filterable\":true},";
                              columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Suspendido\",\"dataIndex\":\"Suspendido\",\"processEvent\":'function() { return false; }',\"width\":100,\"filterable\":true},";
@@ -1585,7 +1592,7 @@ namespace RJ.Areas.Cobranza.Controllers
                                               DCliente = m["DCliente"].ToString(),
                                               CodCliente = m["CodCliente"].ToString(),
                                               Anexo = m["Anexo"].ToString(),
-                                              //Inscripcion = m["Inscripcion"].ToString(),
+                                              Sector = m["Sector"].ToString(),
                                               DGestionCliente = m["DGestionCliente"].ToString(),
                                               //CodCartera = m["CodCartera"].ToString(),
                                               Zonal = m["Zonal"].ToString(),
@@ -1600,15 +1607,15 @@ namespace RJ.Areas.Cobranza.Controllers
                                               Moroso = Convert.ToInt32(m["Moroso"]),
                                               DMoroso = m["DMoroso"].ToString(),
                                               DeudaTotal = Convert.ToDecimal(m["DeudaTotal"]),
-                                              Vencido = Convert.ToDecimal(m["Vencido"]),
-                                              PorVencer = Convert.ToDecimal(m["PorVencer"]),
+                                              Reclamo = Convert.ToDecimal(m["Reclamo"]),
+                                              NotaCredito = Convert.ToDecimal(m["NotaCredito"]),
                                               //Exigible = Convert.ToDecimal(m["MTO_Exigible"]),
                                               PagoTotal = Convert.ToDecimal(m["PagoTotal"]),
                                               Saldo = Convert.ToDecimal(m["Saldo"]),
                                               Suspendido = Convert.ToBoolean(m["Suspendido"]),
                                               TlfContactado = Convert.ToBoolean(m["TlfContactado"]),
-                                              GestionadoCall = Convert.ToBoolean(m["GestionadoCall"]),
-                                              ContactadoCall = Convert.ToBoolean(m["ContactadoCall"]),
+                                              UltGestionCall = (m["UltGestionCall"] == DBNull.Value ? "" : Convert.ToDateTime(m["UltGestionCall"]).ToString("yyyy/MM/dd")),
+                                              EstadoGestionCall = m["EstadoGestionCall"].ToString(),
                                               OfrecerDescuento = Convert.ToBoolean(m["OfrecerDescuento"]),
                                               PromesaPago = (m["PromesaPago"] == DBNull.Value ? "" : Convert.ToDateTime(m["PromesaPago"]).ToString("yyyy/MM/dd"))
                                           }).ToList<object>();
@@ -5166,12 +5173,14 @@ namespace RJ.Areas.Cobranza.Controllers
             dt.Columns.Add("NotaCredito");//19
             dt.Columns.Add("Saldo");//19
             dt.Columns.Add("OfrecerDescuento");//20
-            dt.Columns.Add("MejorIncidenciaCall");//20
-            dt.Columns.Add("MejorIncidenciaCampo");//20
-            dt.Columns.Add("GestionadoCall");//20
-            dt.Columns.Add("GestionadoCampo");//20
-            dt.Columns.Add("ContactadoCall");//20
-            dt.Columns.Add("ContactadoCampo");//20
+            dt.Columns.Add("EstadoGestionCall");//20
+            dt.Columns.Add("estadoGestionCampo");//20
+            dt.Columns.Add("UltimaGestionCall");//20
+            dt.Columns.Add("UltimaGestionCampo");//20
+            dt.Columns.Add("NroGestionesCall");//20
+            dt.Columns.Add("NroGestionesCampo");//20
+            //dt.Columns.Add("ContactadoCall");//20
+            //dt.Columns.Add("ContactadoCampo");//20
             dt.Columns.Add("FechaPromesaCall");//20
             dt.Columns.Add("FechaPromesaCampo");//20
             dt.Columns.Add("DetalleDeuda");//21
