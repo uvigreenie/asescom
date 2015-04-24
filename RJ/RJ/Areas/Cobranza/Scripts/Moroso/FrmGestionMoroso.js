@@ -459,6 +459,8 @@
                             { type: 'numeric', dataIndex: 'PorVencer' },
                             { type: 'numeric', dataIndex: 'Exigible' },
                             { type: 'numeric', dataIndex: 'PagoTotal' },
+                            { type: 'numeric', dataIndex: 'Reclamo' },
+                            { type: 'numeric', dataIndex: 'NotaCredito' },
                             { type: 'numeric', dataIndex: 'Saldo' },
                             { type: 'numeric', dataIndex: 'AlCambio' },
                             { type: 'numeric', dataIndex: 'LiqTotal' },
@@ -470,7 +472,9 @@
                             { type: 'boolean', dataIndex: 'ContactadoCall', defaultValue: null, yesText: 'Si', noText: 'No' },
                             { type: 'boolean', dataIndex: 'CPromesaPago', defaultValue: null, yesText: 'Si', noText: 'No' },
                             { type: 'boolean', dataIndex: 'Suspendido', defaultValue: null, yesText: 'Si', noText: 'No' },
+                            { type: 'list', dataIndex: 'EstadoGestionCall', options: ['CEF', 'CNE', 'NOC'] },
                             { type: 'date', dataIndex: 'PromesaPago', beforeText: 'Antes del', afterText: 'Después del', onText: 'En el' },
+                            { type: 'date', dataIndex: 'UltGestionCall', beforeText: 'Antes del', afterText: 'Después del', onText: 'En el' },
                             { type: 'string', dataIndex: 'Zonal' }
                         ]
                     }],
