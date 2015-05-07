@@ -4883,7 +4883,7 @@ namespace RJ.Areas.Cobranza.Controllers
                         else 
                             cell.Style = doubleStyle;
                     }
-                    else if (nombreHoja.Substring(0, 5).ToUpper() == "CABLE" && item.ColumnName.Contains("FechaPromesa"))
+                    else if (nombreHoja.Substring(0, 5).ToUpper() == "CABLE" && item.ColumnName.Contains("FechaPromesa") || item.ColumnName.Contains("UltimaGestion"))
                     {
                         cell.Value = dr[item.Ordinal] == DBNull.Value ? "" : dr[item.Ordinal].ToString();
                         if (cell.Value.ToString() != "") cell.Value = Convert.ToDateTime(dr[item.Ordinal]);
@@ -5097,17 +5097,22 @@ namespace RJ.Areas.Cobranza.Controllers
             dt.Columns.Add("DireccionPorVerificar");//18
             dt.Columns.Add("DeudaTotal");//19
             dt.Columns.Add("PagoTotal");//20
+            dt.Columns.Add("Reclamo");//20
             dt.Columns.Add("Saldo");//21
-            dt.Columns.Add("MejorIncidenciaCall");//22
-            dt.Columns.Add("MejorIncidenciaCampo");//23
-            dt.Columns.Add("GestionadoCall");//24
-            dt.Columns.Add("GestionadoCampo");//25
-            dt.Columns.Add("ContactadoCall");//26
-            dt.Columns.Add("ContactadoCampo");//27
-            dt.Columns.Add("FechaPromesaCall");//28
-            dt.Columns.Add("MontoPromesaCall");//29
-            dt.Columns.Add("FechaPromesaCampo");//30
-            dt.Columns.Add("MontoPromesaCampo");//31
+            dt.Columns.Add("EstadoGestionCall");//20
+            dt.Columns.Add("EstadoGestionCampo");//20
+            dt.Columns.Add("UltimaGestionCall");//20
+            dt.Columns.Add("UltimaGestionCampo");//20
+            dt.Columns.Add("NroGestionesCall");//20
+            dt.Columns.Add("NroGestionesCampo");//20
+            dt.Columns.Add("MejorIncidenciaCall");//20
+            dt.Columns.Add("MejorIncidenciaCampo");//20
+            dt.Columns.Add("MejorObservacionCall");//20
+            dt.Columns.Add("MejorObservacionCampo");//20
+            //dt.Columns.Add("ContactadoCall");//20
+            //dt.Columns.Add("ContactadoCampo");//20
+            dt.Columns.Add("FechaPromesaCall");//20
+            dt.Columns.Add("FechaPromesaCampo");//20
             dt.Columns.Add("DetalleDeuda");//32
         }
 
@@ -5116,6 +5121,8 @@ namespace RJ.Areas.Cobranza.Controllers
             dt.Columns.Add("DCliente");//0
             dt.Columns.Add("DGestionCliente");//1
             dt.Columns.Add("CodCartera");//2
+            dt.Columns.Add("FechaInicio");
+            dt.Columns.Add("FechaFin");
             dt.Columns.Add("Zonal");//3
             dt.Columns.Add("Departamento");//4
             dt.Columns.Add("Provincia");//5
@@ -5137,6 +5144,20 @@ namespace RJ.Areas.Cobranza.Controllers
             dt.Columns.Add("DeudaExigible");//20
             dt.Columns.Add("PagoTotal");//20
             dt.Columns.Add("Saldo");//21
+            dt.Columns.Add("EstadoGestionCall");//20
+            dt.Columns.Add("EstadoGestionCampo");//20
+            dt.Columns.Add("UltimaGestionCall");//20
+            dt.Columns.Add("UltimaGestionCampo");//20
+            dt.Columns.Add("NroGestionesCall");//20
+            dt.Columns.Add("NroGestionesCampo");//20
+            dt.Columns.Add("MejorIncidenciaCall");//20
+            dt.Columns.Add("MejorIncidenciaCampo");//20
+            dt.Columns.Add("MejorObservacionCall");//20
+            dt.Columns.Add("MejorObservacionCampo");//20
+            //dt.Columns.Add("ContactadoCall");//20
+            //dt.Columns.Add("ContactadoCampo");//20
+            dt.Columns.Add("FechaPromesaCall");//20
+            dt.Columns.Add("FechaPromesaCampo");//20
             dt.Columns.Add("DetalleDeuda");//22
         }
         private void CrearTablaDetalleDeudaMovil(DataTable dt)
@@ -5144,12 +5165,15 @@ namespace RJ.Areas.Cobranza.Controllers
             dt.Columns.Add("DCliente");//0
             dt.Columns.Add("DGestionCliente");//1
             dt.Columns.Add("CodCartera");//2
+            dt.Columns.Add("FechaInicio");//2
             dt.Columns.Add("FechaFin");//2
             dt.Columns.Add("Zonal");//3
             dt.Columns.Add("Departamento");//4
             dt.Columns.Add("Provincia");//5
             dt.Columns.Add("Distrito");//6
             dt.Columns.Add("Cluster");//7
+            dt.Columns.Add("GrupoPlan");//7
+            dt.Columns.Add("FechaVencMin");//7
             dt.Columns.Add("Tramo");//8
             dt.Columns.Add("Telefono");//9
             dt.Columns.Add("Anexo");//10
@@ -5179,6 +5203,10 @@ namespace RJ.Areas.Cobranza.Controllers
             dt.Columns.Add("UltimaGestionCampo");//20
             dt.Columns.Add("NroGestionesCall");//20
             dt.Columns.Add("NroGestionesCampo");//20
+            dt.Columns.Add("MejorIncidenciaCall");//20
+            dt.Columns.Add("MejorIncidenciaCampo");//20
+            dt.Columns.Add("MejorObservacionCall");//20
+            dt.Columns.Add("MejorObservacionCampo");//20
             //dt.Columns.Add("ContactadoCall");//20
             //dt.Columns.Add("ContactadoCampo");//20
             dt.Columns.Add("FechaPromesaCall");//20
