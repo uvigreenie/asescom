@@ -424,7 +424,7 @@ namespace RJ.Areas.Cobranza.Models
             public DataTable ListarMorosos(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento, string tramo)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
-                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ExportarMorosos");
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ExportarMorososV1");
                 cmd.CommandTimeout = 300;
                 db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
                 db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
@@ -502,7 +502,7 @@ namespace RJ.Areas.Cobranza.Models
             public DataTable ListarMorososEnCarteraV2(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento, string tramo, string cluster)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
-                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaMorososEnCarteraV2");
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaMorososEnCarteraV3");
                 cmd.CommandTimeout = 180;
                 db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
                 db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
@@ -517,7 +517,7 @@ namespace RJ.Areas.Cobranza.Models
             public DataTable ListarMorososEnCarteraIBK(string cliente, short gestionCliente, string fechaInicio, string departamento, string tramo)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
-                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaMorososEnCarteraIBK");
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaMorososEnCarteraIBKV1");
                 cmd.CommandTimeout = 180;
                 db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
                 db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
@@ -553,7 +553,7 @@ namespace RJ.Areas.Cobranza.Models
             public DataTable ListarMorososEnCarteraOtrosFiltros(string cliente, short gestionCliente, int idParametro, string parametro, double valor1, double valor2)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
-                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaMorososEnCartera_OF");
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ListaMorososEnCartera_OFV1");
                 cmd.CommandTimeout = 180;
                 db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
                 db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
