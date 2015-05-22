@@ -375,7 +375,7 @@
             ],
             sorters: [{
                 property: 'FechaGestion',
-                direction: 'ASC'
+                direction: 'DESC'
             },
             {
                 property: 'Dtrabajador',
