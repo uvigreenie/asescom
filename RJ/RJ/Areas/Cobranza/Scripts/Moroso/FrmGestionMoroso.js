@@ -1676,6 +1676,11 @@
 
     oncbxGestionClienteSelect: function (combo, records, eOpts) {
         this.fnLimpiarFiltros();
+        this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').clearValue();
+        this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').getStore().clearFilter();
+        this.getComponent('pnlFiltro').getComponent('txtBuscarPor').setValue('');
+        this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').getStore().filter('gestionCliente', parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()));
+        this.getComponent('pnlFiltro').getComponent('chkOtrosFiltros').setValue(false);
         if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 4 || this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 6) {
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').setVisible(true);
             this.getComponent('pnlFiltro').getComponent('chkOtrosFiltros').setVisible(true);
@@ -1697,9 +1702,7 @@
                     gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
                 }
             });
-            this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').clearValue();
-            this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').getStore().clearFilter();
-            this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').getStore().filter('gestionCliente', parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()));
+            
             this.getComponent('pnlFiltro').getComponent('cbxFechaFin').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
@@ -1724,9 +1727,7 @@
                     gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
                 }
             });
-            this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').clearValue();
-            this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').getStore().clearFilter();
-            this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').getStore().filter('gestionCliente', parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()));
+            
             this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();
@@ -1746,9 +1747,7 @@
                     gestionCliente: parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue())
                 }
             });
-            this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').clearValue();
-            this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').getStore().clearFilter();
-            this.getComponent('pnlFiltro').getComponent('cbxBuscarPor').getStore().filter('gestionCliente', parseInt(this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue()));
+            
             this.getComponent('pnlFiltro').getComponent('cbxFechaInicio').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxZonal').clearValue();
             this.getComponent('pnlFiltro').getComponent('cbxDepartamento').clearValue();

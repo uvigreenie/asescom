@@ -2034,43 +2034,35 @@ namespace RJ.Areas.Cobranza.Controllers
                      {
                          DataTable dt = Cartera.Instancia.ListarMorososEnCarteraIBKOtrosFiltros(cliente, gestionCliente, idParametro, parametro.Trim());
 
-                         string fields = "[{\"name\":\"Cartera\",\"type\":\"int\"},";
-                         fields += "{\"name\":\"DCliente\",\"type\":\"string\"},";
-                         fields += "{\"name\":\"DGestionCliente\",\"type\":\"string\"},";
+                         string fields = "[{\"name\":\"Cartera\",\"type\":\"int\"},{\"name\":\"DCliente\",\"type\":\"string\"},{\"name\":\"DGestionCliente\",\"type\":\"string\"},";
                          fields += "{\"name\":\"CodCartera\",\"type\":\"string\"},{\"name\":\"Departamento\",\"type\":\"string\"},";
                          fields += "{\"name\":\"CodCliente\",\"type\":\"string\"},{\"name\":\"Sector\",\"type\":\"string\"},";
                          fields += "{\"name\":\"Provincia\",\"type\":\"string\"},{\"name\":\"Distrito\",\"type\":\"string\"},";
                          fields += "{\"name\":\"Flag\",\"type\":\"string\"},";
                          fields += "{\"name\":\"NumeroDocumento\",\"type\":\"string\"},{\"name\":\"Moroso\",\"type\":\"int\"},{\"name\":\"DMoroso\",\"type\":\"string\"},";
                          fields += "{\"name\":\"DeudaTotal\",\"type\":\"number\"},{\"name\":\"ImporteCancelacion\",\"type\":\"number\"},{\"name\":\"PagoTotal\",\"type\":\"number\"},{\"name\":\"SaldoCapital\",\"type\":\"number\"},";
-                         fields += "{\"name\":\"GestionadoCall\",\"type\":\"bool\"},{\"name\":\"ContactadoCall\",\"type\":\"bool\"},{\"name\":\"TlfContactado\",\"type\":\"bool\"},{\"name\":\"PromesaPago\", type:\"date\"},{\"name\":\"Tramo\",\"type\":\"string\"}]";
+                         fields += "{\"name\":\"UltGestionCall\",\"type\":\"date\"},{\"name\":\"TlfContactado\",\"type\":\"bool\"},{\"name\":\"EstadoGestionCall\",\"type\":\"string\"},{\"name\":\"PromesaPago\",\"type\":\"date\"},";
+                         fields += "{\"name\":\"Tramo\",\"type\":\"string\"}]";
 
-                         string columns = "[{\"text\":\"Cartera\",\"dataIndex\":\"Cartera\",\"hidden\":true,\"hideable\":false},";
-                         columns += "{\"text\":\"Cartera\",\"dataIndex\":\"CodCartera\",\"width\":120},";
+                         string columns = "[{\"xtype\":\"rownumberer\",\"resizable\":true,\"width\":50},{\"text\":\"Cartera\",\"dataIndex\":\"Cartera\",\"hidden\":true,\"hideable\":false},";
                          columns += "{\"text\":\"Cliente\",\"dataIndex\":\"DCliente\",\"width\":150,\"hideable\":false,\"hidden\":true},";
                          columns += "{\"text\":\"Gestión\",\"dataIndex\":\"DGestionCliente\",\"width\":100,\"hideable\":false,\"hidden\":true},";
                          columns += "{\"text\":\"DNI\",\"dataIndex\":\"NumeroDocumento\",\"align\": \"right\",\"width\":90,\"filterable\":true,\"hidden\":true},";
                          columns += "{\"text\":\"Sector\",\"dataIndex\":\"Sector\",\"align\": \"right\",\"width\":60,\"filterable\":true},";
+                         columns += "{\"text\":\"Cartera\",\"dataIndex\":\"CodCartera\",\"width\":150},";
                          columns += "{\"text\":\"CodCliente\",\"dataIndex\":\"CodCliente\",\"width\":95,\"filterable\":true},";
                          columns += "{\"text\":\"Moroso\",\"dataIndex\":\"Moroso\",\"hideable\":false,\"hidden\":true},";
                          columns += "{\"text\":\"Moroso\",\"dataIndex\":\"DMoroso\",\"width\":280,\"filterable\":true},";
-
-                         //columns += "{\"xtype\":\"numbercolumn\",\"text\":\"SaldoCapital\",\"align\": \"right\",\"dataIndex\":\"SaldoCapital\",\"format\":\"0,000.00\",\"width\":90,\"filterable\":true},";
                          columns += "{\"xtype\":\"numbercolumn\",\"text\":\"DeudaTotal\", \"align\": \"right\",\"dataIndex\":\"DeudaTotal\",\"format\":\"0,000.00\",\"width\":90,\"filterable\":true},";
-                         //columns += "{\"xtype\":\"numbercolumn\",\"text\":\"ImporteCancelacion\",\"align\": \"right\",\"dataIndex\":\"ImporteCancelacion\",\"format\":\"0,000.00\",\"width\":90,\"filterable\":true},";
                          columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Pago\",\"align\": \"right\",\"dataIndex\":\"PagoTotal\",\"format\":\"0,000.00\",\"width\":90,\"filterable\":true, \"renderer\": \"fnColorearPago\"},";
-
                          columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Tlf. Contactado\",\"dataIndex\":\"TlfContactado\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
-                         columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Gestión Call\",\"dataIndex\":\"GestionadoCall\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
-                         columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Contacto Call\",\"dataIndex\":\"ContactadoCall\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
-                         //columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Doble Salto\",\"dataIndex\":\"DobleSalto\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
+                         columns += "{\"xtype\":\"datecolumn\",\"text\":\"Ult. Gestión\",\"dataIndex\":\"UltGestionCall\",\"width\":110,\"filterable\":true, \"format\":\"d/m/Y\"},";
+                         columns += "{\"text\":\"Estado Gestion Call\",\"dataIndex\":\"EstadoGestionCall\",\"width\":60,\"filterable\":true},";
                          columns += "{\"xtype\":\"datecolumn\",\"text\":\"Promesa\",\"dataIndex\":\"PromesaPago\",\"width\":110,\"filterable\":true, \"format\":\"d/m/Y\"},";
-                         //columns += "{\"text\":\"Tramo\",\"dataIndex\":\"Tramo\",\"width\":90,\"filterable\":true},";
                          columns += "{\"text\":\"Flag\",\"dataIndex\":\"Flag\",\"width\":130},";
                          columns += "{\"text\":\"Departamento\",\"dataIndex\":\"Departamento\",\"width\":110 },";
                          columns += "{\"text\":\"Provincia\",\"dataIndex\":\"Provincia\",\"width\":130},";
                          columns += "{\"text\":\"Distrito\",\"dataIndex\":\"Distrito\",\"width\":130},";
-                         //columns += "{\"text\":\"Cartera\",\"dataIndex\":\"CodCartera\",\"width\":190},";
                          columns += "{\"flex\":1,\"menuDisabled\":true,\"hideable\":false}]";
 
                          var lista = (from m in dt.AsEnumerable()
@@ -2095,9 +2087,9 @@ namespace RJ.Areas.Cobranza.Controllers
                                           PagoTotal = Convert.ToDecimal(m["PagoTotal"]),
                                           SaldoCapital = Convert.ToDecimal(m["SaldoCapital"]),
                                           TlfContactado = Convert.ToBoolean(m["TlfContactado"]),
-                                          GestionadoCall = Convert.ToBoolean(m["GestionadoCall"]),
-                                          ContactadoCall = Convert.ToBoolean(m["ContactadoCall"]),
+                                          EstadoGestionCall = m["EstadoGestionCall"].ToString(),
                                           //DobleSalto = Convert.ToBoolean(m["DobleSalto"]),
+                                          UltGestionCall = (m["UltGestionCall"] == DBNull.Value ? "" : Convert.ToDateTime(m["UltGestionCall"]).ToString("yyyy/MM/dd")),
                                           PromesaPago = (m["PromesaPago"] == DBNull.Value ? "" : Convert.ToDateTime(m["PromesaPago"]).ToString("yyyy/MM/dd"))
                                       }).ToList<object>();
 
@@ -2116,14 +2108,15 @@ namespace RJ.Areas.Cobranza.Controllers
                          fields += "{\"name\":\"Provincia\",\"type\":\"string\"},{\"name\":\"Distrito\",\"type\":\"string\"},";
                          fields += "{\"name\":\"NumeroDocumento\",\"type\":\"string\"},{\"name\":\"Moroso\",\"type\":\"int\"},{\"name\":\"DMoroso\",\"type\":\"string\"},";
                          fields += "{\"name\":\"DeudaTotal\",\"type\":\"number\"},{\"name\":\"Actualizado\",\"type\":\"number\"},{\"name\":\"PagoTotal\",\"type\":\"number\"},{\"name\":\"Saldo\",\"type\":\"number\"},";
-                         fields += "{\"name\":\"GestionadoCall\",\"type\":\"bool\"},{\"name\":\"ContactadoCall\",\"type\":\"bool\"},{\"name\":\"TlfContactado\",\"type\":\"bool\"},{\"name\":\"DobleSalto\",\"type\":\"bool\"},{\"name\":\"PromesaPago\", type:\"date\"},{\"name\":\"Tramo\",\"type\":\"string\"}]";
+                         fields += "{\"name\":\"UltGestionCall\",\"type\":\"date\"},{\"name\":\"TlfContactado\",\"type\":\"bool\"},{\"name\":\"EstadoGestionCall\",\"type\":\"string\"},{\"name\":\"PromesaPago\",\"type\":\"date\"},";
+                         fields += "{\"name\":\"DobleSalto\",\"type\":\"bool\"},{\"name\":\"Tramo\",\"type\":\"string\"}]";
 
-                         string columns = "[{\"text\":\"Cartera\",\"dataIndex\":\"Cartera\",\"hidden\":true,\"hideable\":false},";
-                         columns += "{\"text\":\"Cartera\",\"dataIndex\":\"CodCartera\",\"width\":120},";
+                         string columns = "[{\"xtype\":\"rownumberer\",\"resizable\":true,\"width\":50},{\"text\":\"Cartera\",\"dataIndex\":\"Cartera\",\"hidden\":true,\"hideable\":false},";
                          columns += "{\"text\":\"Cliente\",\"dataIndex\":\"DCliente\",\"width\":150,\"hideable\":false,\"hidden\":true},";
                          columns += "{\"text\":\"Gestión\",\"dataIndex\":\"DGestionCliente\",\"width\":100,\"hideable\":false,\"hidden\":true},";
                          columns += "{\"text\":\"DNI\",\"dataIndex\":\"NumeroDocumento\",\"align\": \"right\",\"width\":90,\"filterable\":true,\"hidden\":true},";
                          columns += "{\"text\":\"Sector\",\"dataIndex\":\"Sector\",\"align\": \"right\",\"width\":60,\"filterable\":true},";
+                         columns += "{\"text\":\"Cartera\",\"dataIndex\":\"CodCartera\",\"width\":150},";
                          columns += "{\"text\":\"CodCliente\",\"dataIndex\":\"CodCliente\",\"width\":95,\"filterable\":true},";
                          columns += "{\"text\":\"Moroso\",\"dataIndex\":\"Moroso\",\"hideable\":false,\"hidden\":true},";
                          columns += "{\"text\":\"Moroso\",\"dataIndex\":\"DMoroso\",\"width\":280,\"filterable\":true},";
@@ -2132,9 +2125,9 @@ namespace RJ.Areas.Cobranza.Controllers
                          columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Pago\",\"align\": \"right\",\"dataIndex\":\"PagoTotal\",\"format\":\"0,000.00\",\"width\":90,\"filterable\":true, \"renderer\": \"fnColorearPago\"},";
                          columns += "{\"xtype\":\"numbercolumn\",\"text\":\"Saldo\",\"align\": \"right\",\"dataIndex\":\"Saldo\",\"format\":\"0,000.00\",\"width\":90,\"filterable\":true},";
                          columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Tlf. Contactado\",\"dataIndex\":\"TlfContactado\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
-                         columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Gestión Call\",\"dataIndex\":\"GestionadoCall\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
-                         columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Contacto Call\",\"dataIndex\":\"ContactadoCall\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
-                         columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Doble Salto\",\"dataIndex\":\"DobleSalto\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
+                         columns += "{\"xtype\":\"datecolumn\",\"text\":\"Ult. Gestión\",\"dataIndex\":\"UltGestionCall\",\"width\":110,\"filterable\":true, \"format\":\"d/m/Y\"},";
+                         columns += "{\"text\":\"Estado Gestion Call\",\"dataIndex\":\"EstadoGestionCall\",\"width\":60,\"filterable\":true},";
+                         //columns += "{\"xtype\":\"checkcolumn\",\"text\":\"Doble Salto\",\"dataIndex\":\"DobleSalto\",\"processEvent\":'function() { return false; }',\"width\":110,\"filterable\":true},";
                          columns += "{\"xtype\":\"datecolumn\",\"text\":\"Promesa\",\"dataIndex\":\"PromesaPago\",\"width\":110,\"filterable\":true, \"format\":\"d/m/Y\"},";
                          columns += "{\"text\":\"Tramo\",\"dataIndex\":\"Tramo\",\"width\":90,\"filterable\":true},";
                          columns += "{\"text\":\"Departamento\",\"dataIndex\":\"Departamento\",\"width\":110 },";
@@ -2164,9 +2157,9 @@ namespace RJ.Areas.Cobranza.Controllers
                                           PagoTotal = Convert.ToDecimal(m["PagoTotal"]),
                                           Saldo = Convert.ToDecimal(m["Saldo"]),
                                           TlfContactado = Convert.ToBoolean(m["TlfContactado"]),
-                                          GestionadoCall = Convert.ToBoolean(m["GestionadoCall"]),
-                                          ContactadoCall = Convert.ToBoolean(m["ContactadoCall"]),
-                                          DobleSalto = Convert.ToBoolean(m["DobleSalto"]),
+                                          EstadoGestionCall = m["EstadoGestionCall"].ToString(),
+                                          //DobleSalto = Convert.ToBoolean(m["DobleSalto"]),
+                                          UltGestionCall = (m["UltGestionCall"] == DBNull.Value ? "" : Convert.ToDateTime(m["UltGestionCall"]).ToString("yyyy/MM/dd")),
                                           PromesaPago = (m["PromesaPago"] == DBNull.Value ? "" : Convert.ToDateTime(m["PromesaPago"]).ToString("yyyy/MM/dd"))
                                       }).ToList<object>();
 
