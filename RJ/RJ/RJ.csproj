@@ -4066,6 +4066,7 @@
     <Content Include="Scripts\ExtJs\ux\TabScrollerMenu.js" />
     <Content Include="Scripts\ExtJs\ux\ToolbarDroppable.js" />
     <Content Include="Scripts\ExtJs\ux\TreePicker.js" />
+    <Content Include="Scripts\Overrides\EventManager.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

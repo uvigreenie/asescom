@@ -1461,7 +1461,7 @@ namespace RJ.Areas.Cobranza.Controllers
                              DataTable dt = Cartera.Instancia.ListarMorososEnCarteraV2(cliente, gestionCliente, fechaFin, xmlZonal, xmlDpto, xmlTramo, xmlCluster);
                              //{\"name\":\"CodCartera\",\"type\":\"string\"},
                              string fields = "[{\"name\":\"Cartera\",\"type\":\"int\"},{\"name\":\"DCliente\",\"type\":\"string\"},{\"name\":\"DGestionCliente\",\"type\":\"string\"},";
-                             fields += "{\"name\":\"Zonal\",\"type\":\"string\"},{\"name\":\"Departamento\",\"type\":\"string\"},";
+                             fields += "{\"name\":\"Zonal\",\"type\":\"string\"},{\"name\":\"Departamento\",\"type\":\"string\"},{\"name\":\"Cuenta\",\"type\":\"string\"},";
                              fields += "{\"name\":\"Inscripcion\",\"type\":\"string\"},{\"name\":\"CodCliente\",\"type\":\"string\"},";
                              fields += "{\"name\":\"Provincia\",\"type\":\"string\"},{\"name\":\"Distrito\",\"type\":\"string\"},{\"name\":\"Cluster\",\"type\":\"string\"},";
                              fields += "{\"name\":\"Tramo\",\"type\":\"string\"},{\"name\":\"Telefono\",\"type\":\"string\"},{\"name\":\"DetalleCarteraFija\",\"type\":\"int\"},";
@@ -1480,6 +1480,7 @@ namespace RJ.Areas.Cobranza.Controllers
                              columns += "{\"text\":\"Teléfono\",\"dataIndex\":\"Telefono\",\"width\":110},";
 
                              columns += "{\"text\":\"CodCliente\",\"dataIndex\":\"CodCliente\",\"width\":90,\"filterable\":true},";
+                             columns += "{\"text\":\"Cuenta\",\"dataIndex\":\"Cuenta\",\"width\":100,\"filterable\":true},";
                              columns += "{\"text\":\"Inscripcion\",\"dataIndex\":\"Inscripcion\",\"width\":100,\"filterable\":true},";
                              columns += "{\"text\":\"Moroso\",\"dataIndex\":\"Moroso\",\"hideable\":false,\"hidden\":true},";
                              columns += "{\"text\":\"Moroso\",\"dataIndex\":\"DMoroso\",\"width\":280,\"filterable\":true},";
@@ -1506,6 +1507,7 @@ namespace RJ.Areas.Cobranza.Controllers
                                               Cartera = Convert.ToInt32(m["Cartera"]),
                                               DCliente = m["DCliente"].ToString(),
                                               CodCliente = m["CodCliente"].ToString(),
+                                              Cuenta = m["Cuenta"].ToString(),
                                               Inscripcion = m["Inscripcion"].ToString(),
                                               Sector = m["Sector"].ToString(),
                                               DGestionCliente = m["DGestionCliente"].ToString(),
@@ -2359,7 +2361,7 @@ namespace RJ.Areas.Cobranza.Controllers
                          //{\"name\":\"CodCartera\",\"type\":\"string\"},
                          string fields = "[{\"name\":\"Cartera\",\"type\":\"int\"},{\"name\":\"DCliente\",\"type\":\"string\"},{\"name\":\"DGestionCliente\",\"type\":\"string\"},";
                          fields += "{\"name\":\"Zonal\",\"type\":\"string\"},{\"name\":\"Departamento\",\"type\":\"string\"},";
-                         fields += "{\"name\":\"Inscripcion\",\"type\":\"string\"},{\"name\":\"CodCliente\",\"type\":\"string\"},";
+                         fields += "{\"name\":\"Inscripcion\",\"type\":\"string\"},{\"name\":\"CodCliente\",\"type\":\"string\"},{\"name\":\"Cuenta\",\"type\":\"string\"},";
                          fields += "{\"name\":\"Provincia\",\"type\":\"string\"},{\"name\":\"Distrito\",\"type\":\"string\"},{\"name\":\"Cluster\",\"type\":\"string\"},";
                          fields += "{\"name\":\"Tramo\",\"type\":\"string\"},{\"name\":\"Telefono\",\"type\":\"string\"},{\"name\":\"DetalleCarteraFija\",\"type\":\"int\"},";
                          fields += "{\"name\":\"NumeroDocumento\",\"type\":\"string\"},{\"name\":\"Moroso\",\"type\":\"int\"},{\"name\":\"DMoroso\",\"type\":\"string\"},";
@@ -2380,6 +2382,7 @@ namespace RJ.Areas.Cobranza.Controllers
                          columns += "{\"text\":\"Teléfono\",\"dataIndex\":\"Telefono\",\"width\":110},";
 
                          columns += "{\"text\":\"CodCliente\",\"dataIndex\":\"CodCliente\",\"width\":90,\"filterable\":true},";
+                         columns += "{\"text\":\"Cuenta\",\"dataIndex\":\"Cuenta\",\"width\":100,\"filterable\":true},";
                          columns += "{\"text\":\"Inscripcion\",\"dataIndex\":\"Inscripcion\",\"width\":100,\"filterable\":true},";
                          columns += "{\"text\":\"Moroso\",\"dataIndex\":\"Moroso\",\"hideable\":false,\"hidden\":true},";
                          columns += "{\"text\":\"Moroso\",\"dataIndex\":\"DMoroso\",\"width\":280,\"filterable\":true},";
@@ -2407,6 +2410,7 @@ namespace RJ.Areas.Cobranza.Controllers
                                           Cartera = Convert.ToInt32(m["Cartera"]),
                                           DCliente = m["DCliente"].ToString(),
                                           CodCliente = m["CodCliente"].ToString(),
+                                          Cuenta = m["Cuenta"].ToString(),
                                           Inscripcion = m["Inscripcion"].ToString(),
                                           Sector = m["Sector"].ToString(),
                                           DGestionCliente = m["DGestionCliente"].ToString(),
@@ -5184,6 +5188,7 @@ namespace RJ.Areas.Cobranza.Controllers
             dt.Columns.Add("NumeroDocumento");//13
             dt.Columns.Add("DMoroso");//14
             dt.Columns.Add("Sector");//15
+            dt.Columns.Add("DetalleMoroso");//15
             dt.Columns.Add("DireccionBase");//16
             dt.Columns.Add("DireccionUbicada");//17
             dt.Columns.Add("DireccionPorVerificar");//18
@@ -5194,8 +5199,10 @@ namespace RJ.Areas.Cobranza.Controllers
             dt.Columns.Add("PagoTotal");//20
             dt.Columns.Add("Reclamo");//20
             dt.Columns.Add("Saldo");//21
-            dt.Columns.Add("EstadoGestionCall");//20
-            dt.Columns.Add("EstadoGestionCampo");//20
+            dt.Columns.Add("EGCallCliente");//20
+            dt.Columns.Add("EGCallCartera");//20
+            dt.Columns.Add("EGCampoCliente");//20
+            dt.Columns.Add("EGCampoCartera");//20
             dt.Columns.Add("UltimaGestionCall");//20
             dt.Columns.Add("UltimaGestionCampo");//20
             dt.Columns.Add("NroGestionesCall");//20
@@ -5241,8 +5248,10 @@ namespace RJ.Areas.Cobranza.Controllers
             dt.Columns.Add("Segmento");//20
             dt.Columns.Add("PagoTotal");//20
             dt.Columns.Add("Saldo");//21
-            dt.Columns.Add("EstadoGestionCall");//20
-            dt.Columns.Add("EstadoGestionCampo");//20
+            dt.Columns.Add("EGCallCliente");//20
+            dt.Columns.Add("EGCallCartera");//20
+            dt.Columns.Add("EGCampoCliente");//20
+            dt.Columns.Add("EGCampoCartera");//20
             dt.Columns.Add("UltimaGestionCall");//20
             dt.Columns.Add("UltimaGestionCampo");//20
             dt.Columns.Add("NroGestionesCall");//20
@@ -5297,8 +5306,10 @@ namespace RJ.Areas.Cobranza.Controllers
             dt.Columns.Add("NotaCredito");//35
             dt.Columns.Add("Saldo");//36
             dt.Columns.Add("OfrecerDescuento");//37
-            dt.Columns.Add("EstadoGestionCall");//38
-            dt.Columns.Add("estadoGestionCampo");//39
+            dt.Columns.Add("EGCallCliente");//20
+            dt.Columns.Add("EGCallCartera");//20
+            dt.Columns.Add("EGCampoCliente");//20
+            dt.Columns.Add("EGCampoCartera");//20
             dt.Columns.Add("UltimaGestionCall");//40
             dt.Columns.Add("UltimaGestionCampo");//41
             dt.Columns.Add("NroGestionesCall");//42
