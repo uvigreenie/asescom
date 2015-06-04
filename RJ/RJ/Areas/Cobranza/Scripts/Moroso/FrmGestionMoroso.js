@@ -1,5 +1,6 @@
 ﻿Ext.define('CobApp.Moroso.FrmGestionMoroso', {
     extend: 'Ext.panel.Panel',
+    requires: 'RJ.overrides.ext.EventManager',
     closable: true,
     layout: 'border',
     initComponent: function () {

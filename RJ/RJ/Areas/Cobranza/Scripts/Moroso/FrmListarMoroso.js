@@ -534,18 +534,19 @@
                     if (this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue() != null) {
                         dtTramo = this.getComponent('pnlFiltro').getComponent('cbxTramo').getValue();
                     }
-                    if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
-                        this.getComponent('grdListadoMoroso').getStore().load({
-                            params: {
-                                cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
-                                gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
-                                fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
-                                zonal: dtZonal,
-                                tramo: dtTramo,
-                                departamento: dtDepartamento
-                            }
-                        });
-                    } else { Ext.example.msg('Información', 'Haga click en exportar para descargar el listado de morosos.'); }
+//                    if (this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue() == 1) {
+//                        this.getComponent('grdListadoMoroso').getStore().load({
+//                            params: {
+//                                cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
+//                                gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
+//                                fechaFin: this.getComponent('pnlFiltro').getComponent('cbxFechaFin').getValue(),
+//                                zonal: dtZonal,
+//                                tramo: dtTramo,
+//                                departamento: dtDepartamento
+//                            }
+//                        });
+                    //                    } else { Ext.example.msg('Información', 'Haga click en exportar para descargar el listado de morosos.'); }
+                    Ext.example.msg('Información', 'Haga click en Exportar para descargar el listado de morosos.');
                     this.getComponent('pnlFiltro').getDockedItems('toolbar[dock="bottom"]')[0].getComponent('btnExportar').setParams({
                         cliente: this.getComponent('pnlFiltro').getComponent('cbxCliente').getValue().toString(),
                         gestionCliente: this.getComponent('pnlFiltro').getComponent('cbxGestionCliente').getValue().toString(),
