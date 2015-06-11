@@ -4959,7 +4959,7 @@ namespace RJ.Areas.Cobranza.Controllers
                         else
                             cell.Style = doubleStyle;
                     }
-                    else if (item.ColumnName.Contains("DeudaTotal") || item.ColumnName.Contains("Pago") || item.ColumnName == "Reclamo" || item.ColumnName == "NotaCredito" || item.ColumnName == "Saldo")
+                    else if (item.ColumnName.Contains("DeudaTotal") || item.ColumnName.Contains("Pago") || item.ColumnName.Contains("PIF") || item.ColumnName == "Reclamo" || item.ColumnName == "NotaCredito" || item.ColumnName == "Saldo")
                     {
                         cell.Value = Convert.ToDouble(dr[item.Ordinal]);
                     }
@@ -5302,6 +5302,8 @@ namespace RJ.Areas.Cobranza.Controllers
             dt.Columns.Add("DeudaTotalLinea");//31
             dt.Columns.Add("Segmento");//32
             dt.Columns.Add("Pago");//33
+            dt.Columns.Add("PIF");//33
+            dt.Columns.Add("Pago + PIF");//33
             dt.Columns.Add("Reclamo");//34
             dt.Columns.Add("NotaCredito");//35
             dt.Columns.Add("Saldo");//36
