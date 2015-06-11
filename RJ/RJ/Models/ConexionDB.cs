@@ -11,7 +11,7 @@
 
         public string CadenaConexion()
         {
-            string cnn = "Data Source = localhost; Initial Catalog = RJAbogados; User ID=mgeldres; Password=asescomadmin2014.rar";
+            string cnn = "Data Source = 181.65.184.171; Initial Catalog = RJAbogados; User ID=mgeldres; Password=asescomadmin2014.rar";
             return cnn;
         }
     }

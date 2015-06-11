@@ -424,7 +424,7 @@ namespace RJ.Areas.Cobranza.Models
             public DataTable ListarMorosos(string cliente, short gestionCliente, string fechaFin, string zonal, string departamento, string tramo)
             {
                 Database db = new SqlDatabase(ConexionDB.Instancia.CadenaConexion());
-                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ExportarMorososV1");
+                DbCommand cmd = db.GetStoredProcCommand("uspCOB_ExportarMorososV2");
                 cmd.CommandTimeout = 300;
                 db.AddInParameter(cmd, "@prmstrCliente", DbType.String, cliente);
                 db.AddInParameter(cmd, "@prmintGestionCliente", DbType.Int16, gestionCliente);
