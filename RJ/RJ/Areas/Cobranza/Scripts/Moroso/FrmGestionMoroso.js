@@ -473,7 +473,8 @@
                             { type: 'boolean', dataIndex: 'ContactadoCall', defaultValue: null, yesText: 'Si', noText: 'No' },
                             { type: 'boolean', dataIndex: 'CPromesaPago', defaultValue: null, yesText: 'Si', noText: 'No' },
                             { type: 'boolean', dataIndex: 'Suspendido', defaultValue: null, yesText: 'Si', noText: 'No' },
-                            { type: 'list', dataIndex: 'EstadoGestionCall', options: ['CEF', 'CNE', 'NOC'] },
+                            { type: 'list', dataIndex: 'EstadoGestionTelefono', options: ['CEF', 'CNE', 'NOC', 'No gest.'] },
+                            { type: 'list', dataIndex: 'EstadoGestionCall', options: ['CEF', 'CNE', 'NOC', 'No gest.'] },
                             { type: 'date', dataIndex: 'PromesaPago', beforeText: 'Antes del', afterText: 'Después del', onText: 'En el' },
                             { type: 'date', dataIndex: 'UltGestionCall', beforeText: 'Antes del', afterText: 'Después del', onText: 'En el' },
                             { type: 'string', dataIndex: 'Zonal' }
